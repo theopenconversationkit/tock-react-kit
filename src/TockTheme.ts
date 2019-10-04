@@ -1,21 +1,20 @@
 export interface TockTheme {
   fontFamily?: string;
   fontSize?: string;
-  botMessage?: {
-    color?: string;
-    background?: string;
-    borderRadius?: string;
-    padding?: string;
-  };
-  userMessage?: {
-    color?: string;
-    background?: string;
-    borderRadius?: string;
-    padding?: string;
-  };
-  chat?: {
-    background?: string;
-    maxWidth?: string;
+  userColor?: string;
+  botColor?: string;
+  cardColor?: string;
+  inputColor?: string;
+  borderRadius?: string;
+  conversationWidth?: string;
+  styles?: {
+    card?: string;
+    carouselItem?: string;
+    carouselArrow?: string;
+    messageBot?: string;
+    messageUser?: string;
+    quickReply?: string;
+    chat?: string;
   };
 }
 
