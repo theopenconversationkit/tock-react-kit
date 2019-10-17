@@ -1,7 +1,7 @@
-import React, { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes } from 'react';
 import styled, { StyledComponent } from '@emotion/styled';
+import { invert, readableColor } from 'polished';
+import React, { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes } from 'react';
 import TockTheme from 'TockTheme';
-import { readableColor, invert } from 'polished';
 
 const CardOuter: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
@@ -101,6 +101,7 @@ export interface CardProps {
   subTitle?: string;
   imageUrl: string;
   buttons?: { label: string; url: string }[];
+  onButtonClick: (button: { label: string; url: string }) => void;
 }
 
 const Card: (props: CardProps) => JSX.Element = ({
@@ -108,6 +109,7 @@ const Card: (props: CardProps) => JSX.Element = ({
   subTitle,
   imageUrl,
   buttons,
+  onButtonClick,
 }: CardProps) => (
   <CardOuter>
     <CardContainer>
@@ -118,7 +120,12 @@ const Card: (props: CardProps) => JSX.Element = ({
         <ButtonList>
           {buttons.map((button: { label: string; url: string }, i: number) => (
             <li key={i}>
-              <Button>{button.label}</Button>
+              <Button
+                onClick={onButtonClick.bind(null, button)}
+                onKeyPress={onButtonClick.bind(null, button)}
+              >
+                {button.label}
+              </Button>
             </li>
           ))}
         </ButtonList>

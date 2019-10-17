@@ -1,7 +1,7 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, { ReactNode, DetailedHTMLProps, HTMLAttributes } from 'react';
-import TockTheme from 'TockTheme';
 import { readableColor } from 'polished';
+import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import TockTheme from 'TockTheme';
 
 const QuickReplyButton: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
@@ -30,10 +30,10 @@ const QuickReplyButton: StyledComponent<
   ${props => (props.theme && props.theme.styles && props.theme.styles.quickReply) || ''}
 `;
 
-const QuickReply: (props: { children?: ReactNode }) => JSX.Element = ({
-  children,
-}: {
-  children?: ReactNode;
-}) => <QuickReplyButton>{children}</QuickReplyButton>;
+const QuickReply: (
+  props: DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+) => JSX.Element = (
+  props: DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+) => <QuickReplyButton {...props} />;
 
 export default QuickReply;

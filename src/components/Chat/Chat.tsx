@@ -16,7 +16,7 @@ export interface ChatProps {
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
-  const { messages, quickReplies, sendMessage }: UseTock = useTock(endPoint);
+  const { messages, quickReplies, sendMessage, sendQuickReply }: UseTock = useTock(endPoint);
   return (
     <Container>
       <Conversation>
@@ -28,12 +28,26 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
               <MessageUser key={i}>{message.message}</MessageUser>
             );
           } else if (message.type === 'card') {
-            return <CardComponent key={i} {...message} />;
+            return (
+              <CardComponent
+                key={i}
+                {...message}
+                onButtonClick={(button: { label: string; url?: string }) =>
+                  sendQuickReply(button.label)
+                }
+              />
+            );
           } else if (message.type === 'carousel') {
             return (
               <CarouselComponent key={i}>
                 {message.cards.map((card: Card, ic) => (
-                  <CardComponent key={ic} {...card} />
+                  <CardComponent
+                    key={ic}
+                    {...card}
+                    onButtonClick={(button: { label: string; url?: string }) =>
+                      sendQuickReply(button.label)
+                    }
+                  />
                 ))}
               </CarouselComponent>
             );
@@ -43,7 +57,9 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
       </Conversation>
       <QuickReplyList>
         {quickReplies.map((qr: QuickReply, i: number) => (
-          <QR key={i}>{qr.label}</QR>
+          <QR key={i} onClick={sendQuickReply.bind(null, qr.label, qr.payload)}>
+            {qr.label}
+          </QR>
         ))}
       </QuickReplyList>
       <ChatInput onSubmit={(message: string) => sendMessage(message)} />

@@ -19,10 +19,11 @@ export interface UseTock {
     title: string,
     imageUrl: string,
     subTitle?: string,
-    buttons?: { label: string; url: string }[]
+    buttons?: { label: string; url?: string }[]
   ) => void;
   addCarousel: (cards: Card[]) => void;
   setQuickReplies: (quickReplies: QuickReply[]) => void;
+  sendQuickReply: (title: string, payload?: string) => Promise<void>;
 }
 
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
@@ -37,6 +38,64 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       }),
     []
   );
+
+  const handleBotResponse: (botResponse: any) => void = ({ responses }: any) => {
+    if (Array.isArray(responses) && responses.length > 0) {
+      const lastMessage: any = responses[responses.length - 1];
+      if (lastMessage.buttons && lastMessage.buttons.length > 0) {
+        dispatch({
+          type: 'SET_QUICKREPLIES',
+          quickReplies: lastMessage.buttons.map(({ title, payload }: any) => ({
+            label: title,
+            payload,
+          })),
+        });
+      } else {
+        dispatch({
+          type: 'SET_QUICKREPLIES',
+          quickReplies: [],
+        });
+      }
+      dispatch({
+        type: 'ADD_MESSAGE',
+        messages: responses.map(({ text, card, carousel }: any) => {
+          if (text) {
+            return {
+              author: 'bot',
+              message: text,
+              type: 'message',
+            } as Message;
+          } else if (card) {
+            return {
+              title: card.title,
+              subTitle: card.subTitle,
+              imageUrl: card.file ? card.file.url : null,
+              buttons: card.actions.map((action: any) => ({
+                label: action.title,
+              })),
+              type: 'card',
+            } as Card;
+          } else {
+            return {
+              cards: carousel.cards.map(
+                (card: any) =>
+                  ({
+                    title: card.title,
+                    subTitle: card.subTitle,
+                    imageUrl: card.file ? card.file.url : null,
+                    buttons: card.actions.map((action: any) => ({
+                      label: action.title,
+                    })),
+                    type: 'card',
+                  } as Card)
+              ),
+              type: 'carousel',
+            } as Carousel;
+          }
+        }),
+      });
+    }
+  };
 
   const sendMessage: (message: string) => Promise<void> = useCallback((message: string) => {
     dispatch({
@@ -54,17 +113,31 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       },
     })
       .then(res => res.json())
-      .then(({ responses }) =>
-        dispatch({
-          type: 'ADD_MESSAGE',
-          messages: responses.map(({ text }: any) => ({
-            author: 'bot',
-            message: text,
-            type: 'message',
-          })),
-        })
-      );
+      .then(handleBotResponse);
   }, []);
+
+  const sendQuickReply: (title: string, payload?: string) => Promise<void> = (
+    title: string,
+    payload?: string
+  ) => {
+    addMessage(title, 'user');
+    if (payload) {
+      return fetch(tockEndPoint, {
+        body: JSON.stringify({
+          payload,
+          userId: 'user',
+        }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.json())
+        .then(handleBotResponse);
+    } else {
+      return Promise.resolve();
+    }
+  };
 
   const addCard: (
     title: string,
@@ -124,6 +197,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     addMessage,
     sendMessage,
     setQuickReplies,
+    sendQuickReply,
   };
 };
 

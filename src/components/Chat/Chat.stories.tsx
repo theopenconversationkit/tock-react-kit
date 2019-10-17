@@ -111,7 +111,7 @@ storiesOf('Chat app', module)
       <ThemeProvider theme={theme}>
         <TockContext>
           <BuildMessages>
-            <Chat endPoint="" />
+            <Chat endPoint="https://demo-bot.tock.ai/io/vsct-jburet/new_assistant/web" />
           </BuildMessages>
         </TockContext>
       </ThemeProvider>
@@ -132,7 +132,7 @@ storiesOf('Chat app', module)
     >
       <TockContext>
         <BuildMessages>
-          <Chat endPoint="" />
+          <Chat endPoint="https://demo-bot.tock.ai/io/vsct-jburet/new_assistant/web" />
         </BuildMessages>
       </TockContext>
     </ThemeProvider>

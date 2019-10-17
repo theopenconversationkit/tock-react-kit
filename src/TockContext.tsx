@@ -32,7 +32,7 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
 };
 
 export interface QuickReply {
-  payload: string;
+  payload?: string;
   label: string;
 }
 
