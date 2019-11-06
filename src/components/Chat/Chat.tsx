@@ -16,7 +16,9 @@ export interface ChatProps {
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
-  const { messages, quickReplies, sendMessage, sendQuickReply }: UseTock = useTock(endPoint);
+  const { messages, quickReplies, sendMessage, sendQuickReply, sendAction }: UseTock = useTock(
+    endPoint
+  );
   return (
     <Container>
       <Conversation>
@@ -40,12 +42,12 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
           } else if (message.type === 'carousel') {
             return (
               <CarouselComponent key={i}>
-                {message.cards.map((card: Card, ic) => (
+                {message.cards.map((card: Card, ic: number) => (
                   <CardComponent
                     key={ic}
                     {...card}
                     onButtonClick={(button: { label: string; url?: string }) =>
-                      sendQuickReply(button.label)
+                      sendAction(button.label, button.url)
                     }
                   />
                 ))}

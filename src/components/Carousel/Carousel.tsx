@@ -32,7 +32,7 @@ const ItemContainer: StyledComponent<
 > = styled.div`
   display: flex;
   overflow: hidden;
-  justify-content: center;
+  justify-content: space-between;
   scroll-behavior: smooth;
 
   & > * {

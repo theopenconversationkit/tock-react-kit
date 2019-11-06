@@ -23,7 +23,8 @@ export interface UseTock {
   ) => void;
   addCarousel: (cards: Card[]) => void;
   setQuickReplies: (quickReplies: QuickReply[]) => void;
-  sendQuickReply: (title: string, payload?: string) => Promise<void>;
+  sendQuickReply: (label: string, payload?: string) => Promise<void>;
+  sendAction: (label: string, url?: string) => Promise<void>;
 }
 
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
@@ -116,12 +117,12 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       .then(handleBotResponse);
   }, []);
 
-  const sendQuickReply: (title: string, payload?: string) => Promise<void> = (
-    title: string,
+  const sendQuickReply: (label: string, payload?: string) => Promise<void> = (
+    label: string,
     payload?: string
   ) => {
-    addMessage(title, 'user');
     if (payload) {
+      addMessage(label, 'user');
       return fetch(tockEndPoint, {
         body: JSON.stringify({
           payload,
@@ -135,8 +136,20 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         .then(res => res.json())
         .then(handleBotResponse);
     } else {
-      return Promise.resolve();
+      return sendMessage(label);
     }
+  };
+
+  const sendAction: (label: string, url?: string) => Promise<void> = (
+    label: string,
+    url?: string
+  ) => {
+    if (url) {
+      window.open(url, '_blank');
+    } else {
+      return sendMessage(label);
+    }
+    return Promise.resolve();
   };
 
   const addCard: (
@@ -198,6 +211,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     sendMessage,
     setQuickReplies,
     sendQuickReply,
+    sendAction,
   };
 };
 
