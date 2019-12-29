@@ -28,7 +28,7 @@ export interface UseTock {
 }
 
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
-  const { messages, quickReplies }: TockState = useTockState();
+  const { messages, quickReplies, userId }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
 
   const addMessage: (message: string, author: 'bot' | 'user') => void = useCallback(
@@ -73,6 +73,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
               imageUrl: card.file ? card.file.url : null,
               buttons: card.actions.map((action: any) => ({
                 label: action.title,
+                url: action.url
               })),
               type: 'card',
             } as Card;
@@ -86,6 +87,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
                     imageUrl: card.file ? card.file.url : null,
                     buttons: card.actions.map((action: any) => ({
                       label: action.title,
+                      url: action.url
                     })),
                     type: 'card',
                   } as Card)
@@ -106,7 +108,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     return fetch(tockEndPoint, {
       body: JSON.stringify({
         query: message,
-        userId: 'user',
+        userId: userId,
       }),
       method: 'POST',
       headers: {

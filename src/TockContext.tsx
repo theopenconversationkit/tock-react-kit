@@ -58,6 +58,7 @@ export interface Carousel {
 export interface TockState {
   quickReplies: QuickReply[];
   messages: (Message | Card | Carousel)[];
+  userId: string;
 }
 
 export interface TockAction {
@@ -99,6 +100,7 @@ const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
   const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(tockReducer, {
     quickReplies: [],
     messages: [],
+    userId: (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase()
   });
   return (
     <TockStateContext.Provider value={state}>

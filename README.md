@@ -16,7 +16,7 @@ _React must be at least version 16.8 (must have hooks)_
 <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 <script
   crossorigin
-  src="https://unpkg.com/tock-react-kit@0.2.0/build/tock-react-kit.umd.js"
+  src="https://unpkg.com/tock-react-kit@latest/build/tock-react-kit.umd.js"
 ></script>
 ```
 

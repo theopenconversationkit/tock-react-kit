@@ -35,7 +35,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
                 key={i}
                 {...message}
                 onButtonClick={(button: { label: string; url?: string }) =>
-                  sendQuickReply(button.label)
+                  sendAction(button.label, button.url)
                 }
               />
             );
