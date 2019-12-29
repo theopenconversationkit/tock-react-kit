@@ -43,9 +43,9 @@ export interface Message {
 }
 
 export interface Card {
+  imageUrl?: string;
   title: string;
   subTitle?: string;
-  imageUrl: string;
   buttons?: { label: string; url: string }[];
   type: 'card';
 }

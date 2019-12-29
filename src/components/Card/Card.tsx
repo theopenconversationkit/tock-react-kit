@@ -99,7 +99,7 @@ const Button: StyledComponent<
 export interface CardProps {
   title: string;
   subTitle?: string;
-  imageUrl: string;
+  imageUrl?: string;
   buttons?: { label: string; url: string }[];
   onButtonClick: (button: { label: string; url: string }) => void;
 }
@@ -114,8 +114,8 @@ const Card: (props: CardProps) => JSX.Element = ({
   <CardOuter>
     <CardContainer>
       <CardTitle>{title}</CardTitle>
-      {subTitle ? <CardSubTitle>{subTitle}</CardSubTitle> : null}
-      <CardImage src={imageUrl} alt={title} />
+      {subTitle ? <CardSubTitle><div dangerouslySetInnerHTML={{__html: subTitle}} /></CardSubTitle> : null}
+      {imageUrl ? <CardImage src={imageUrl} alt={title} /> : null}
       {Array.isArray(buttons) && buttons.length > 0 ? (
         <ButtonList>
           {buttons.map((button: { label: string; url: string }, i: number) => (

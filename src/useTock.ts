@@ -17,7 +17,7 @@ export interface UseTock {
   sendMessage: (message: string) => Promise<void>;
   addCard: (
     title: string,
-    imageUrl: string,
+    imageUrl?: string,
     subTitle?: string,
     buttons?: { label: string; url?: string }[]
   ) => void;
@@ -154,13 +154,13 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
 
   const addCard: (
     title: string,
-    imageUrl: string,
+    imageUrl?: string,
     subTitle?: string,
     buttons?: { label: string; url: string }[]
   ) => void = useCallback(
     (
       title: string,
-      imageUrl: string,
+      imageUrl?: string,
       subTitle?: string,
       buttons?: { label: string; url: string }[]
     ) =>

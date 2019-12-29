@@ -20,13 +20,61 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
     addMessage('I am doing great thank you!', 'bot');
     addMessage('What can you do?', 'user');
     addMessage('So far I can:', 'bot');
-    addMessage('Send a card...', 'bot');
+    addMessage('Send a card with an image...', 'bot');
     addCard(
       'The Open Conversation Kit',
       'https://avatars0.githubusercontent.com/u/48585267?s=200&v=4',
       'Build assistants & chatbots with ease'
     );
-    addMessage('Or a carousel', 'bot');
+    addMessage('Or without an image...', 'bot');
+    addCard(
+        'The Open Conversation Kit',
+        undefined,
+        '<p>Key1: Value1</p><p>Key2: Value2</p><p>Key3: Value3</p><p>Key4: Value4</p>'
+    );
+    addMessage('Or a carousel with two cards', 'bot');
+    addCarousel([
+      {
+        title: 'SNCF',
+        imageUrl:
+            'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
+        type: 'card',
+        buttons: [
+          {
+            label: 'Website',
+            url: 'https://sncf.com',
+          },
+        ],
+      },
+      {
+        title: 'OUI.sncf',
+        imageUrl:
+            'https://www.oui.sncf/sites/all/modules/custom/vsct_feature_seo/images/oui-fb.jpg',
+        type: 'card',
+        buttons: [
+          {
+            label: 'Website',
+            url: 'https://oui.sncf',
+          },
+        ],
+      }
+    ]);
+    addMessage('With one card', 'bot');
+    addCarousel([
+      {
+        title: 'SNCF',
+        imageUrl:
+            'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
+        type: 'card',
+        buttons: [
+          {
+            label: 'Website',
+            url: 'https://sncf.com',
+          },
+        ],
+      }
+    ]);
+    addMessage('With 4 cards', 'bot');
     addCarousel([
       {
         title: 'SNCF',
