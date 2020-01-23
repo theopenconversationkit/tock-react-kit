@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Card, Carousel, Message, QuickReply } from '../../TockContext';
 import useTock, { UseTock } from '../../useTock';
 import CardComponent from '../Card';
@@ -13,12 +13,18 @@ import QuickReplyList from '../QuickReplyList';
 
 export interface ChatProps {
   endPoint: string;
+  referralParameter?: string;
 }
 
-const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
-  const { messages, quickReplies, sendMessage, sendQuickReply, sendAction }: UseTock = useTock(
+const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter }: ChatProps) => {
+  const { messages, quickReplies, sendMessage, sendQuickReply, sendAction, sendReferralParameter }: UseTock = useTock(
     endPoint
   );
+  useEffect(() => {
+    if (referralParameter) {
+      sendReferralParameter(referralParameter);
+    }
+  }, [sendReferralParameter, referralParameter]);
   return (
     <Container>
       <Conversation>

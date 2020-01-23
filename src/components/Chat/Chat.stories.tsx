@@ -159,7 +159,7 @@ storiesOf('Chat app', module)
       <ThemeProvider theme={theme}>
         <TockContext>
           <BuildMessages>
-            <Chat endPoint="" />
+            <Chat endPoint=""  referralParameter="" />
           </BuildMessages>
         </TockContext>
       </ThemeProvider>
@@ -180,7 +180,7 @@ storiesOf('Chat app', module)
     >
       <TockContext>
         <BuildMessages>
-          <Chat endPoint="" />
+          <Chat endPoint=""  referralParameter="" />
         </BuildMessages>
       </TockContext>
     </ThemeProvider>
