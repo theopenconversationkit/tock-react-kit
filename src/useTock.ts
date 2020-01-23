@@ -128,7 +128,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       return fetch(tockEndPoint, {
         body: JSON.stringify({
           payload,
-          userId: 'user',
+          userId: userId,
         }),
         method: 'POST',
         headers: {
