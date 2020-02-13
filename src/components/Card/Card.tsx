@@ -24,7 +24,7 @@ const CardContainer: StyledComponent<
   border: 2px solid ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
   width: 20em;
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.card) || ''}
+  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardContainer) || ''}
 `;
 
 const CardTitle: StyledComponent<
@@ -35,6 +35,8 @@ const CardTitle: StyledComponent<
   margin: 0.5em 0;
 
   font-size: 1.5em;
+  
+  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardTitle) || ''};
 `;
 
 const CardSubTitle: StyledComponent<
@@ -45,6 +47,8 @@ const CardSubTitle: StyledComponent<
   margin: 0.5em 0;
 
   font-size: 1em;
+  
+  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardSubTitle) || ''};
 `;
 
 const CardImage: StyledComponent<
@@ -54,6 +58,8 @@ const CardImage: StyledComponent<
 > = styled.img`
   max-width: 100%;
   max-height: 100%;
+  
+  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardImage) || ''}
 `;
 
 const ButtonList: StyledComponent<
@@ -64,11 +70,15 @@ const ButtonList: StyledComponent<
   margin: 0.5em 0;
   list-style: none;
   padding: 0.5em 0;
+  
+  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.buttonList) || ''}
 
   & > li {
     padding: 0;
     margin: 0 0.5em;
     display: inline-block;
+    
+    ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.buttonContainer) || ''}
   }
 `;
 
@@ -78,10 +88,9 @@ const Button: StyledComponent<
   TockTheme
 > = styled.button`
   background: none;
-  border: 2px solid black;
   border-radius: ${props => (props.theme && props.theme.borderRadius) || '1em'};
   color: ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
-  border-color: ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
+  border: 2px solid ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
   padding: 0.5em 1em;
   cursor: pointer;
 
@@ -94,6 +103,8 @@ const Button: StyledComponent<
     color: ${props => invert(readableColor((props.theme && props.theme.cardColor) || 'white'))};
     background: ${props => invert((props.theme && props.theme.cardColor) || 'white')};
   }
+  
+  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardButton) || ''}
 `;
 
 export interface CardProps {
