@@ -7,6 +7,9 @@ export interface TockTheme {
   inputColor?: string;
   borderRadius?: string;
   conversationWidth?: string;
+  postbackButtonBackColor?: string;
+  postbackButtonRadius?: string;
+  postbackButtonColor?: string;
   styles?: {
     card?: string;
     carouselItem?: string;
@@ -15,6 +18,7 @@ export interface TockTheme {
     messageUser?: string;
     quickReply?: string;
     chat?: string;
+    postbackButton?: string;
   };
 }
 

@@ -1,18 +1,20 @@
-import { Dispatch, useCallback } from 'react';
+import {Dispatch, useCallback} from 'react';
 import {
+  Card,
+  Carousel,
   Message,
+  PostButton,
   QuickReply,
   TockAction,
   TockState,
   useTockDispatch,
   useTockState,
-  Card,
-  Carousel,
 } from './TockContext';
 
 export interface UseTock {
   messages: (Message | Card | Carousel)[];
   quickReplies: QuickReply[];
+  postButtons: PostButton[];
   addMessage: (message: string, author: 'bot' | 'user') => void;
   sendMessage: (message: string) => Promise<void>;
   addCard: (
@@ -28,7 +30,7 @@ export interface UseTock {
 }
 
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
-  const { messages, quickReplies, userId }: TockState = useTockState();
+  const { messages, postButtons, quickReplies, userId }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
 
   const addMessage: (message: string, author: 'bot' | 'user') => void = useCallback(
@@ -44,17 +46,46 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     if (Array.isArray(responses) && responses.length > 0) {
       const lastMessage: any = responses[responses.length - 1];
       if (lastMessage.buttons && lastMessage.buttons.length > 0) {
-        dispatch({
-          type: 'SET_QUICKREPLIES',
-          quickReplies: lastMessage.buttons.map(({ title, payload }: any) => ({
-            label: title,
-            payload,
-          })),
-        });
+        let filteredQuickReplies = lastMessage.buttons.filter(({title, payload, type}: any) => (type === 'quick_reply'));
+        if (filteredQuickReplies.length > 0) {
+          dispatch({
+            type: 'SET_QUICKREPLIES',
+            quickReplies: filteredQuickReplies.map(({title, payload, imageUrl}: any) => ({
+              label: title,
+              payload,
+              imageUrl: imageUrl
+            })),
+          });
+        } else {
+          dispatch({
+            type: 'SET_QUICKREPLIES',
+            quickReplies: []
+          });
+        }
+
+        let filteredPostButtons = lastMessage.buttons.filter(({type}: any) => (type === 'postback'));
+        if (filteredPostButtons.length > 0) {
+          dispatch({
+            type: 'SET_POST_BUTTONS',
+            postButtons: filteredPostButtons.map(({title, payload}: any) => ({
+              title: title,
+              payload: payload,
+            })),
+          });
+        } else {
+          dispatch({
+            type: 'SET_POST_BUTTONS',
+            postButtons: []
+          });
+        }
       } else {
         dispatch({
           type: 'SET_QUICKREPLIES',
           quickReplies: [],
+        });
+        dispatch({
+          type: 'SET_POST_BUTTONS',
+          postButtons: []
         });
       }
       dispatch({
@@ -207,6 +238,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
   return {
     messages,
     quickReplies,
+    postButtons,
     addCard,
     addCarousel,
     addMessage,

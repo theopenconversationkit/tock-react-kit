@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Carousel, Message, QuickReply } from '../../TockContext';
+import { Card, Carousel, Message, QuickReply, PostButton } from '../../TockContext';
 import useTock, { UseTock } from '../../useTock';
 import CardComponent from '../Card';
 import CarouselComponent from '../Carousel';
@@ -10,13 +10,15 @@ import MessageBot from '../MessageBot';
 import MessageUser from '../MessageUser';
 import QR from '../QuickReply';
 import QuickReplyList from '../QuickReplyList';
+import PostbackButtonList from "../PostbackButtonList";
+import PostbackButton from "../PostbackButton";
 
 export interface ChatProps {
   endPoint: string;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
-  const { messages, quickReplies, sendMessage, sendQuickReply, sendAction }: UseTock = useTock(
+  const { messages, quickReplies, postButtons, sendMessage, sendQuickReply, sendAction }: UseTock = useTock(
     endPoint
   );
   return (
@@ -64,6 +66,14 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint }: ChatProps) => {
           </QR>
         ))}
       </QuickReplyList>
+        <PostbackButtonList>
+            {postButtons.map((btn: PostButton) => (
+                    <PostbackButton onClick={sendQuickReply.bind(null, btn.title, btn.payload)}>
+                        { btn.title}
+                    </PostbackButton>
+                )
+            )}
+        </PostbackButtonList>
       <ChatInput onSubmit={(message: string) => sendMessage(message)} />
     </Container>
   );
