@@ -25,6 +25,7 @@ export interface UseTock {
   setQuickReplies: (quickReplies: QuickReply[]) => void;
   sendQuickReply: (label: string, payload?: string) => Promise<void>;
   sendAction: (label: string, url?: string) => Promise<void>;
+  sendReferralParameter: (referralParameter: string) => Promise<void>;
 }
 
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
@@ -119,6 +120,21 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       .then(handleBotResponse);
   }, []);
 
+  const sendReferralParameter: (referralParameter: string) => Promise<void> = useCallback((referralParameter: string) => {
+    return fetch(tockEndPoint, {
+      body: JSON.stringify({
+        ref: referralParameter,
+        userId: userId,
+      }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+        .then(res => res.json())
+        .then(handleBotResponse);
+  }, []);
+
   const sendQuickReply: (label: string, payload?: string) => Promise<void> = (
     label: string,
     payload?: string
@@ -128,7 +144,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       return fetch(tockEndPoint, {
         body: JSON.stringify({
           payload,
-          userId: 'user',
+          userId: userId,
         }),
         method: 'POST',
         headers: {
@@ -214,6 +230,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     setQuickReplies,
     sendQuickReply,
     sendAction,
+    sendReferralParameter
   };
 };
 
