@@ -34,7 +34,9 @@ const ItemContainer: StyledComponent<
   overflow: hidden;
   justify-content: center;
   scroll-behavior: smooth;
-
+  
+  ${props => (props.theme && props.theme.styles && props.theme.styles.carouselContainer) || ''}
+  
   & > * {
     margin-left: 1em;
     margin-right: 1em;

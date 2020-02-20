@@ -1,3 +1,5 @@
+import TockThemeCardStyle from "./TockThemeCardStyle";
+
 export interface TockTheme {
   fontFamily?: string;
   fontSize?: string;
@@ -8,7 +10,8 @@ export interface TockTheme {
   borderRadius?: string;
   conversationWidth?: string;
   styles?: {
-    card?: string;
+    card?: TockThemeCardStyle;
+    carouselContainer?: string;
     carouselItem?: string;
     carouselArrow?: string;
     messageBot?: string;
