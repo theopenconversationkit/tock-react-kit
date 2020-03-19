@@ -8,6 +8,9 @@ const ConversationContainer: StyledComponent<
   TockTheme
 > = styled.div`
   overflow-y: scroll;
+  ::-webkit-scrollbar {
+      background-color: transparent;
+  }
   scroll-behavior: smooth;
 `;
 
