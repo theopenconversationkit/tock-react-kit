@@ -10,6 +10,13 @@ const QuickReplyListContainer: StyledComponent<
   max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
   margin: 0.5em auto;
   overflow-x: unset;
+  @media (max-width: 640px) {
+    overflow-y: scroll;
+    ::-webkit-scrollbar {
+      background-color: transparent;
+      width: 0;
+    }
+  }
   white-space: nowrap;
   text-align: left;
 
