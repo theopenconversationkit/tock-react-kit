@@ -23,6 +23,9 @@ const CardContainer: StyledComponent<
   border-radius: ${props => (props.theme && props.theme.borderRadius) || '1em'};
   border: 2px solid ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
   width: 20em;
+  @media (max-width: 640px) {
+    width: 10em;
+  }
 
   ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardContainer) || ''}
 `;
@@ -35,6 +38,9 @@ const CardTitle: StyledComponent<
   margin: 0.5em 0;
 
   font-size: 1.5em;
+  @media (max-width: 640px) {
+    font-size: 1em;
+  }
   
   ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardTitle) || ''};
 `;

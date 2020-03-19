@@ -22,6 +22,9 @@ const Container: StyledComponent<
   & > *:first-child {
     flex-shrink: 1;
     overflow-y: scroll;
+    ::-webkit-scrollbar {
+      width: 0px;
+    }
   }
 
   & > *:not(:first-child) {
