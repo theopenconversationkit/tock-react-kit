@@ -72,9 +72,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
               title: card.title,
               subTitle: card.subTitle,
               imageUrl: card.file ? card.file.url : null,
-              buttons: card.actions.map((action: any) => ({
-                label: action.title,
-                url: action.url
+              buttons: card.buttons.map((button: any) => ({
+                label: button.title,
+                url: button.url
               })),
               type: 'card',
             } as Card;
@@ -86,9 +86,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
                     title: card.title,
                     subTitle: card.subTitle,
                     imageUrl: card.file ? card.file.url : null,
-                    buttons: card.actions.map((action: any) => ({
-                      label: action.title,
-                      url: action.url
+                    buttons: card.buttons.map((button: any) => ({
+                      label: button.title,
+                      url: button.url
                     })),
                     type: 'card',
                   } as Card)
