@@ -98,6 +98,7 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `botColor`          | `string?`          | CSS color used mainly for the bot's chat speech balloons  |
 | `cardColor`         | `string?`          | CSS background color for cards                            |
 | `inputColor`        | `string?`          | CSS background color for the main user text input         |
+| `backgroundColor`   | `string?`          | CSS background color off the bot window                   |
 | `borderRadius`      | `string?`          | Border radius used in various chat components             |
 | `conversationWidth` | `string?`          | CSS max-width of the chat interface                       |
 | `styles`            | `TockThemeStyles?` | Object allowing further styling (see below)               |
