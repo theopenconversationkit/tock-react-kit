@@ -17,11 +17,12 @@ const CardContainer: StyledComponent<
   {},
   TockTheme
 > = styled.div`
+  margin-right: 0.5em;
+  margin-left: 0.5em;
   padding: 0.5em;
   background: ${props => (props.theme && props.theme.cardColor) || 'white'};
   color: ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
   border-radius: ${props => (props.theme && props.theme.borderRadius) || '1em'};
-  border: 2px solid ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
   width: 20em;
   @media (max-width: 640px) {
     width: 10em;
@@ -62,7 +63,13 @@ const CardImage: StyledComponent<
   {},
   TockTheme
 > = styled.img`
-  max-width: 100%;
+  max-width: 105%;
+  @media (max-width: 640px) {
+    max-width: 110%;
+  }
+  margin-left: -0.5em;
+  margin-top: -0.5em;
+  border-radius: 1em 1em 0 0;
   max-height: 100%;
   
   ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardImage) || ''}
@@ -130,9 +137,9 @@ const Card: (props: CardProps) => JSX.Element = ({
 }: CardProps) => (
   <CardOuter>
     <CardContainer>
+      {imageUrl ? <CardImage src={imageUrl} alt={title} /> : null}
       <CardTitle>{title}</CardTitle>
       {subTitle ? <CardSubTitle><div dangerouslySetInnerHTML={{__html: subTitle}} /></CardSubTitle> : null}
-      {imageUrl ? <CardImage src={imageUrl} alt={title} /> : null}
       {Array.isArray(buttons) && buttons.length > 0 ? (
         <ButtonList>
           {buttons.map((button: { label: string; url: string }, i: number) => (

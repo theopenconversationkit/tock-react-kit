@@ -32,7 +32,7 @@ const ItemContainer: StyledComponent<
 > = styled.div`
   display: flex;
   overflow: hidden;
-  justify-content: center;
+  justify-content: space-between;
   scroll-behavior: smooth;
   
   ${props => (props.theme && props.theme.styles && props.theme.styles.carouselContainer) || ''}
@@ -66,7 +66,7 @@ const Previous: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${props => (props.theme && props.theme.botColor) || 'black'};
+    stroke: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
   }
 
   &:hover,
@@ -100,7 +100,7 @@ const Next: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${props => (props.theme && props.theme.botColor) || 'black'};
+    stroke: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
   }
 
   &:hover,
