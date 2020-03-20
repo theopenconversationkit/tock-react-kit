@@ -9,7 +9,7 @@ const CardOuter: StyledComponent<
   TockTheme
 > = styled.div`
   max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
-  margin: 0.5em auto;
+  margin: 0.5em 0.5em auto 0.5em;
 `;
 
 const CardContainer: StyledComponent<
@@ -17,8 +17,6 @@ const CardContainer: StyledComponent<
   {},
   TockTheme
 > = styled.div`
-  margin-right: 0.5em;
-  margin-left: 0.5em;
   padding: 0.5em;
   background: ${props => (props.theme && props.theme.cardColor) || 'white'};
   color: ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
