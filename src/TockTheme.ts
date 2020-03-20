@@ -1,4 +1,5 @@
-import TockThemeCardStyle from "./TockThemeCardStyle";
+import TockThemeInputStyle from './TockThemeInputStyle';
+import TockThemeCardStyle from './TockThemeCardStyle';
 
 export interface TockTheme {
   fontFamily?: string;
@@ -16,6 +17,7 @@ export interface TockTheme {
     carouselArrow?: string;
     messageBot?: string;
     messageUser?: string;
+    chatInput?: TockThemeInputStyle;
     quickReply?: string;
     chat?: string;
   };

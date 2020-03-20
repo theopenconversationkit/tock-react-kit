@@ -24,7 +24,13 @@ const InputOuterContainer: StyledComponent<
   position: relative;
   margin: 0.5em auto;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+
+  ${props =>
+    props.theme &&
+    props.theme.styles &&
+    props.theme.styles.chatInput &&
+    props.theme.styles.chatInput.container}
 `;
 
 const Input: StyledComponent<
@@ -45,6 +51,12 @@ const Input: StyledComponent<
 
   font-family: inherit;
   font-size: inherit;
+
+  ${props =>
+    props.theme &&
+    props.theme.styles &&
+    props.theme.styles.chatInput &&
+    props.theme.styles.chatInput.input}
 `;
 
 const Icon: StyledComponent<
@@ -76,6 +88,12 @@ const Icon: StyledComponent<
       fill: ${props => invert((props.theme && props.theme.userColor) || 'white')};
     }
   }
+
+  ${props =>
+    props.theme &&
+    props.theme.styles &&
+    props.theme.styles.chatInput &&
+    props.theme.styles.chatInput.icon}
 `;
 
 export interface ChatInputProps {
