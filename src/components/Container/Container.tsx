@@ -12,7 +12,7 @@ const Container: StyledComponent<
   position: fixed;
   display: flex;
   flex-direction: column;
-  background-color: ${props => props.theme.backgroundColor || 'Arial, Helvetica, sans-serif'};
+  background-color: ${props => props.theme.backgroundColor || '#FFFFFF'};
 
   font-family: ${props =>
     (props.theme && props.theme.fontFamily) || 'Arial, Helvetica, sans-serif'};
