@@ -12,6 +12,16 @@ const QuickReplyListContainer: StyledComponent<
   overflow-x: unset;
   white-space: nowrap;
   text-align: left;
+  
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  touch-action: pan-x pan-y;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  padding-left: 1em;
+  padding-right: 1em;
 
   & > * {
     display: inline-block;

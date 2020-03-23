@@ -31,13 +31,17 @@ const ItemContainer: StyledComponent<
   TockTheme
 > = styled.div`
   display: flex;
-  overflow: hidden;
-  justify-content: center;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  justify-content: start;
   scroll-behavior: smooth;
-  
+  touch-action: pan-x pan-y;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   ${props => (props.theme && props.theme.styles && props.theme.styles.carouselContainer) || ''}
-  
-  & > * {
+
+  & > div, & > * {
     margin-left: 1em;
     margin-right: 1em;
 

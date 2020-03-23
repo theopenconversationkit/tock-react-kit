@@ -14,6 +14,7 @@ const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
   background: ${props => (props.theme && props.theme.botColor) || 'black'};
   color: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
   padding: 0.5em 1.5em;
+  margin-left: 1em;
   white-space: pre-line;
   border-radius: ${props =>
     (props.theme &&
