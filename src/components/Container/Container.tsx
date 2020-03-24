@@ -15,16 +15,19 @@ const Container: StyledComponent<
 
   font-family: ${props =>
     (props.theme && props.theme.fontFamily) || 'Arial, Helvetica, sans-serif'};
-  font-size: ${props =>
-    (console.log(props) as any) || (props.theme && props.theme.fontSize) || '16px'};
+  font-size: ${props =>(props.theme && props.theme.fontSize) || '16px'};
 
   & > *:first-child {
-    flex-shrink: 1;
-    overflow-y: scroll;
+    flex: 1;
+    overflow-y: auto;
+    ::-webkit-scrollbar {
+      width: 0px;  /* Remove scrollbar space */
+      background: transparent;  /* Optional: just make scrollbar invisible */
+    }
   }
 
   & > *:not(:first-child) {
-    flex: 1;
+    flex: 0;
   }
 
   & * {

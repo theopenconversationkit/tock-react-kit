@@ -93,7 +93,8 @@ const Button: StyledComponent<
   border: 2px solid ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
   padding: 0.5em 1em;
   cursor: pointer;
-
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
   font-family: inherit;
   font-size: inherit;
 
@@ -116,33 +117,35 @@ export interface CardProps {
 }
 
 const Card: (props: CardProps) => JSX.Element = ({
-  title,
-  subTitle,
-  imageUrl,
-  buttons,
-  onButtonClick,
-}: CardProps) => (
-  <CardOuter>
-    <CardContainer>
-      <CardTitle>{title}</CardTitle>
-      {subTitle ? <CardSubTitle><div dangerouslySetInnerHTML={{__html: subTitle}} /></CardSubTitle> : null}
-      {imageUrl ? <CardImage src={imageUrl} alt={title} /> : null}
-      {Array.isArray(buttons) && buttons.length > 0 ? (
-        <ButtonList>
-          {buttons.map((button: { label: string; url: string }, i: number) => (
-            <li key={i}>
-              <Button
-                onClick={onButtonClick.bind(null, button)}
-                onKeyPress={onButtonClick.bind(null, button)}
-              >
-                {button.label}
-              </Button>
-            </li>
-          ))}
-        </ButtonList>
-      ) : null}
-    </CardContainer>
-  </CardOuter>
+                                                     title,
+                                                     subTitle,
+                                                     imageUrl,
+                                                     buttons,
+                                                     onButtonClick
+                                                 }: CardProps) => (
+    <CardOuter>
+        <CardContainer>
+            {imageUrl ? <CardImage src={imageUrl} alt={title}/> : null}
+            <CardTitle>{title}</CardTitle>
+            {subTitle ? <CardSubTitle>
+                            <div dangerouslySetInnerHTML={{__html: subTitle}}/>
+                        </CardSubTitle> : null}
+            {Array.isArray(buttons) && buttons.length > 0 ? (
+                <ButtonList>
+                    {buttons.map((button: { label: string; url: string }, i: number) => (
+                        <li key={i}>
+                            <Button
+                                onClick={onButtonClick.bind(null, button)}
+                                onKeyPress={onButtonClick.bind(null, button)}
+                            >
+                                {button.label}
+                            </Button>
+                        </li>
+                    ))}
+                </ButtonList>
+            ) : null}
+        </CardContainer>
+    </CardOuter>
 );
 
 export default Card;
