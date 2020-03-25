@@ -14,11 +14,13 @@ import QuickReplyList from '../QuickReplyList';
 export interface ChatProps {
   endPoint: string;
   referralParameter?: string;
+  timeoutBetweenMessage?: number;
 }
 
-const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter }: ChatProps) => {
+const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter, timeoutBetweenMessage = 1500 }: ChatProps) => {
   const { messages, quickReplies, sendMessage, sendQuickReply, sendAction, sendReferralParameter }: UseTock = useTock(
-    endPoint
+    endPoint,
+    timeoutBetweenMessage
   );
   useEffect(() => {
     if (referralParameter) {

@@ -12,7 +12,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
 }: {
   children?: ReactNode;
 }) => {
-  const { addMessage, addCard, addCarousel, setQuickReplies }: UseTock = useTock('');
+  const { addMessage, addCard, addCarousel, setQuickReplies }: UseTock = useTock('', 1500);
   useEffect(() => {
     addMessage('Hello! 😊', 'user');
     addMessage('Hello! I am a chatbot 🤖<br />I am powered ⚙️ by Tock! 💡', 'bot');

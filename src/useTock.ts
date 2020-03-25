@@ -28,7 +28,7 @@ export interface UseTock {
   sendReferralParameter: (referralParameter: string) => Promise<void>;
 }
 
-const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
+const useTock: (tockEndPoint: string, timeoutBetweenMessage: number) => UseTock = (tockEndPoint: string, timeoutBetweenMessage: number) => {
   const { messages, quickReplies, userId }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
 
@@ -41,34 +41,30 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     []
   );
 
-  const handleBotResponse: (botResponse: any) => void = ({ responses }: any) => {
-    if (Array.isArray(responses) && responses.length > 0) {
-      const lastMessage: any = responses[responses.length - 1];
-      if (lastMessage.buttons && lastMessage.buttons.length > 0) {
-        dispatch({
-          type: 'SET_QUICKREPLIES',
-          quickReplies: lastMessage.buttons.map(({ title, payload }: any) => ({
-            label: title,
-            payload,
-          })),
-        });
-      } else {
-        dispatch({
-          type: 'SET_QUICKREPLIES',
-          quickReplies: [],
-        });
-      }
-      dispatch({
-        type: 'ADD_MESSAGE',
-        messages: responses.map(({ text, card, carousel }: any) => {
-          if (text) {
-            return {
-              author: 'bot',
-              message: text,
-              type: 'message',
-            } as Message;
-          } else if (card) {
-            return {
+  const responseToMessage: (response: any) => (Message | Card | Carousel) = (response: any) => {
+    const {carousel, card, text} = response;
+    if (text) {
+      return {
+        author: 'bot',
+        message: text,
+        type: 'message',
+      } as Message;
+    } else if (card) {
+      return {
+        title: card.title,
+        subTitle: card.subTitle,
+        imageUrl: card.file ? card.file.url : null,
+        buttons: card.buttons.map((button: any) => ({
+          label: button.title,
+          url: button.url
+        })),
+        type: 'card',
+      } as Card;
+    } else {
+      return {
+        cards: carousel.cards.map(
+          (card: any) =>
+            ({
               title: card.title,
               subTitle: card.subTitle,
               imageUrl: card.file ? card.file.url : null,
@@ -77,27 +73,44 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
                 url: button.url
               })),
               type: 'card',
-            } as Card;
-          } else {
-            return {
-              cards: carousel.cards.map(
-                (card: any) =>
-                  ({
-                    title: card.title,
-                    subTitle: card.subTitle,
-                    imageUrl: card.file ? card.file.url : null,
-                    buttons: card.buttons.map((button: any) => ({
-                      label: button.title,
-                      url: button.url
-                    })),
-                    type: 'card',
-                  } as Card)
-              ),
-              type: 'carousel',
-            } as Carousel;
-          }
-        }),
+            } as Card)
+        ),
+        type: 'carousel',
+      } as Carousel;
+    }
+  };
+
+  const handleBotResponse: (botResponse: any) => void = ({ responses }: any) => {
+    if (Array.isArray(responses) && responses.length > 0) {
+      dispatch({
+        type: 'SET_QUICKREPLIES',
+        quickReplies: [],
       });
+      responses.forEach((response, index) => {
+        let isLastMessage: boolean = index == responses.length -1;
+        setTimeout(() => {
+          if(isLastMessage) {
+            if (response.buttons && response.buttons.length > 0) {
+              dispatch({
+                type: 'SET_QUICKREPLIES',
+                quickReplies: response.buttons.map(({ title, payload }: any) => ({
+                  label: title,
+                  payload,
+                })),
+              });
+            } else {
+              dispatch({
+                type: 'SET_QUICKREPLIES',
+                quickReplies: [],
+              });
+            }
+          }
+          dispatch({
+            type: 'ADD_MESSAGE',
+            messages: [responseToMessage(response)],
+          });
+        }, timeoutBetweenMessage*(index+1));
+      })
     }
   };
 
