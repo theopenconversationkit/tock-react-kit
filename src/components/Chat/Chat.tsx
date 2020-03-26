@@ -10,6 +10,7 @@ import MessageBot from '../MessageBot';
 import MessageUser from '../MessageUser';
 import QR from '../QuickReply';
 import QuickReplyList from '../QuickReplyList';
+import Loader from "../Loader";
 
 export interface ChatProps {
   endPoint: string;
@@ -37,6 +38,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter, 
   return (
     <Container>
       <Conversation>
+        {referralParameter && displayableMessageCount == 0 && <Loader />}
         {messages.slice(0, displayableMessageCount).map((message: Message | Card | Carousel, i: number) => {
           if (message.type === 'message') {
             return message.author === 'bot' ? (
