@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
-import { Card, Carousel, Message, QuickReply } from '../../TockContext';
-import useTock, { UseTock } from '../../useTock';
+import React, {useEffect, useState} from 'react';
+import {Card, Carousel, Message, QuickReply} from '../../TockContext';
+import useTock, {UseTock} from '../../useTock';
 import CardComponent from '../Card';
 import CarouselComponent from '../Carousel';
 import ChatInput from '../ChatInput';
@@ -14,21 +14,30 @@ import QuickReplyList from '../QuickReplyList';
 export interface ChatProps {
   endPoint: string;
   referralParameter?: string;
+  timeoutBetweenMessage?: number;
 }
 
-const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter }: ChatProps) => {
+const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter, timeoutBetweenMessage = 700 }: ChatProps) => {
   const { messages, quickReplies, sendMessage, sendQuickReply, sendAction, sendReferralParameter }: UseTock = useTock(
     endPoint
   );
+  const [displayableMessageCount, setDisplayableMessageCount] = useState(0);
   useEffect(() => {
     if (referralParameter) {
       sendReferralParameter(referralParameter);
     }
   }, [sendReferralParameter, referralParameter]);
+  useEffect(() => {
+    if (messages.length > displayableMessageCount) {
+      setTimeout(() => {
+        setDisplayableMessageCount(displayableMessageCount + 1);
+      }, timeoutBetweenMessage)
+    }
+  }, [messages, displayableMessageCount]);
   return (
     <Container>
       <Conversation>
-        {messages.map((message: Message | Card | Carousel, i: number) => {
+        {messages.slice(0, displayableMessageCount).map((message: Message | Card | Carousel, i: number) => {
           if (message.type === 'message') {
             return message.author === 'bot' ? (
               <MessageBot key={i}>{message.message}</MessageBot>
@@ -63,13 +72,13 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter }
           return null;
         })}
       </Conversation>
-      <QuickReplyList>
+      {displayableMessageCount == messages.length && <QuickReplyList>
         {quickReplies.map((qr: QuickReply, i: number) => (
           <QR key={i} onClick={sendQuickReply.bind(null, qr.label, qr.payload)}>
             {qr.label}
           </QR>
         ))}
-      </QuickReplyList>
+      </QuickReplyList>}
       <ChatInput onSubmit={(message: string) => sendMessage(message)} />
     </Container>
   );
