@@ -55,16 +55,26 @@ export interface Carousel {
   type: 'carousel';
 }
 
+export interface Widget {
+  widgetData: WidgetData;
+  type: 'widget';
+}
+
+export interface WidgetData {
+  data: any;
+  type: string;
+}
+
 export interface TockState {
   quickReplies: QuickReply[];
-  messages: (Message | Card | Carousel)[];
+  messages: (Message | Card | Carousel | Widget)[];
   userId: string;
 }
 
 export interface TockAction {
   type: 'SET_QUICKREPLIES' | 'ADD_MESSAGE';
   quickReplies?: QuickReply[];
-  messages?: (Message | Card | Carousel)[];
+  messages?: (Message | Card | Carousel | Widget)[];
 }
 
 export const tockReducer: Reducer<TockState, TockAction> = (

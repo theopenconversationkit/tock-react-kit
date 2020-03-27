@@ -7,11 +7,11 @@ import {
   useTockDispatch,
   useTockState,
   Card,
-  Carousel,
+  Carousel, Widget, WidgetData,
 } from './TockContext';
 
 export interface UseTock {
-  messages: (Message | Card | Carousel)[];
+  messages: (Message | Card | Carousel | Widget)[];
   quickReplies: QuickReply[];
   addMessage: (message: string, author: 'bot' | 'user') => void;
   sendMessage: (message: string) => Promise<void>;
@@ -22,6 +22,7 @@ export interface UseTock {
     buttons?: { label: string; url?: string }[]
   ) => void;
   addCarousel: (cards: Card[]) => void;
+  addWidget: (widgetData: WidgetData) => void;
   setQuickReplies: (quickReplies: QuickReply[]) => void;
   sendQuickReply: (label: string, payload?: string) => Promise<void>;
   sendAction: (label: string, url?: string) => Promise<void>;
@@ -60,8 +61,13 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       }
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: responses.map(({ text, card, carousel }: any) => {
-          if (text) {
+        messages: responses.map(({ text, card, carousel, widget }: any) => {
+          if(widget) {
+            return  {
+              widgetData: widget,
+              type: 'widget'
+            }
+          } else if (text) {
             return {
               author: 'bot',
               message: text,
@@ -211,6 +217,21 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     []
   );
 
+  const addWidget: (widgetData: WidgetData) => void = useCallback(
+    (widgetData: WidgetData) =>
+      dispatch({
+        type: 'ADD_MESSAGE',
+        messages: [
+          {
+            type: 'widget',
+            widgetData: widgetData
+          }
+        ],
+      }),
+    []
+  );
+
+
   const setQuickReplies: (quickReplies: QuickReply[]) => void = useCallback(
     (quickReplies: QuickReply[]) =>
       dispatch({
@@ -226,6 +247,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     addCard,
     addCarousel,
     addMessage,
+    addWidget,
     sendMessage,
     setQuickReplies,
     sendQuickReply,
