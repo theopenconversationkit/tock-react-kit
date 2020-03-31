@@ -1,3 +1,4 @@
+import _TockOptions from './TockOptions';
 import _TockTheme from './TockTheme';
 
 export { ThemeProvider } from 'emotion-theming';
@@ -15,3 +16,4 @@ export { renderChat } from './renderChat';
 export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
 export type TockTheme = _TockTheme;
+export type TockOptions = _TockOptions;

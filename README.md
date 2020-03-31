@@ -50,7 +50,7 @@ renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>');
 Use the third argument of `renderChat` to style your app:
 
 ```js
-renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', {
+renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParameter', {
   fontFamily: 'monospace',
   fontSize: '24px',
   botColor: 'rebeccapurple',
@@ -72,11 +72,13 @@ If the chat does not suit your needs you can also use the components separately.
 
 Renders an entire chat in a target element.
 
-| Argument name   | Type                                                                  | Description                                    |
-| --------------- | --------------------------------------------------------------------- | ---------------------------------------------- |
-| `element`       | [`Element`](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Target element where the chat will be rendered |
-| `tockBotApiUrl` | `string`                                                              | URL to the Tock Bot REST API                   |
-| `themeOptions`  | `TockTheme`                                                           | Optional theme object                          |
+| Argument name                  | Type                                                                  | Description                                    |
+| ------------------------------ | --------------------------------------------------------------------- | ---------------------------------------------- |
+| `element`                      | [`Element`](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Target element where the chat will be rendered |
+| `tockBotApiUrl`                | `string`                                                              | URL to the Tock Bot REST API                   |
+| `referralParameter`            | `string`                                                              | Optional referal parameter                     |
+| `theme`                        | `TockTheme`                                                           | Optional theme object                          |
+| `options`                      | `TockOptions`                                                         | Optional options object                        |
 
 ### `useTock(tockBotApiUrl)`
 
@@ -113,3 +115,55 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `messageUser`   | `string?` | Additional CSS styles for the user's speech balloons (overrides base styles) |
 | `quickReply`    | `string?` | Additional CSS styles for the quick reply buttons (overrides base styles)    |
 | `chat`          | `string?` | Additional CSS styles for the chat container (overrides base styles)         |
+
+### `TockOptions`
+
+A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`](https://emotion.sh/docs/theming) (bundled with the library) or as a third argument of `renderChat`.
+
+| Property name                            | Type              | Description                                               |
+|------------------------------------------|-------------------|-----------------------------------------------------------|
+| `timeoutBetweenMessage`                  | `number?`         | Timeout between message                                   |
+| `widgets`                                | `any?`            | Custom display component                                  |
+
+
+## Create custom widget
+
+Tock web connector can send custom messages :
+
+```
+{
+  data: {
+    departure: 'Paris',
+    arrival: 'Nice'
+  },
+  type: 'TrainCardWidget',
+} 
+```
+
+You can define your own display components for this custom message :
+
+```js
+import React from 'react';
+import { renderChat } from 'tock-react-kit';
+
+const TrainCardWidget = ({departure, arrival}) => {
+    return (
+        <div>
+            <p>Departure: {departure}</p>
+            <p>Arrival: {arrival}</p>
+        </div>
+    );
+};
+
+renderChat(
+    document.getElementById('chat'), 
+    '<TOCK_BOT_API_URL>', 
+    'referralParameter', 
+    {}, 
+    {
+        widgets: {
+            TrainCardWidget
+        }
+    }
+);
+```
