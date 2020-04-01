@@ -1,19 +1,36 @@
-import { storiesOf } from '@storybook/react';
-import React, { ReactNode, useEffect } from 'react';
-import { ThemeProvider } from 'emotion-theming';
+import {storiesOf} from '@storybook/react';
+import React, {ReactNode, useEffect} from 'react';
+import {ThemeProvider} from 'emotion-theming';
 import TockContext from '../../TockContext';
-import useTock, { UseTock } from '../../useTock';
+import useTock, {UseTock} from '../../useTock';
 import Chat from './Chat';
 import TockTheme from 'TockTheme';
-import { withKnobs, number, color, text } from '@storybook/addon-knobs';
+import {color, number, text, withKnobs} from '@storybook/addon-knobs';
+import Product from "../widgets/ProductWidget/Product";
+import ProductWidget from "../widgets/ProductWidget";
 
 const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
-  children,
-}: {
+                                                                           children,
+                                                                         }: {
   children?: ReactNode;
 }) => {
-  const { addMessage, addCard, addCarousel, setQuickReplies }: UseTock = useTock('');
+  const {addMessage, addCard, addCarousel, addWidget, setQuickReplies}: UseTock = useTock('');
   useEffect(() => {
+    const product: Product = {
+      name: 'Product name',
+      description: 'product description',
+      price: 99.9
+    };
+    addWidget({
+      data: product,
+      type: 'ProductWidget',
+    });
+    addWidget({
+      data: {
+        title: "unknown Widget"
+      },
+      type: 'unknownWidget',
+    });
     addMessage('Hello! 😊', 'user');
     addMessage('Hello! I am a chatbot 🤖<br />I am powered ⚙️ by Tock! 💡', 'bot');
     addMessage('How are you doing?', 'user');
@@ -28,16 +45,16 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
     );
     addMessage('Or without an image...', 'bot');
     addCard(
-        'The Open Conversation Kit',
-        undefined,
-        '<p>Key1: Value1</p><p>Key2: Value2</p><p>Key3: Value3</p><p>Key4: Value4</p>'
+      'The Open Conversation Kit',
+      undefined,
+      '<p>Key1: Value1</p><p>Key2: Value2</p><p>Key3: Value3</p><p>Key4: Value4</p>'
     );
     addMessage('Or a carousel with two cards', 'bot');
     addCarousel([
       {
         title: 'SNCF',
         imageUrl:
-            'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
+          'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
         type: 'card',
         buttons: [
           {
@@ -49,7 +66,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
       {
         title: 'OUI.sncf',
         imageUrl:
-            'https://www.oui.sncf/sites/all/modules/custom/vsct_feature_seo/images/oui-fb.jpg',
+          'https://www.oui.sncf/sites/all/modules/custom/vsct_feature_seo/images/oui-fb.jpg',
         type: 'card',
         buttons: [
           {
@@ -64,7 +81,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
       {
         title: 'SNCF',
         imageUrl:
-            'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
+          'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
         type: 'card',
         buttons: [
           {
@@ -151,15 +168,18 @@ storiesOf('Chat app', module)
         chat: `background: ${color('background', '#eaeaea')};`,
       },
       userColor: color('User color', '#fff'),
-      botColor: color('Bot color', '#000'),
+      botColor: color('Bot color', '#fff'),
       cardColor: color('Card color', '#fff'),
       inputColor: color('Input color', '#fff'),
+    };
+    const widgets = {
+      ProductWidget
     };
     return (
       <ThemeProvider theme={theme}>
         <TockContext>
           <BuildMessages>
-            <Chat endPoint=""  referralParameter="" />
+            <Chat endPoint="" referralParameter="" widgets={widgets} />
           </BuildMessages>
         </TockContext>
       </ThemeProvider>
@@ -180,7 +200,7 @@ storiesOf('Chat app', module)
     >
       <TockContext>
         <BuildMessages>
-          <Chat endPoint=""  referralParameter="" />
+          <Chat endPoint="" referralParameter="" />
         </BuildMessages>
       </TockContext>
     </ThemeProvider>

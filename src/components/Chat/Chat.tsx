@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Carousel, Message, QuickReply} from '../../TockContext';
+import {Card, Carousel, Message, QuickReply, Widget} from '../../TockContext';
 import useTock, {UseTock} from '../../useTock';
 import CardComponent from '../Card';
 import CarouselComponent from '../Carousel';
@@ -11,15 +11,17 @@ import MessageUser from '../MessageUser';
 import QR from '../QuickReply';
 import QuickReplyList from '../QuickReplyList';
 import Loader from "../Loader";
+import DefaultWidget from "../widgets/DefaultWidget";
 
 export interface ChatProps {
   endPoint: string;
   referralParameter?: string;
   timeoutBetweenMessage?: number;
+  widgets?: any
 }
 
-const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter, timeoutBetweenMessage = 700 }: ChatProps) => {
-  const { messages, quickReplies, sendMessage, sendQuickReply, sendAction, sendReferralParameter }: UseTock = useTock(
+const Chat: (props: ChatProps) => JSX.Element = ({endPoint, referralParameter, timeoutBetweenMessage = 700, widgets = {}}: ChatProps) => {
+  const {messages, quickReplies, sendMessage, sendQuickReply, sendAction, sendReferralParameter}: UseTock = useTock(
     endPoint
   );
   const [displayableMessageCount, setDisplayableMessageCount] = useState(0);
@@ -38,9 +40,15 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter, 
   return (
     <Container>
       <Conversation>
-        {referralParameter && displayableMessageCount == 0 && <Loader />}
-        {messages.slice(0, displayableMessageCount).map((message: Message | Card | Carousel, i: number) => {
-          if (message.type === 'message') {
+        {referralParameter && displayableMessageCount == 0 && <Loader/>}
+        {messages.slice(0, displayableMessageCount).map((message: Message | Card | Carousel | Widget, i: number) => {
+          if (message.type === 'widget') {
+            let WidgetComponent = DefaultWidget;
+            if (widgets[message.widgetData.type]) {
+              WidgetComponent = widgets[message.widgetData.type];
+            }
+            return <WidgetComponent key={i} {...message.widgetData.data}/>
+          } else if (message.type === 'message') {
             return message.author === 'bot' ? (
               <MessageBot key={i}>{message.message}</MessageBot>
             ) : (
@@ -81,7 +89,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({ endPoint, referralParameter, 
           </QR>
         ))}
       </QuickReplyList>}
-      <ChatInput onSubmit={(message: string) => sendMessage(message)} />
+      <ChatInput onSubmit={(message: string) => sendMessage(message)}/>
     </Container>
   );
 };
