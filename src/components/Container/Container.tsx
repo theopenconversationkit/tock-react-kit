@@ -27,7 +27,7 @@ const Container: StyledComponent<
   }
 
   & > *:not(:first-child) {
-    flex: 0;
+    flex: unset;
   }
 
   & * {
