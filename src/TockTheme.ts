@@ -10,6 +10,7 @@ export interface TockTheme {
   inputColor?: string;
   borderRadius?: string;
   conversationWidth?: string;
+  loaderSize?: string,
   styles?: {
     card?: TockThemeCardStyle;
     carouselContainer?: string;

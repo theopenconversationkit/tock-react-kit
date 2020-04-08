@@ -21,7 +21,7 @@ export interface ChatProps {
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({endPoint, referralParameter, timeoutBetweenMessage = 700, widgets = {}}: ChatProps) => {
-  const {messages, quickReplies, sendMessage, sendQuickReply, sendAction, sendReferralParameter}: UseTock = useTock(
+  const {messages, quickReplies, loading, sendMessage, sendQuickReply, sendAction, sendReferralParameter}: UseTock = useTock(
     endPoint
   );
   const [displayableMessageCount, setDisplayableMessageCount] = useState(0);
@@ -40,7 +40,6 @@ const Chat: (props: ChatProps) => JSX.Element = ({endPoint, referralParameter, t
   return (
     <Container>
       <Conversation>
-        {referralParameter && displayableMessageCount == 0 && <Loader/>}
         {messages.slice(0, displayableMessageCount).map((message: Message | Card | Carousel | Widget, i: number) => {
           if (message.type === 'widget') {
             let WidgetComponent = DefaultWidget;
@@ -81,6 +80,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({endPoint, referralParameter, t
           }
           return null;
         })}
+        {loading && <Loader/>}
       </Conversation>
       {displayableMessageCount == messages.length && <QuickReplyList>
         {quickReplies.map((qr: QuickReply, i: number) => (

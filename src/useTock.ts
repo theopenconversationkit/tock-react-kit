@@ -9,10 +9,12 @@ import {
   Card,
   Carousel, Widget, WidgetData,
 } from './TockContext';
+import { Sse } from "./Sse";
 
 export interface UseTock {
   messages: (Message | Card | Carousel | Widget)[];
   quickReplies: QuickReply[];
+  loading: boolean;
   addMessage: (message: string, author: 'bot' | 'user') => void;
   sendMessage: (message: string) => Promise<void>;
   addCard: (
@@ -29,18 +31,25 @@ export interface UseTock {
   sendReferralParameter: (referralParameter: string) => Promise<void>;
 }
 
+
+
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
-  const { messages, quickReplies, userId }: TockState = useTockState();
+  const { messages, quickReplies, userId, loading }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
 
-  const addMessage: (message: string, author: 'bot' | 'user') => void = useCallback(
-    (message: string, author: 'bot' | 'user') =>
-      dispatch({
-        type: 'ADD_MESSAGE',
-        messages: [{ author, message, type: 'message' }],
-      }),
-    []
-  );
+  const startLoading: () => void = () => {
+    dispatch({
+      type: 'SET_LOADING',
+      loading: true,
+    });
+  };
+
+  const stopLoading: () => void = () => {
+    dispatch({
+      type: 'SET_LOADING',
+      loading: false,
+    });
+  };
 
   const handleBotResponse: (botResponse: any) => void = ({ responses }: any) => {
     if (Array.isArray(responses) && responses.length > 0) {
@@ -107,11 +116,27 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     }
   };
 
+  const handleBotResponseIfSseDisabled: (botResponse: any) => void = (botResponse: any) => {
+    if (!Sse.isEnable()) {
+      handleBotResponse(botResponse)
+    }
+  };
+
+  const addMessage: (message: string, author: 'bot' | 'user') => void = useCallback(
+    (message: string, author: 'bot' | 'user') =>
+      dispatch({
+        type: 'ADD_MESSAGE',
+        messages: [{author, message, type: 'message'}],
+      }),
+    []
+  );
+
   const sendMessage: (message: string) => Promise<void> = useCallback((message: string) => {
     dispatch({
       type: 'ADD_MESSAGE',
       messages: [{ author: 'user', message, type: 'message' }],
     });
+    startLoading();
     return fetch(tockEndPoint, {
       body: JSON.stringify({
         query: message,
@@ -123,10 +148,12 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       },
     })
       .then(res => res.json())
-      .then(handleBotResponse);
+      .then(handleBotResponseIfSseDisabled)
+      .finally(stopLoading);
   }, []);
 
   const sendReferralParameter: (referralParameter: string) => Promise<void> = useCallback((referralParameter: string) => {
+    startLoading();
     return fetch(tockEndPoint, {
       body: JSON.stringify({
         ref: referralParameter,
@@ -137,8 +164,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         'Content-Type': 'application/json',
       },
     })
-        .then(res => res.json())
-        .then(handleBotResponse);
+      .then(res => res.json())
+      .then(handleBotResponseIfSseDisabled)
+      .finally(stopLoading);
   }, []);
 
   const sendQuickReply: (label: string, payload?: string) => Promise<void> = (
@@ -146,7 +174,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     payload?: string
   ) => {
     if (payload) {
+      setQuickReplies([]);
       addMessage(label, 'user');
+      startLoading();
       return fetch(tockEndPoint, {
         body: JSON.stringify({
           payload,
@@ -158,7 +188,8 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         },
       })
         .then(res => res.json())
-        .then(handleBotResponse);
+        .then(handleBotResponseIfSseDisabled)
+        .finally(stopLoading);
     } else {
       return sendMessage(label);
     }
@@ -241,9 +272,13 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     []
   );
 
+
+  Sse.init(tockEndPoint, userId, handleBotResponse);
+
   return {
     messages,
     quickReplies,
+    loading,
     addCard,
     addCarousel,
     addMessage,
