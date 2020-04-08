@@ -174,6 +174,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     payload?: string
   ) => {
     if (payload) {
+      setQuickReplies([]);
       addMessage(label, 'user');
       startLoading();
       return fetch(tockEndPoint, {
