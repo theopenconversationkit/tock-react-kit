@@ -11,7 +11,10 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "build": "rollup -c --environment BUILD:production",
-    "prepare": "rollup -c --environment BUILD:production"
+    "prepare": "rollup -c --environment BUILD:production",
+    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "test-release": "np --preview",
+    "release": "np"
   },
   "dependencies": {
     "@emotion/core": "^10.0.17",
@@ -32,8 +35,10 @@
     "@types/react-color": "^3.0.1",
     "@types/react-dom": "^16.9.1",
     "@types/storybook__react": "^4.0.2",
+    "auto-changelog": "^1.16.4",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.6",
+    "np": "^6.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "rollup": "^1.23.0",
@@ -46,5 +51,13 @@
   "peerDependencies": {
     "react": ">=16.8",
     "react-dom": ">=16.8"
+  },
+  "auto-changelog": {
+    "includeBranch": [
+      "master"
+    ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }
