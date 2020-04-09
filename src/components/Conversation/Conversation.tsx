@@ -21,9 +21,7 @@ const Conversation: (
     if (container.current) {
       const scroll = () => {
         if (container.current) {
-          container.current.scrollTo({
-            top: container.current.scrollHeight,
-          });
+          container.current.scrollTop = container.current.scrollHeight
         }
       };
       scroll();

@@ -153,14 +153,14 @@ const Carousel: (props: { children?: ReactNode }) => JSX.Element = ({
 
   const scrollLeft: () => void = () => {
     if (carousel.current) {
-      carousel.current.scrollTo(carousel.current.scrollLeft - carousel.current.clientWidth, 0);
+      carousel.current.scrollLeft = carousel.current.scrollLeft - carousel.current.clientWidth;
     }
     handleArrowVisibility();
   };
 
   const scrollRight: () => void = () => {
     if (carousel.current) {
-      carousel.current.scrollTo(carousel.current.scrollLeft + carousel.current.clientWidth, 0);
+      carousel.current.scrollLeft = carousel.current.scrollLeft + carousel.current.clientWidth;
     }
     handleArrowVisibility();
   };
