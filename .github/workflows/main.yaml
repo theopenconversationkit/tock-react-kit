@@ -1,0 +1,36 @@
+name: Publish
+
+on:
+  repository_dispatch:
+    types: publish
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag number
+        id: get_tag
+        run: echo ::set-output name=TAG::$(echo $GITHUB_REF | cut -d / -f 3)
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 13
+          registry-url: https://registry.npmjs.org/
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - run: yarn install
+      - run: git config --local user.email "action@github.com"
+      - run: git config --local user.name "GitHub Action"
+      - run: yarn run test-release ${{ github.event.client_payload.version }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
