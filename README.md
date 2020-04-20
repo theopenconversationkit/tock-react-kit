@@ -1,3 +1,5 @@
+![Publish](https://github.com/theopenconversationkit/tock-react-kit/workflows/Publish/badge.svg?branch=master&event=repository_dispatch)
+
 # Tock React Kit
 
 Create web UIs for Tock chatbots
