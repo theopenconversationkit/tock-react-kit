@@ -31,6 +31,7 @@ jobs:
       - run: yarn install
       - run: git config --local user.email "action@github.com"
       - run: git config --local user.name "GitHub Action"
+      - run: yarn config set version-sign-git-tag true
       - run: yarn run test-release ${{ github.event.client_payload.version }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
