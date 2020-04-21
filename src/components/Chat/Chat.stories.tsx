@@ -1,7 +1,7 @@
 import {storiesOf} from '@storybook/react';
 import React, {ReactNode, useEffect} from 'react';
 import {ThemeProvider} from 'emotion-theming';
-import TockContext from '../../TockContext';
+import TockContext, {UrlButton} from '../../TockContext';
 import useTock, {UseTock} from '../../useTock';
 import Chat from './Chat';
 import TockTheme from 'TockTheme';
@@ -49,6 +49,13 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
       undefined,
       '<p>Key1: Value1</p><p>Key2: Value2</p><p>Key3: Value3</p><p>Key4: Value4</p>'
     );
+    addMessage('Or with a url button', 'bot');
+    addCard(
+      'The Open Conversation Kit',
+      undefined,
+      '<p>Some text</p>',
+       [new UrlButton('Website', 'https://sncf.com')]
+    );
     addMessage('Or a carousel with two cards', 'bot');
     addCarousel([
       {
@@ -57,10 +64,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
           'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
         type: 'card',
         buttons: [
-          {
-            label: 'Website',
-            url: 'https://sncf.com',
-          },
+          new UrlButton('Website', 'https://sncf.com')
         ],
       },
       {
@@ -69,10 +73,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
           'https://www.oui.sncf/sites/all/modules/custom/vsct_feature_seo/images/oui-fb.jpg',
         type: 'card',
         buttons: [
-          {
-            label: 'Website',
-            url: 'https://oui.sncf',
-          },
+          new UrlButton('Website', 'https://sncf.com')
         ],
       }
     ]);
@@ -84,10 +85,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
           'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
         type: 'card',
         buttons: [
-          {
-            label: 'Website',
-            url: 'https://sncf.com',
-          },
+          new UrlButton('Website', 'https://sncf.com')
         ],
       }
     ]);
@@ -99,10 +97,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
           'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
         type: 'card',
         buttons: [
-          {
-            label: 'Website',
-            url: 'https://sncf.com',
-          },
+          new UrlButton('Website', 'https://sncf.com')
         ],
       },
       {
@@ -111,10 +106,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
           'https://www.oui.sncf/sites/all/modules/custom/vsct_feature_seo/images/oui-fb.jpg',
         type: 'card',
         buttons: [
-          {
-            label: 'Website',
-            url: 'https://oui.sncf',
-          },
+          new UrlButton('Website', 'https://sncf.com')
         ],
       },
       {
@@ -123,10 +115,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
           'https://www.sncf.com/sites/default/files/styles/crop_header_edito/public/2018-10/Resized_20180920_135209_921.jpg',
         type: 'card',
         buttons: [
-          {
-            label: 'Website',
-            url: 'https://sncf.com',
-          },
+          new UrlButton('Website', 'https://sncf.com')
         ],
       },
       {
@@ -135,10 +124,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
           'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Z50000_12dec2009_IMG_6241.jpg/1920px-Z50000_12dec2009_IMG_6241.jpg',
         type: 'card',
         buttons: [
-          {
-            label: 'Website',
-            url: 'https://transilien.com',
-          },
+          new UrlButton('Website', 'https://sncf.com')
         ],
       },
     ]);

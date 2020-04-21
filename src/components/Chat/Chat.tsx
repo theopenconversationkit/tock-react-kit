@@ -56,11 +56,9 @@ const Chat: (props: ChatProps) => JSX.Element = ({endPoint, referralParameter, t
           } else if (message.type === 'card') {
             return (
               <CardComponent
+                sendAction={sendAction}
                 key={i}
                 {...message}
-                onButtonClick={(button: { label: string; url?: string }) =>
-                  sendAction(button.label, button.url)
-                }
               />
             );
           } else if (message.type === 'carousel') {
@@ -68,11 +66,9 @@ const Chat: (props: ChatProps) => JSX.Element = ({endPoint, referralParameter, t
               <CarouselComponent key={i}>
                 {message.cards.map((card: Card, ic: number) => (
                   <CardComponent
+                    sendAction={sendAction}
                     key={ic}
                     {...card}
-                    onButtonClick={(button: { label: string; url?: string }) =>
-                      sendAction(button.label, button.url)
-                    }
                   />
                 ))}
               </CarouselComponent>

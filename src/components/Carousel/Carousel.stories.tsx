@@ -15,7 +15,7 @@ for (let i = 0; i < nCards; i++) {
     {
       title: `Card #${i}`,
       imageUrl: 'https://avatars0.githubusercontent.com/u/48585267?s=200&v=4',
-      onButtonClick,
+      sendAction: onButtonClick,
     },
   ];
 }
