@@ -31,10 +31,37 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
   return dispatch;
 };
 
-export interface QuickReply {
-  payload?: string;
+export class QuickReply {
   label: string;
+  payload?: string;
+
+  constructor(label: string, payload: string) {
+    this.label = label;
+    this.payload = payload;
+  }
 }
+
+export class PostBackButton {
+  label: string;
+  payload?: string;
+
+  constructor(label: string, payload: string) {
+    this.label = label;
+    this.payload = payload;
+  }
+}
+
+export class UrlButton {
+  label: string;
+  url: string;
+
+  constructor(label: string, url: string) {
+    this.label = label;
+    this.url = url;
+  }
+}
+
+export type Button = QuickReply | PostBackButton | UrlButton;
 
 export interface Message {
   author: 'bot' | 'user';
@@ -46,7 +73,7 @@ export interface Card {
   imageUrl?: string;
   title: string;
   subTitle?: string;
-  buttons?: { label: string; url: string }[];
+  buttons?: Button[];
   type: 'card';
 }
 
