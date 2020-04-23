@@ -33,7 +33,7 @@ jobs:
       - run: git config --local user.name "GitHub Action"
       #- run: yarn config set version-sign-git-tag true
       - run: |
-              if [ ${{ github.event.client_payload.version }} == "prepatch" ]; then
+              if [ ${{ github.event.client_payload.version }} == "prerelease" ]; then
                   yarn run release ${{ github.event.client_payload.version }} --tag=beta
               else
                   yarn run release ${{ github.event.client_payload.version }}
