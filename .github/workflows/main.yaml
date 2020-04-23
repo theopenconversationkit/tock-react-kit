@@ -32,6 +32,11 @@ jobs:
       - run: git config --local user.email "action@github.com"
       - run: git config --local user.name "GitHub Action"
       - run: yarn config set version-sign-git-tag true
-      - run: yarn run release ${{ github.event.client_payload.version }}
+      - run: |
+              if [ ${{ github.event.client_payload.version }} == "prepatch" ]; then
+                  yarn run release ${{ github.event.client_payload.version }} --tag=beta
+              else
+                  yarn run release ${{ github.event.client_payload.version }}
+              fi 
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
