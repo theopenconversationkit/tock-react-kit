@@ -5,13 +5,13 @@ import TockTheme from 'TockTheme';
 // @ts-ignore
 import linkifyHtml from 'linkifyjs/html';
 
-const MessageContainer: StyledComponent<{}, {}, TockTheme> = styled.div`
+export const MessageContainer: StyledComponent<{}, {}, TockTheme> = styled.div`
   width: 100%;
   max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
   margin: 0.5em auto;
 `;
 
-const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
+export const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
   display: inline-block;
   background: ${props => (props.theme && props.theme.botColor) || 'black'};
   color: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
