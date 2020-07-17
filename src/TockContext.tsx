@@ -67,6 +67,7 @@ export interface Message {
   author: 'bot' | 'user';
   message: string;
   type: 'message';
+  buttons?: Button[];
 }
 
 export interface Card {
@@ -93,7 +94,7 @@ export interface WidgetData {
 }
 
 export interface TockState {
-  quickReplies: QuickReply[];
+  quickReplies: Button[];
   messages: (Message | Card | Carousel | Widget)[];
   userId: string;
   loading: boolean;
@@ -101,7 +102,7 @@ export interface TockState {
 
 export interface TockAction {
   type: 'SET_QUICKREPLIES' | 'ADD_MESSAGE' | 'SET_LOADING';
-  quickReplies?: QuickReply[];
+  quickReplies?: Button[];
   messages?: (Message | Card | Carousel | Widget)[];
   loading?: boolean;
 }

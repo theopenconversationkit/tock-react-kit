@@ -1,7 +1,7 @@
 import {storiesOf} from '@storybook/react';
 import React, {ReactNode, useEffect} from 'react';
 import {ThemeProvider} from 'emotion-theming';
-import TockContext, {UrlButton} from '../../TockContext';
+import TockContext, {UrlButton, PostBackButton} from '../../TockContext';
 import useTock, {UseTock} from '../../useTock';
 import Chat from './Chat';
 import TockTheme from 'TockTheme';
@@ -14,7 +14,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
                                                                          }: {
   children?: ReactNode;
 }) => {
-  const {addMessage, addCard, addCarousel, addWidget, setQuickReplies}: UseTock = useTock('');
+  const {addMessage, addMessageWithButtons, addCard, addCarousel, addWidget, setQuickReplies}: UseTock = useTock('');
   useEffect(() => {
     const product: Product = {
       name: 'Product name',
@@ -128,6 +128,9 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
         ],
       },
     ]);
+    addMessageWithButtons('Message with url button', 'bot', [new UrlButton('Url Website', 'https://sncf.com')])
+    addMessageWithButtons('Message with postback button', 'bot', [new PostBackButton('Post back Website', '')])
+
     setQuickReplies([
       {
         payload: '',

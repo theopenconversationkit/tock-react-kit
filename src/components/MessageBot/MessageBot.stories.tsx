@@ -14,5 +14,5 @@ const html: string = '<b>Hello user!</b> ' +
     '</ul>';
 
 storiesOf('Bot message', module)
-  .add('Default', () => <MessageBot>{message}</MessageBot>)
-  .add('With HTML content', () => <MessageBot>{html}</MessageBot>);
+  .add('Default', () => <MessageBot message={{author: 'bot', message: message, type: 'message', buttons: []}} sendAction= {(_) => {} }/>)
+  .add('With HTML content', () => <MessageBot message={{author: 'bot', message: html, type: 'message', buttons: []}} sendAction= {(_) => {} }/>);

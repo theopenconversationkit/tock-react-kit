@@ -1,7 +1,10 @@
 import styled, {StyledComponent} from '@emotion/styled';
 import {readableColor} from 'polished';
-import React, {ReactNode} from 'react';
+import React from 'react';
 import TockTheme from 'TockTheme';
+import {Message as messageType, Button} from "../../TockContext";
+import QR from "../QuickReply";
+import QuickReplyList from "../QuickReplyList";
 // @ts-ignore
 import linkifyHtml from 'linkifyjs/html';
 
@@ -27,11 +30,19 @@ const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
   ${props => (props.theme && props.theme.styles && props.theme.styles.messageBot) || ''}
 `;
 
-const MessageBot: ({children}: { children: ReactNode }) => JSX.Element = ({children}: { children: ReactNode }) => {
+export interface MessageProps {
+    message: messageType;
+    sendAction: (button: Button) => void;
+}
+
+const MessageBot: (props: MessageProps) => JSX.Element = ({
+      message,
+      sendAction,
+    }: MessageProps) => {
 
     function getHtmlContent() {
-        let message = children ? children.toString() : '';
-        return linkifyHtml(message);
+        let content = message.message ? message.message.toString() : '';
+        return linkifyHtml(content);
     }
 
     return (
@@ -39,6 +50,15 @@ const MessageBot: ({children}: { children: ReactNode }) => JSX.Element = ({child
             <Message>
                 <div dangerouslySetInnerHTML={{__html: getHtmlContent()}}/>
             </Message>
+            {Array.isArray(message.buttons) && message.buttons.length > 0 ? (
+                <QuickReplyList>
+                    {message.buttons.map((button: Button, i: number) => (
+                        <QR key={i} onClick={sendAction.bind(null, button)}>
+                            {button.label}
+                        </QR>
+                    ))}
+                </QuickReplyList>
+            ) : null}
         </MessageContainer>
     );
 };

@@ -21,6 +21,7 @@ export interface UseTock {
   quickReplies: QuickReply[];
   loading: boolean;
   addMessage: (message: string, author: 'bot' | 'user') => void;
+  addMessageWithButtons: (message: string, author: 'bot' | 'user', buttons: Button[]) => void;
   sendMessage: (message: string) => Promise<void>;
   addCard: (
     title: string,
@@ -83,7 +84,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       if (lastMessage.buttons && lastMessage.buttons.length > 0) {
         dispatch({
           type: 'SET_QUICKREPLIES',
-          quickReplies: lastMessage.buttons.map(({ title, payload }: any) => new QuickReply(title, payload))
+          quickReplies: lastMessage.buttons.filter((button: any) => button.type === "quick_reply").map(mapButton)
         });
       } else {
         dispatch({
@@ -104,6 +105,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
               author: 'bot',
               message: text,
               type: 'message',
+              buttons: lastMessage.buttons.filter((button: any) => button.type !== "quick_reply").map(mapButton)
             } as Message;
           } else if (card) {
             return mapCard(card);
@@ -129,6 +131,15 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       dispatch({
         type: 'ADD_MESSAGE',
         messages: [{author, message, type: 'message'}],
+      }),
+    []
+  );
+
+  const addMessageWithButtons: (message: string, author: 'bot' | 'user', buttons: Button[]) => void = useCallback(
+    (message: string, author: 'bot' | 'user', buttons: Button[]) =>
+      dispatch({
+        type: 'ADD_MESSAGE',
+        messages: [{author, message, type: 'message', buttons: buttons}],
       }),
     []
   );
@@ -285,6 +296,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     addCard,
     addCarousel,
     addMessage,
+    addMessageWithButtons,
     addWidget,
     sendMessage,
     setQuickReplies,

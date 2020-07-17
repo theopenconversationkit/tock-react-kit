@@ -7,7 +7,7 @@ import Conversation from './Conversation';
 const messages = (
   <>
     <MessageUser>A user asking things</MessageUser>
-    <MessageBot>Bot replying with incredible things</MessageBot>
+    <MessageBot message={{author: 'bot', message: 'Bot replying with incredible things', type: 'message', buttons: []}} sendAction= {(_) => {} }/>
   </>
 );
 
