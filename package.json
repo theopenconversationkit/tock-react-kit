@@ -17,40 +17,40 @@
     "release": "np"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.17",
-    "@emotion/styled": "^10.0.17",
-    "emotion-theming": "^10.0.18",
-    "polished": "^3.4.1",
-    "react-feather": "^2.0.3"
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "emotion-theming": "^10.0.27",
+    "polished": "^3.6.5",
+    "react-feather": "^2.0.8"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.0",
-    "@storybook/addon-actions": "^5.1.11",
-    "@storybook/addon-backgrounds": "^5.1.11",
-    "@storybook/addon-knobs": "^5.2.1",
-    "@storybook/addon-links": "^5.1.11",
-    "@storybook/addons": "^5.1.11",
-    "@storybook/react": "^5.1.11",
-    "@types/node": "^12.7.8",
-    "@types/react-color": "^3.0.1",
-    "@types/react-dom": "^16.9.1",
-    "@types/storybook__react": "^4.0.2",
-    "auto-changelog": "^1.16.4",
+    "@babel/core": "^7.10.5",
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-backgrounds": "^5.3.19",
+    "@storybook/addon-knobs": "^5.3.19",
+    "@storybook/addon-links": "^5.3.19",
+    "@storybook/addons": "^5.3.19",
+    "@storybook/react": "^5.3.19",
+    "@types/node": "^14.0.26",
+    "@types/react-color": "^3.0.4",
+    "@types/react-dom": "^16.9.8",
+    "@types/storybook__react": "^5.2.1",
+    "auto-changelog": "^2.2.0",
     "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.6",
-    "np": "^6.2.0",
+    "babel-loader": "^8.1.0",
+    "np": "^6.3.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "rollup": "^1.23.0",
+    "rollup": "^2.23.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-typescript": "^1.0.1",
-    "typescript": "^3.6.3"
+    "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "react": ">=16.8",
-    "react-dom": ">=16.8"
+    "react": ">=16.13",
+    "react-dom": ">=16.13"
   },
   "auto-changelog": {
     "includeBranch": [
