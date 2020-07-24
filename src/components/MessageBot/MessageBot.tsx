@@ -1,7 +1,9 @@
-import styled, { StyledComponent } from '@emotion/styled';
-import { readableColor } from 'polished';
-import React, { ReactNode } from 'react';
+import styled, {StyledComponent} from '@emotion/styled';
+import {readableColor} from 'polished';
+import React, {ReactNode} from 'react';
 import TockTheme from 'TockTheme';
+// @ts-ignore
+import linkifyHtml from 'linkifyjs/html';
 
 const MessageContainer: StyledComponent<{}, {}, TockTheme> = styled.div`
   width: 100%;
@@ -18,25 +20,27 @@ const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
   white-space: pre-line;
   border-radius: ${props =>
     (props.theme &&
-      props.theme.borderRadius &&
-      `${props.theme.borderRadius} ${props.theme.borderRadius} ${props.theme.borderRadius} 0`) ||
+        props.theme.borderRadius &&
+        `${props.theme.borderRadius} ${props.theme.borderRadius} ${props.theme.borderRadius} 0`) ||
     '1em'};
 
   ${props => (props.theme && props.theme.styles && props.theme.styles.messageBot) || ''}
 `;
 
-const MessageBot: ({ children }: { children: ReactNode }) => JSX.Element = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
-  return (
-    <MessageContainer>
-      <Message>
-        <span dangerouslySetInnerHTML={{ __html: children ? children.toString() : '' }}></span>
-      </Message>
-    </MessageContainer>
-  );
+const MessageBot: ({children}: { children: ReactNode }) => JSX.Element = ({children}: { children: ReactNode }) => {
+
+    function getHtmlContent() {
+        let message = children ? children.toString() : '';
+        return linkifyHtml(message);
+    }
+
+    return (
+        <MessageContainer>
+            <Message>
+                <div dangerouslySetInnerHTML={{__html: getHtmlContent()}}/>
+            </Message>
+        </MessageContainer>
+    );
 };
 
 export default MessageBot;
