@@ -14,7 +14,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
                                                                          }: {
   children?: ReactNode;
 }) => {
-  const {addMessage, addMessageWithButtons, addCard, addCarousel, addWidget, setQuickReplies}: UseTock = useTock('');
+  const {addMessage, addCard, addCarousel, addWidget, setQuickReplies}: UseTock = useTock('');
   useEffect(() => {
     const product: Product = {
       name: 'Product name',
@@ -128,8 +128,8 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
         ],
       },
     ]);
-    addMessageWithButtons('Message with url button', 'bot', [new UrlButton('Url Website', 'https://sncf.com')])
-    addMessageWithButtons('Message with postback button', 'bot', [new PostBackButton('Post back Website', '')])
+    addMessage('Message with url button', 'bot', [new UrlButton('Url Website', 'https://sncf.com')])
+    addMessage('Message with postback button', 'bot', [new PostBackButton('Post back Website', '')])
 
     setQuickReplies([
       {
