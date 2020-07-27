@@ -83,7 +83,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       if (lastMessage.buttons && lastMessage.buttons.length > 0) {
         dispatch({
           type: 'SET_QUICKREPLIES',
-          quickReplies: lastMessage.buttons.filter((button: any) => button.type === "quick_reply").map(mapButton)
+          quickReplies: (lastMessage.buttons || []).filter((button: any) => button.type === "quick_reply").map(mapButton)
         });
       } else {
         dispatch({
@@ -104,7 +104,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
               author: 'bot',
               message: text,
               type: 'message',
-              buttons: lastMessage.buttons.filter((button: any) => button.type !== "quick_reply").map(mapButton)
+              buttons: (lastMessage.buttons || []).filter((button: any) => button.type !== "quick_reply").map(mapButton)
             } as Message;
           } else if (card) {
             return mapCard(card);
