@@ -21,6 +21,7 @@
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "emotion-theming": "^10.0.27",
+    "linkifyjs": "^2.1.9",
     "polished": "^3.6.5",
     "react-feather": "^2.0.8"
   },
