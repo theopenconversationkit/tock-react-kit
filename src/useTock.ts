@@ -1,20 +1,20 @@
-import { Dispatch, useCallback } from 'react';
+import {Dispatch, useCallback} from 'react';
 import {
   Button,
+  Card,
+  Carousel,
   Message,
+  PostBackButton,
   QuickReply,
   TockAction,
   TockState,
+  UrlButton,
   useTockDispatch,
   useTockState,
-  Card,
-  Carousel,
   Widget,
-  WidgetData,
-  UrlButton,
-  PostBackButton
+  WidgetData
 } from './TockContext';
-import { Sse } from "./Sse";
+import {Sse} from "./Sse";
 
 export interface UseTock {
   messages: (Message | Card | Carousel | Widget)[];
@@ -33,7 +33,9 @@ export interface UseTock {
   setQuickReplies: (quickReplies: QuickReply[]) => void;
   sendQuickReply: (label: string, payload?: string) => Promise<void>;
   sendAction: (button: Button) => Promise<void>;
-  sendReferralParameter: (referralParameter: string) => Promise<void>;
+  sendReferralParameter: (referralParameter: string) => void;
+  sseInitPromise: Promise<void>;
+  sseInitializing: boolean;
 }
 
 
@@ -60,7 +62,7 @@ function mapCard(card: any): Card {
 }
 
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
-  const { messages, quickReplies, userId, loading }: TockState = useTockState();
+  const { messages, quickReplies, userId, loading, sseInitializing }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
 
   const startLoading: () => void = () => {
@@ -159,9 +161,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       .finally(stopLoading);
   }, []);
 
-  const sendReferralParameter: (referralParameter: string) => Promise<void> = useCallback((referralParameter: string) => {
+  const sendReferralParameter: (referralParameter: string) => void = useCallback((referralParameter: string) => {
     startLoading();
-    return fetch(tockEndPoint, {
+    fetch(tockEndPoint, {
       body: JSON.stringify({
         ref: referralParameter,
         userId: userId,
@@ -276,8 +278,15 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     []
   );
 
+  const onSseStateChange: (state: number) => void = useCallback(
+      (state: number) =>
+          dispatch({
+            type: "SET_SSE_INITIALIZING",
+            sseInitializing: state === EventSource.CONNECTING
+          }), []
+  );
 
-  Sse.init(tockEndPoint, userId, handleBotResponse);
+  const sseInitPromise = Sse.init(tockEndPoint, userId, handleBotResponse, onSseStateChange);
 
   return {
     messages,
@@ -291,7 +300,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     setQuickReplies,
     sendQuickReply,
     sendAction,
-    sendReferralParameter
+    sendReferralParameter,
+    sseInitPromise,
+    sseInitializing
   };
 };
 
