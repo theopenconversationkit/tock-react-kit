@@ -146,14 +146,16 @@ You can define your own display components for this custom message :
 
 ```js
 import React from 'react';
-import { renderChat } from 'tock-react-kit';
+import { renderChat, MessageContainer, Message } from 'tock-react-kit';
 
 const TrainCardWidget = ({departure, arrival}) => {
     return (
-        <div>
-            <p>Departure: {departure}</p>
-            <p>Arrival: {arrival}</p>
-        </div>
+        <MessageContainer>
+            <Message>
+                <p>Departure: {departure}</p>
+                <p>Arrival: {arrival}</p>
+            </Message>
+        </MessageContainer>
     );
 };
 

@@ -4,14 +4,14 @@ import React, {DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes} from 'react
 import TockTheme from 'TockTheme';
 import {Button} from "../../TockContext";
 
-const CardOuter: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+export const CardOuter: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
     {},
     TockTheme> = styled.div`
   max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
   margin: 0.5em auto;
 `;
 
-const CardContainer: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+export const CardContainer: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
     {},
     TockTheme> = styled.div`
   padding: 0.5em;
