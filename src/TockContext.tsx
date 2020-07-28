@@ -67,6 +67,7 @@ export interface Message {
   author: 'bot' | 'user';
   message: string;
   type: 'message';
+  buttons?: Button[];
 }
 
 export interface Card {

@@ -49,7 +49,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({endPoint, referralParameter, t
             return <WidgetComponent key={i} {...message.widgetData.data}/>
           } else if (message.type === 'message') {
             return message.author === 'bot' ? (
-              <MessageBot key={i}>{message.message}</MessageBot>
+              <MessageBot key={i} message={message} sendAction={sendAction} />
             ) : (
               <MessageUser key={i}>{message.message}</MessageUser>
             );
