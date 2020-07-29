@@ -51,6 +51,10 @@ const Input: StyledComponent<
 
   font-family: inherit;
   font-size: inherit;
+  
+  &.disabled-input {
+    background: ${props => (props.theme && props.theme.disabledInputColor) || '#b6b4b4'};
+  }
 
   ${props =>
     props.theme &&
@@ -121,7 +125,7 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
 
   return (
     <InputOuterContainer onSubmit={submit}>
-      <Input disabled={disabled} value={value} onChange={({ target: { value } }) => setValue(value)} />
+      <Input disabled={disabled} className={disabled? 'disabled-input':undefined} value={value} onChange={({ target: { value } }) => setValue(value)} />
       <Icon>
         <Send size={fontSize * 2} />
       </Icon>
