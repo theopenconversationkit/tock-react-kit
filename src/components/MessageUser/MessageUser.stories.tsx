@@ -4,4 +4,5 @@ import MessageUser from './MessageUser';
 
 const message: string = 'A user message';
 
-storiesOf('User message', module).add('Default', () => <MessageUser>{message}</MessageUser>);
+storiesOf('User message', module)
+  .add('Default', () => <MessageUser>{message}</MessageUser>);

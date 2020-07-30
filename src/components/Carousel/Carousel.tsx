@@ -5,12 +5,12 @@ import React, {
   ReactElement
 } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
-import TockTheme from '../../TockTheme';
-import { opacify, readableColor } from 'polished';
-import { fontSize } from '../../utils';
+import { opacify } from 'polished';
+import { prop } from 'styled-tools';
 import { useTheme } from 'emotion-theming';
 import useCarousel from './hooks/useCarousel';
 import useArrowVisibility from './hooks/useArrowVisibility';
+import TockTheme from 'styles/theme';
 
 const ButtonContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
@@ -37,13 +37,13 @@ const ItemContainer: StyledComponent<
     display: none;
   }
   scrollbar-width: none;
-  ${props => (props.theme && props.theme.styles && props.theme.styles.carouselContainer) || ''}
+  ${prop<any>('theme.overrides.carouselContainer', '')}
 
   & > div, & > * {
     margin-left: 1em;
     margin-right: 1em;
 
-    ${props => (props.theme && props.theme.styles && props.theme.styles.carouselItem) || ''}
+    ${prop<any>('theme.overrides.carouselItem', '')}
   }
 `;
 
@@ -58,7 +58,7 @@ const Previous: StyledComponent<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${props => opacify(-0.8, (props.theme && props.theme.botColor) || 'black')};
+  background: ${props => opacify(-0.8, props.theme.palette.background.bot)};
   border: none;
   width: 4em;
   height: 4em;
@@ -68,17 +68,17 @@ const Previous: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${props => (props.theme && props.theme.botColor) || 'black'};
+    stroke: ${prop<any>('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
+      stroke: ${prop<any>('theme.palette.text.bot')};
     }
   }
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.carouselArrow) || ''}
+  ${prop<any>('theme.overrides.carouselArrow', '')};
 `;
 
 const Next: StyledComponent<
@@ -92,7 +92,7 @@ const Next: StyledComponent<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${props => opacify(-0.8, (props.theme && props.theme.botColor) || 'black')};
+  background: ${props => opacify(-0.8, props.theme.palette.background.bot)};
   border: none;
   width: 4em;
   height: 4em;
@@ -102,17 +102,17 @@ const Next: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${props => (props.theme && props.theme.botColor) || 'black'};
+    stroke: ${prop<any>('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
+      stroke: ${prop<any>('theme.palette.text.bot')};
     }
   }
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.carouselArrow) || ''}
+  ${prop<any>('theme.overrides.carouselArrow', '')};
 `;
 
 const Carousel: (props: { children?: ReactElement<any>[] }) => JSX.Element = ({
@@ -132,7 +132,7 @@ const Carousel: (props: { children?: ReactElement<any>[] }) => JSX.Element = ({
     <ButtonContainer>
       {leftVisible && (
         <Previous onClick={previous}>
-          <ArrowLeftCircle size={fontSize(theme) * 2} />
+          <ArrowLeftCircle size={`calc(${theme.typography.fontSize} * 2)`} />
         </Previous>
       )}
       <ItemContainer ref={ref.container}>
@@ -140,7 +140,7 @@ const Carousel: (props: { children?: ReactElement<any>[] }) => JSX.Element = ({
       </ItemContainer>
       {rightVisible && (
         <Next onClick={next}>
-          <ArrowRightCircle size={fontSize(theme) * 2} />
+          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} />
         </Next>
       )}
     </ButtonContainer>

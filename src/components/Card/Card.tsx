@@ -1,83 +1,82 @@
-import styled, {StyledComponent} from '@emotion/styled';
-import {invert, readableColor} from 'polished';
-import React, {DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes} from 'react';
-import TockTheme from 'TockTheme';
-import {Button} from "../../TockContext";
+import styled, { StyledComponent } from '@emotion/styled';
+import React, { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes } from 'react';
+import TockTheme from 'styles/theme';
+import { prop } from 'styled-tools';
+
+import { Button } from '../../TockContext';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-    {},
-    TockTheme> = styled.div`
-  max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
+  {},
+  TockTheme> = styled.div`
+  max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
 `;
 
 export const CardContainer: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-    {},
-    TockTheme> = styled.div`
+  {},
+  TockTheme> = styled.div`
   padding: 0.5em;
-  background: ${props => (props.theme && props.theme.cardColor) || 'white'};
-  color: ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
-  border-radius: ${props => (props.theme && props.theme.borderRadius) || '1em'};
-  border: 2px solid ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
+  background: ${prop<any>('theme.palette.background.card')};
+  color: ${prop<any>('theme.palette.text.card')};
+  border-radius: ${prop<any>('theme.sizing.borderRadius')};
+  border: 2px solid ${prop<any>('theme.palette.text.card')};
   width: 20em;
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardContainer) || ''}
+  ${prop<any>('theme.overrides.card.cardContainer', '')};
 `;
 
 const CardTitle: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>,
-    {},
-    TockTheme> = styled.h3`
+  {},
+  TockTheme> = styled.h3`
   margin: 0.5em 0;
-
   font-size: 1.5em;
   
-  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardTitle) || ''};
+  ${prop<any>('theme.overrides.card.cardTitle', '')};
 `;
 
 const CardSubTitle: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>,
-    {},
-    TockTheme> = styled.h4`
+  {},
+  TockTheme> = styled.h4`
   margin: 0.5em 0;
-
   font-size: 1em;
   
-  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardSubTitle) || ''};
+  ${prop<any>('theme.overrides.card.cardSubTitle', '')};
 `;
 
 const CardImage: StyledComponent<DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-    {},
-    TockTheme> = styled.img`
+  {},
+  TockTheme> = styled.img`
   max-width: 100%;
   max-height: 100%;
   
-  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardImage) || ''}
+  ${prop<any>('theme.overrides.card.cardImage', '')};
 `;
 
 const ButtonList: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
-    {},
-    TockTheme> = styled.ul`
+  {},
+  TockTheme> = styled.ul`
   margin: 0.5em 0;
   list-style: none;
   padding: 0.5em 0;
   
-  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.buttonList) || ''}
+  ${prop<any>('theme.overrides.card.buttonList', '')};
 
   & > li {
     padding: 0;
     margin: 0 0.5em;
     display: inline-block;
-    
-    ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.buttonContainer) || ''}
+
+    ${prop<any>('theme.overrides.card.buttonContainer', '')};
   }
 `;
 
 const Button: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-    {},
-    TockTheme> = styled.button`
+  {},
+  TockTheme> = styled.button`
   background: none;
-  border-radius: ${props => (props.theme && props.theme.borderRadius) || '1em'};
-  color: ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
-  border: 2px solid ${props => readableColor((props.theme && props.theme.cardColor) || 'white')};
+  border-radius: ${prop<any>('theme.sizing.borderRadius')};
+  color: ${prop<any>('theme.palette.text.card')};
+  border: 2px solid ${prop<any>('theme.palette.text.card')};
   padding: 0.5em 1em;
   cursor: pointer;
   margin-top: 0.25em;
@@ -88,19 +87,19 @@ const Button: StyledComponent<DetailedHTMLProps<HTMLAttributes<HTMLButtonElement
   &:hover,
   &:focus,
   &:active {
-    color: ${props => invert(readableColor((props.theme && props.theme.cardColor) || 'white'))};
-    background: ${props => invert((props.theme && props.theme.cardColor) || 'white')};
+    color: ${prop<any>('theme.palette.background.card')};
+    background: ${prop<any>('theme.palette.text.card')};
   }
   
-  ${props => (props.theme && props.theme.styles && props.theme.styles.card && props.theme.styles.card.cardButton) || ''}
+  ${prop<any>('theme.overrides.card.cardButton', '')};
 `;
 
 export interface CardProps {
-    title: string;
-    subTitle?: string;
-    imageUrl?: string;
-    buttons?: Button[];
-    sendAction: (button: Button) => void;
+  title: string;
+  subTitle?: string;
+  imageUrl?: string;
+  buttons?: Button[];
+  sendAction: (button: Button) => void;
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(({
@@ -112,25 +111,29 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(({
 }, ref) => (
     <CardOuter ref={ref}>
         <CardContainer>
-            {imageUrl ? <CardImage src={imageUrl} alt={title}/> : null}
-            <CardTitle>{title}</CardTitle>
-            {subTitle ? <CardSubTitle>
-                <div dangerouslySetInnerHTML={{__html: subTitle}}/>
-            </CardSubTitle> : null}
-            {Array.isArray(buttons) && buttons.length > 0 ? (
-                <ButtonList>
-                    {buttons.map((button, index) => (
-                        <li key={index}>
-                            <Button
-                                onClick={sendAction.bind(null, button)}
-                                onKeyPress={sendAction.bind(null, button)}
-                            >
-                                {button.label}
-                            </Button>
-                        </li>
-                    ))}
-                </ButtonList>
-            ) : null}
+          {imageUrl && (
+            <CardImage src={imageUrl} alt={title} />
+          )}
+          <CardTitle>{title}</CardTitle>
+          {subTitle && (
+            <CardSubTitle>
+              <div dangerouslySetInnerHTML={{ __html: subTitle }} />
+            </CardSubTitle>
+          )}
+          {Array.isArray(buttons) && buttons.length > 0 && (
+            <ButtonList>
+              {buttons.map((button, index) => (
+                <li key={index}>
+                  <Button
+                    onClick={sendAction.bind(null, button)}
+                    onKeyPress={sendAction.bind(null, button)}
+                  >
+                    {button.label}
+                  </Button>
+                </li>
+              ))}
+            </ButtonList>
+          )}
         </CardContainer>
     </CardOuter>
 ));
