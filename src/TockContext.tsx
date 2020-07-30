@@ -98,13 +98,15 @@ export interface TockState {
   messages: (Message | Card | Carousel | Widget)[];
   userId: string;
   loading: boolean;
+  sseInitializing: boolean;
 }
 
 export interface TockAction {
-  type: 'SET_QUICKREPLIES' | 'ADD_MESSAGE' | 'SET_LOADING';
+  type: 'SET_QUICKREPLIES' | 'ADD_MESSAGE' | 'SET_LOADING' | 'SET_SSE_INITIALIZING';
   quickReplies?: QuickReply[];
   messages?: (Message | Card | Carousel | Widget)[];
   loading?: boolean;
+  sseInitializing?: boolean;
 }
 
 export const tockReducer: Reducer<TockState, TockAction> = (
@@ -119,6 +121,7 @@ export const tockReducer: Reducer<TockState, TockAction> = (
           quickReplies: action.quickReplies,
         };
       }
+      break;
     case 'ADD_MESSAGE':
       if (action.messages) {
         return {
@@ -126,6 +129,7 @@ export const tockReducer: Reducer<TockState, TockAction> = (
           messages: [...state.messages, ...action.messages],
         };
       }
+      break;
     case 'SET_LOADING':
       if (action.loading != undefined) {
         return {
@@ -133,6 +137,15 @@ export const tockReducer: Reducer<TockState, TockAction> = (
           loading: action.loading
         }
       }
+      break;
+    case 'SET_SSE_INITIALIZING':
+      if (action.sseInitializing != undefined) {
+        return {
+          ...state,
+          sseInitializing: action.sseInitializing
+        }
+      }
+      break;
     default:
       break;
   }
@@ -148,7 +161,8 @@ const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
     quickReplies: [],
     messages: [],
     userId: (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase(),
-    loading: false
+    loading: false,
+    sseInitializing: false
   });
   return (
     <TockStateContext.Provider value={state}>

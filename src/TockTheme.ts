@@ -8,6 +8,7 @@ export interface TockTheme {
   botColor?: string;
   cardColor?: string;
   inputColor?: string;
+  disabledInputColor?: string;
   borderRadius?: string;
   conversationWidth?: string;
   loaderSize?: string,

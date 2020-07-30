@@ -160,6 +160,7 @@ storiesOf('Chat app', module)
       botColor: color('Bot color', '#fff'),
       cardColor: color('Card color', '#fff'),
       inputColor: color('Input color', '#fff'),
+      disabledInputColor: color('Disabled input color', '#b6b4b4')
     };
     const widgets = {
       ProductWidget
