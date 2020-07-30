@@ -15,5 +15,6 @@ export { default as QuickReplyList } from './components/QuickReplyList';
 export { renderChat } from './renderChat';
 export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
+export { default as createTheme } from './styles/createTheme';
 export type TockTheme = _TockTheme;
 export type TockOptions = _TockOptions;
