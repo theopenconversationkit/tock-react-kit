@@ -6,25 +6,24 @@ export namespace Sse {
                          userId: string,
                          handleBotResponse: (botResponse: any) => void,
                          onSseStateChange: (state: number) => void): Promise<void> {
-        return new Promise<void>((nextAction: () => void): void => {
+        return new Promise<void>((afterInit: () => void): void => {
             if (typeof (EventSource) !== "undefined" && tockEndPoint && !eventSource) {
                 eventSource = new EventSource(tockEndPoint + '/sse?userid=' + userId);
-                setTimeout(() => onSseStateChange(EventSource.CONNECTING))
+                setTimeout(() => onSseStateChange(eventSource.readyState))
                 eventSource.addEventListener('message', (e: MessageEvent) => {
                     handleBotResponse(JSON.parse(e.data))
                 }, false);
-                eventSource.addEventListener('open', (e: Event) => {
+                eventSource.addEventListener('open', () => {
+                    onSseStateChange(eventSource.readyState)
                     sseIsEnabled = true;
-                    onSseStateChange(EventSource.OPEN)
-                    nextAction();
+                    afterInit();
                 }, false);
-                eventSource.addEventListener('error', (e: Event) => {
-                    // @ts-ignore
-                    if (e.readyState == EventSource.CLOSED) {
+                eventSource.addEventListener('error', () => {
+                    if (eventSource.readyState == EventSource.CLOSED) {
+                        onSseStateChange(eventSource.readyState);
                         sseIsEnabled = false;
-                        onSseStateChange(EventSource.CLOSED);
+                        afterInit()
                     }
-                    nextAction()
                 }, false);
             }
         });
