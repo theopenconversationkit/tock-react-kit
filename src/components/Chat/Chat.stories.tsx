@@ -1,20 +1,22 @@
-import {storiesOf} from '@storybook/react';
-import React, {ReactNode, useEffect} from 'react';
-import {ThemeProvider} from 'emotion-theming';
-import TockContext, {UrlButton, PostBackButton} from '../../TockContext';
-import useTock, {UseTock} from '../../useTock';
-import Chat from './Chat';
-import TockTheme from 'TockTheme';
-import {color, number, text, withKnobs} from '@storybook/addon-knobs';
+import { storiesOf } from '@storybook/react';
+import React, { useEffect, ReactNode } from 'react';
+import { withKnobs } from '@storybook/addon-knobs';
+import styled from '@emotion/styled';
+
+import { UrlButton, PostBackButton } from '../../TockContext';
+import useTock, { UseTock } from '../../useTock';
 import Product from "../widgets/ProductWidget/Product";
 import ProductWidget from "../widgets/ProductWidget";
+import Chat from './Chat';
 
-const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
-                                                                           children,
-                                                                         }: {
-  children?: ReactNode;
-}) => {
-  const {addMessage, addCard, addCarousel, addWidget, setQuickReplies}: UseTock = useTock('');
+const useMessages = () => {
+  const {
+    addMessage,
+    addCard,
+    addCarousel,
+    addWidget,
+    setQuickReplies
+  }: UseTock = useTock('');
   useEffect(() => {
     const product: Product = {
       name: 'Product name',
@@ -54,7 +56,7 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
       'The Open Conversation Kit',
       undefined,
       '<p>Some text</p>',
-       [new UrlButton('Website', 'https://sncf.com')]
+      [new UrlButton('Website', 'https://sncf.com')]
     );
     addMessage('Or a carousel with two cards', 'bot');
     addCarousel([
@@ -142,56 +144,54 @@ const BuildMessages: (props: { children?: ReactNode }) => JSX.Element = ({
       },
     ]);
   }, [addMessage, setQuickReplies]);
-
-  return children as JSX.Element;
 };
+
+const Wrapper = ({ children }: { children: ReactNode }) => {
+  useMessages()
+  return children as JSX.Element
+}
+
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background-color: rgba(12, 12, 12, 0.65);
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 600px;
+  padding: 1rem;
+  max-height: 100vh;
+  max-width: 100vw;
+  border: 1px solid black;
+`
+
+const FullscreenContainer = styled.div`
+  height: 100vh;
+  width: 100vw;
+`
 
 storiesOf('Chat app', module)
   .addDecorator(withKnobs)
-  .add('Default full screen', () => {
-    const theme: TockTheme = {
-      fontFamily: `${text('font-family', 'Segoe UI, Arial, Helvetica, sans-serif')}`,
-      fontSize: `${number('font-size', 16)}px`,
-      borderRadius: text('border-radius', '0.5em'),
-      styles: {
-        chat: `background: ${color('background', '#eaeaea')};`,
-      },
-      userColor: color('User color', '#fff'),
-      botColor: color('Bot color', '#fff'),
-      cardColor: color('Card color', '#fff'),
-      inputColor: color('Input color', '#fff'),
-      disabledInputColor: color('Disabled input color', '#b6b4b4')
-    };
-    const widgets = {
-      ProductWidget
-    };
-    return (
-      <ThemeProvider theme={theme}>
-        <TockContext>
-          <BuildMessages>
-            <Chat endPoint="" referralParameter="" widgets={widgets} />
-          </BuildMessages>
-        </TockContext>
-      </ThemeProvider>
-    );
-  })
+  .add('Default full screen', () => (
+    <Wrapper>
+      <FullscreenContainer>
+        <Chat
+          endPoint=""
+          referralParameter=""
+          widgets={{
+            ProductWidget
+          }}
+        />
+      </FullscreenContainer>
+    </Wrapper>
+  ))
   .add('Default modal', () => (
-    <ThemeProvider
-      theme={
-        {
-          styles: {
-            chat: `
-            width: 800px;
-            height: 600px;
-            `,
-          },
-        } as TockTheme
-      }
-    >
-      <TockContext>
-        <BuildMessages>
-          <Chat endPoint="" referralParameter="" />
-        </BuildMessages>
-      </TockContext>
-    </ThemeProvider>
+    <Wrapper>
+      <ModalContainer>
+        <Chat
+          endPoint=""
+          referralParameter=""
+        />
+      </ModalContainer>
+    </Wrapper>
   ));

@@ -1,5 +1,6 @@
 import React from 'react';
-import {Message, MessageContainer} from "../../MessageBot";
+
+import { Message, MessageContainer } from '../../MessageBot';
 
 
 const DefaultWidget: (props: any) => JSX.Element = (props) => {

@@ -1,5 +1,5 @@
 import _TockOptions from './TockOptions';
-import _TockTheme from './TockTheme';
+import _TockTheme from './styles/theme';
 
 export { ThemeProvider } from 'emotion-theming';
 export { default as Card, CardContainer, CardOuter } from './components/Card';

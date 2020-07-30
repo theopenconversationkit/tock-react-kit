@@ -7,7 +7,10 @@ import Conversation from './Conversation';
 const messages = (
   <>
     <MessageUser>A user asking things</MessageUser>
-    <MessageBot message={{author: 'bot', message: 'Bot replying with incredible things', type: 'message', buttons: []}} sendAction= {(_) => {} }/>
+    <MessageBot
+      message={{author: 'bot', message: 'Bot replying with incredible things', type: 'message', buttons: []}}
+      sendAction= {(_) => {}}
+    />
   </>
 );
 

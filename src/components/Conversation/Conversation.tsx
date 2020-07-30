@@ -1,6 +1,7 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React, { DetailedHTMLProps, HTMLAttributes, RefObject, useEffect, useRef } from 'react';
-import TockTheme from 'TockTheme';
+
+import TockTheme from 'styles/theme';
 
 const ConversationContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
