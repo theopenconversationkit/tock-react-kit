@@ -5,14 +5,14 @@ import { Typography, TypographyOptions } from './typography';
 
 export default interface TockTheme {
   palette: Palette;
-  sizing: Sizing,
+  sizing: Sizing;
   typography: Typography;
   overrides?: Overrides;
 };
 
 export type TockThemeOptions = {
-  palette?: PaletteOptions,
-  sizing?: SizingOptions,
-  typography?: TypographyOptions,
-  overrides?: Overrides
+  palette?: PaletteOptions;
+  sizing?: SizingOptions;
+  typography?: TypographyOptions;
+  overrides?: Overrides;
 };
