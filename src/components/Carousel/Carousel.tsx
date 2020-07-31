@@ -125,7 +125,7 @@ const Carousel: (props: { children?: ReactElement<any>[] }) => JSX.Element = ({
     previous,
     next
   ] = useCarousel<HTMLDivElement>(children?.length)
-  const [leftVisible, rightVisible] = useArrowVisibility(ref.container)
+  const [leftVisible, rightVisible] = useArrowVisibility(ref.container, ref.items)
 
   return (
     <ButtonContainer>

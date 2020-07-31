@@ -2,62 +2,83 @@ import {
   RefObject,
   useRef,
   useCallback
-} from 'react'
-import useRefs from './useRefs'
-import useMeasures, { Measure } from './useMeasures'
+} from 'react';
+import useRefs from './useRefs';
+import useMeasures, { Measure } from './useMeasures';
 
-type Ref = RefObject<HTMLElement>
-type Refs = Array<Ref>
-
-type CarouselScrollReturn<T> = [
+type CarouselReturn<T> = [
   {
     container: RefObject<T>,
-    items: Refs,
+    items: RefObject<HTMLElement>[],
   },
   (() => void),
   (() => void)
-]
+];
+
+function getMeanX(
+  previous: Measure | undefined,
+  target: Measure | undefined
+) : number {
+  if (!previous || !target) return 0;
+  return Math.round((previous.x + previous.width + target.x) / 2);
+};
 
 function scrollStep(
-  direction: 1 | -1,
+  direction: 'NEXT' | 'PREVIOUS',
   container: HTMLElement | null,
   measures: Measure[]
 ) {
   if (!container) return;
-  const x = container.scrollLeft
-  const width = container.clientWidth
+  const x = container.scrollLeft;
+  const width = container.clientWidth;
 
-  if (direction === 1) {
-    const rightMeasure = measures.find(measure => measure.x + measure.width > x + width)
-    container.scrollLeft = rightMeasure?.x || 0
+  if (direction === 'NEXT') {
+    const targetIndex = measures.findIndex(measure =>
+      measure.x + measure.width > x + width
+    );
+    container.scrollLeft = getMeanX(
+      measures[targetIndex],
+      measures[targetIndex - 1]
+    );
   } else {
-    const leftMeasure = measures.find(measure => measure.x + width >= x)
-    container.scrollLeft = leftMeasure?.x || 0
-  }
-}
+    const firstLeftHidden = measures
+      .slice()
+      .reverse()
+      .find(measure => measure.x < x);
+    if (!firstLeftHidden) return;
 
-export default function useCarousel<T>(itemCount: number = 0) : CarouselScrollReturn<T> {
+    const targetIndex = measures.findIndex(measure =>
+      firstLeftHidden.x - measure.x < width - firstLeftHidden.width
+    );
+    container.scrollLeft = getMeanX(
+      measures[targetIndex - 1],
+      measures[targetIndex]
+    );
+  }
+};
+
+export default function useCarousel<T>(itemCount: number = 0) : CarouselReturn<T> {
   const containerRef = useRef(null);
   const itemRefs = useRefs(itemCount);
   const measures = useMeasures(itemRefs);
 
   const previous = useCallback(() =>
     scrollStep(
-      -1,
+      'PREVIOUS',
       containerRef.current,
       measures
     ),
     [containerRef, measures]
-  )
+  );
 
   const next = useCallback(() =>
     scrollStep(
-      1,
+      'NEXT',
       containerRef.current,
       measures
     ),
     [containerRef, measures]
-  )
+  );
 
   return [
     {
@@ -66,5 +87,5 @@ export default function useCarousel<T>(itemCount: number = 0) : CarouselScrollRe
     },
     previous,
     next
-  ]
-}
+  ];
+};
