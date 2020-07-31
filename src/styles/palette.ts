@@ -4,6 +4,7 @@ interface BackgroundPalette {
   bot: string;
   card: string;
   input: string;
+  inputDisabled: string;
 };
 
 interface TextPalette {
