@@ -153,7 +153,7 @@ export const tockReducer: Reducer<TockState, TockAction> = (
   return state;
 };
 
-const TockProvider: (props: { children?: ReactNode }) => JSX.Element = ({
+const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
   children,
 }: {
   children?: ReactNode;
@@ -172,4 +172,4 @@ const TockProvider: (props: { children?: ReactNode }) => JSX.Element = ({
   );
 };
 
-export default TockProvider;
+export default TockContext;
