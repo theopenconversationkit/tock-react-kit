@@ -1,20 +1,16 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React, {
   DetailedHTMLProps,
-  Dispatch,
   HTMLAttributes,
-  ReactNode,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
+  ReactElement
 } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import TockTheme from '../../TockTheme';
 import { opacify, readableColor } from 'polished';
 import { fontSize } from '../../utils';
 import { useTheme } from 'emotion-theming';
+import useCarousel from './hooks/useCarousel';
+import useArrowVisibility from './hooks/useArrowVisibility';
 
 const ButtonContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
@@ -36,6 +32,7 @@ const ItemContainer: StyledComponent<
   justify-content: start;
   scroll-behavior: smooth;
   touch-action: pan-x pan-y;
+  position: relative;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -117,84 +114,34 @@ const Next: StyledComponent<
   ${props => (props.theme && props.theme.styles && props.theme.styles.carouselArrow) || ''}
 `;
 
-const Carousel: (props: { children?: ReactNode }) => JSX.Element = ({
+const Carousel: (props: { children?: ReactElement<any>[] }) => JSX.Element = ({
   children,
 }: {
-  children?: ReactNode;
+  children?: ReactElement<any>[];
 }) => {
-  const carousel: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
   const theme: TockTheme = useTheme<TockTheme>();
-  const [isLeftArrowVisible, setIsLeftArrowVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false);
-  const [isRightArrowVisible, setIsRightArrowVisible]: [
-    boolean,
-    Dispatch<SetStateAction<boolean>>
-  ] = useState(false);
-
-  const handleArrowVisibility: () => void = () => {
-    if (carousel.current) {
-      if (carousel.current.scrollLeft > 0) {
-        setIsLeftArrowVisible(true);
-      } else {
-        setIsLeftArrowVisible(false);
-      }
-      if (
-        carousel.current.scrollLeft + carousel.current.clientWidth <
-        carousel.current.scrollWidth
-      ) {
-        setIsRightArrowVisible(true);
-      } else {
-        setIsRightArrowVisible(false);
-      }
-    }
-  };
-
-  const scrollLeft: () => void = () => {
-    if (carousel.current) {
-      carousel.current.scrollLeft = carousel.current.scrollLeft - carousel.current.clientWidth;
-    }
-    handleArrowVisibility();
-  };
-
-  const scrollRight: () => void = () => {
-    if (carousel.current) {
-      carousel.current.scrollLeft = carousel.current.scrollLeft + carousel.current.clientWidth;
-    }
-    handleArrowVisibility();
-  };
-
-  useEffect(() => {
-    handleArrowVisibility();
-  });
-
-  useEffect(() => {
-    if (carousel.current) {
-      carousel.current.addEventListener('scroll', handleArrowVisibility);
-      carousel.current.addEventListener('resize', handleArrowVisibility);
-    }
-    return () => {
-      if (carousel.current) {
-        carousel.current.removeEventListener('scroll', handleArrowVisibility);
-        carousel.current.removeEventListener('resize', handleArrowVisibility);
-      }
-    };
-  }, [carousel]);
+  const [
+    ref,
+    previous,
+    next
+  ] = useCarousel<HTMLDivElement>(children?.length)
+  const [leftVisible, rightVisible] = useArrowVisibility(ref.container)
 
   return (
     <ButtonContainer>
-      {isLeftArrowVisible ? (
-        <Previous onClick={scrollLeft}>
+      {leftVisible && (
+        <Previous onClick={previous}>
           <ArrowLeftCircle size={fontSize(theme) * 2} />
         </Previous>
-      ) : null}
-      <ItemContainer ref={carousel}>{children}</ItemContainer>
-      {isRightArrowVisible ? (
-        <Next onClick={scrollRight}>
+      )}
+      <ItemContainer ref={ref.container}>
+        {children?.map((child, i) => React.cloneElement(child, { ref: ref.items[i] }, undefined))}
+      </ItemContainer>
+      {rightVisible && (
+        <Next onClick={next}>
           <ArrowRightCircle size={fontSize(theme) * 2} />
         </Next>
-      ) : null}
+      )}
     </ButtonContainer>
   );
 };
