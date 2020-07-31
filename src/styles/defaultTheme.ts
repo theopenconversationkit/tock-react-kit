@@ -7,13 +7,14 @@ const defaultTheme : TockTheme = {
       user: 'black',
       bot: 'white',
       card: 'black',
-      input: 'black'
+      input: 'black',
     },
     background: {
       user: readableColor('black'),
       bot: readableColor('white'),
       card: readableColor('black'),
       input: readableColor('black'),
+      inputDisabled: '#b6b4b4'
     }
   },
   sizing: {
