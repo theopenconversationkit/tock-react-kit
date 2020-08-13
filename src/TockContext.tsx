@@ -7,6 +7,7 @@ import React, {
   Context,
   useContext,
 } from 'react';
+import {retrieveUserId} from "./utils";
 
 export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
@@ -160,7 +161,7 @@ const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
   const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(tockReducer, {
     quickReplies: [],
     messages: [],
-    userId: (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase(),
+    userId: retrieveUserId(),
     loading: false,
     sseInitializing: false
   });
