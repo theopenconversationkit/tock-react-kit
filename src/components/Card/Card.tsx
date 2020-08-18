@@ -103,14 +103,14 @@ export interface CardProps {
     sendAction: (button: Button) => void;
 }
 
-const Card: (props: CardProps) => JSX.Element = ({
-                                                     title,
-                                                     subTitle,
-                                                     imageUrl,
-                                                     buttons,
-                                                     sendAction
-                                                 }: CardProps) => (
-    <CardOuter>
+const Card = React.forwardRef<HTMLDivElement, CardProps>(({
+    title,
+    subTitle,
+    imageUrl,
+    buttons,
+    sendAction
+}, ref) => (
+    <CardOuter ref={ref}>
         <CardContainer>
             {imageUrl ? <CardImage src={imageUrl} alt={title}/> : null}
             <CardTitle>{title}</CardTitle>
@@ -133,6 +133,6 @@ const Card: (props: CardProps) => JSX.Element = ({
             ) : null}
         </CardContainer>
     </CardOuter>
-);
+));
 
 export default Card;
