@@ -4,14 +4,18 @@ import { prop } from 'styled-tools';
 
 import TockTheme from 'styles/theme';
 
-const MessageContainer: StyledComponent<{}, {}, TockTheme> = styled.div`
+const MessageContainer: StyledComponent<
+  unknown,
+  unknown,
+  TockTheme
+> = styled.div`
   width: 100%;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   text-align: right;
 `;
 
-const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
+const Message: StyledComponent<unknown, unknown, TockTheme> = styled.div`
   display: inline-block;
   background: ${prop<any>('theme.palette.background.user')};
   color: ${prop<any>('theme.palette.text.user')};
@@ -24,10 +28,10 @@ const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
 `;
 
 type Props = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
-const MessageUser: ({ children } : Props) => JSX.Element = ({
+const MessageUser: ({ children }: Props) => JSX.Element = ({
   children,
 }: Props) => {
   return (

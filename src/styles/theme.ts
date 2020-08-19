@@ -8,7 +8,7 @@ export default interface TockTheme {
   sizing: Sizing;
   typography: Typography;
   overrides?: Overrides;
-};
+}
 
 export type TockThemeOptions = {
   palette?: PaletteOptions;

@@ -12,13 +12,13 @@ export const renderChat: (
   endPoint: string,
   referralParameter: string,
   theme: TockTheme,
-  options: TockOptions
+  options: TockOptions,
 ) => void = (
   container: HTMLElement,
   endPoint: string,
   referralParameter?: string,
   theme: TockTheme = defaultTheme,
-  options: TockOptions = {}
+  options: TockOptions = {},
 ): void => {
   ReactDOM.render(
     <ThemeProvider theme={theme}>
@@ -31,6 +31,6 @@ export const renderChat: (
         />
       </TockContext>
     </ThemeProvider>,
-    container
+    container,
   );
 };

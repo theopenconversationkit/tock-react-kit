@@ -8,8 +8,14 @@ const messages = (
   <>
     <MessageUser>A user asking things</MessageUser>
     <MessageBot
-      message={{author: 'bot', message: 'Bot replying with incredible things', type: 'message', buttons: []}}
-      sendAction= {(_) => {}}
+      message={{
+        author: 'bot',
+        message: 'Bot replying with incredible things',
+        type: 'message',
+        buttons: [],
+      }}
+      /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+      sendAction={() => {}}
     />
   </>
 );

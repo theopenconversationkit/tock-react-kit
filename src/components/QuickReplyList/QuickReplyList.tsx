@@ -6,7 +6,7 @@ import TockTheme from 'styles/theme';
 
 const QuickReplyListContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
@@ -14,7 +14,7 @@ const QuickReplyListContainer: StyledComponent<
   overflow-x: unset;
   white-space: nowrap;
   text-align: left;
-  
+
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
@@ -32,7 +32,7 @@ const QuickReplyListContainer: StyledComponent<
 
 const QuickReplyListOuterContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div``;
 

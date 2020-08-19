@@ -1,11 +1,17 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, { DetailedHTMLProps, HTMLAttributes, RefObject, useEffect, useRef } from 'react';
+import React, {
+  DetailedHTMLProps,
+  HTMLAttributes,
+  RefObject,
+  useEffect,
+  useRef,
+} from 'react';
 
 import TockTheme from 'styles/theme';
 
 const ConversationContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div`
   overflow-y: scroll;
@@ -13,8 +19,10 @@ const ConversationContainer: StyledComponent<
 `;
 
 const Conversation: (
-  props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
-) => JSX.Element = (props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+  props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+) => JSX.Element = (
+  props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+) => {
   const container: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
   const { children, ...restProps }: typeof props = props;
 
@@ -22,11 +30,13 @@ const Conversation: (
     if (container.current) {
       const scroll = () => {
         if (container.current) {
-          container.current.scrollTop = container.current.scrollHeight
+          container.current.scrollTop = container.current.scrollHeight;
         }
       };
       scroll();
-      const images: NodeListOf<HTMLImageElement> = container.current.querySelectorAll('img');
+      const images: NodeListOf<HTMLImageElement> = container.current.querySelectorAll(
+        'img',
+      );
       images.forEach((img: HTMLImageElement) => {
         if (!img.onload) {
           img.onload = scroll;

@@ -2,9 +2,9 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 import MessageBot from './MessageBot';
 
-const message: string = 'A bot message';
+const message = 'A bot message';
 
-const html: string = `
+const html = `
 <b>Hello user!</b>
 <p>This is how I display:</p>
 <ul>
@@ -29,8 +29,9 @@ storiesOf('Bot message', module)
         author: 'bot',
         message: message,
         type: 'message',
-        buttons: []
+        buttons: [],
       }}
+      /* eslint-disable-next-line @typescript-eslint/no-empty-function */
       sendAction={() => {}}
     />
   ))
@@ -40,7 +41,9 @@ storiesOf('Bot message', module)
         author: 'bot',
         message: html,
         type: 'message',
-        buttons: []
+        buttons: [],
       }}
-      sendAction={() => {}}/>
+      /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+      sendAction={() => {}}
+    />
   ));

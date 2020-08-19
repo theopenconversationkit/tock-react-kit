@@ -3,12 +3,11 @@ import React from 'react';
 import Product from './Product';
 import { Message, MessageContainer } from '../../MessageBot';
 
-
 const ProductWidget: (props: Product) => JSX.Element = ({
   name,
   description,
-  price
-}) => (
+  price,
+}: Product) => (
   <MessageContainer>
     <Message>
       <h1>product: {name}</h1>

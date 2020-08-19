@@ -6,7 +6,7 @@ import TockTheme from 'styles/theme';
 
 const Container: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div`
   width: 100%;
@@ -20,8 +20,8 @@ const Container: StyledComponent<
     flex: 1;
     overflow-y: auto;
     ::-webkit-scrollbar {
-      width: 0px;  /* Remove scrollbar space */
-      background: transparent;  /* Optional: just make scrollbar invisible */
+      width: 0px; /* Remove scrollbar space */
+      background: transparent; /* Optional: just make scrollbar invisible */
     }
   }
 

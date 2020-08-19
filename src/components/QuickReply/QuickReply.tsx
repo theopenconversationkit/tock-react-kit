@@ -6,7 +6,7 @@ import TockTheme from 'styles/theme';
 
 const QuickReplyButton: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.button`
   background: none;
@@ -31,12 +31,13 @@ const QuickReplyButton: StyledComponent<
   ${prop<any>('theme.overrides.quickReply', '')};
 `;
 
-type Props = DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+type Props = DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>;
 
-const QuickReply: (
-  props: Props
-) => JSX.Element = (
-  props: Props
-) => <QuickReplyButton {...props} />;
+const QuickReply: (props: Props) => JSX.Element = (props: Props) => (
+  <QuickReplyButton {...props} />
+);
 
 export default QuickReply;

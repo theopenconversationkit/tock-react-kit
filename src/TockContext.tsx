@@ -7,14 +7,14 @@ import React, {
   Context,
   useContext,
 } from 'react';
-import {retrieveUserId} from "./utils";
+import { retrieveUserId } from './utils';
 
 export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
 >(undefined);
-export const TockStateDispatch: Context<Dispatch<TockAction> | undefined> = createContext<
+export const TockStateDispatch: Context<
   Dispatch<TockAction> | undefined
->(undefined);
+> = createContext<Dispatch<TockAction> | undefined>(undefined);
 
 export const useTockState: () => TockState = () => {
   const state: TockState | undefined = useContext(TockStateContext);
@@ -25,7 +25,9 @@ export const useTockState: () => TockState = () => {
 };
 
 export const useTockDispatch: () => Dispatch<TockAction> = () => {
-  const dispatch: Dispatch<TockAction> | undefined = useContext(TockStateDispatch);
+  const dispatch: Dispatch<TockAction> | undefined = useContext(
+    TockStateDispatch,
+  );
   if (!dispatch) {
     throw new Error('useTockDispatch must be used in a TockContext');
   }
@@ -103,7 +105,11 @@ export interface TockState {
 }
 
 export interface TockAction {
-  type: 'SET_QUICKREPLIES' | 'ADD_MESSAGE' | 'SET_LOADING' | 'SET_SSE_INITIALIZING';
+  type:
+    | 'SET_QUICKREPLIES'
+    | 'ADD_MESSAGE'
+    | 'SET_LOADING'
+    | 'SET_SSE_INITIALIZING';
   quickReplies?: QuickReply[];
   messages?: (Message | Card | Carousel | Widget)[];
   loading?: boolean;
@@ -112,7 +118,7 @@ export interface TockAction {
 
 export const tockReducer: Reducer<TockState, TockAction> = (
   state: TockState,
-  action: TockAction
+  action: TockAction,
 ): TockState => {
   switch (action.type) {
     case 'SET_QUICKREPLIES':
@@ -135,16 +141,16 @@ export const tockReducer: Reducer<TockState, TockAction> = (
       if (action.loading != undefined) {
         return {
           ...state,
-          loading: action.loading
-        }
+          loading: action.loading,
+        };
       }
       break;
     case 'SET_SSE_INITIALIZING':
       if (action.sseInitializing != undefined) {
         return {
           ...state,
-          sseInitializing: action.sseInitializing
-        }
+          sseInitializing: action.sseInitializing,
+        };
       }
       break;
     default:
@@ -158,16 +164,21 @@ const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
 }: {
   children?: ReactNode;
 }) => {
-  const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(tockReducer, {
-    quickReplies: [],
-    messages: [],
-    userId: retrieveUserId(),
-    loading: false,
-    sseInitializing: false
-  });
+  const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(
+    tockReducer,
+    {
+      quickReplies: [],
+      messages: [],
+      userId: retrieveUserId(),
+      loading: false,
+      sseInitializing: false,
+    },
+  );
   return (
     <TockStateContext.Provider value={state}>
-      <TockStateDispatch.Provider value={dispatch}>{children}</TockStateDispatch.Provider>
+      <TockStateDispatch.Provider value={dispatch}>
+        {children}
+      </TockStateDispatch.Provider>
     </TockStateContext.Provider>
   );
 };

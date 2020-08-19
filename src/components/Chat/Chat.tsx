@@ -11,21 +11,21 @@ import MessageBot from '../MessageBot';
 import MessageUser from '../MessageUser';
 import QR from '../QuickReply';
 import QuickReplyList from '../QuickReplyList';
-import Loader from "../Loader";
-import DefaultWidget from "../widgets/DefaultWidget";
+import Loader from '../Loader';
+import DefaultWidget from '../widgets/DefaultWidget';
 
 export interface ChatProps {
   endPoint: string;
   referralParameter?: string;
   timeoutBetweenMessage?: number;
-  widgets?: any
+  widgets?: any;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
   endPoint,
   referralParameter,
   timeoutBetweenMessage = 700,
-  widgets = {}
+  widgets = {},
 }: ChatProps) => {
   const {
     messages,
@@ -36,7 +36,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sendAction,
     sendReferralParameter,
     sseInitPromise,
-    sseInitializing
+    sseInitializing,
   }: UseTock = useTock(endPoint);
   const [displayableMessageCount, setDisplayableMessageCount] = useState(0);
 
@@ -57,51 +57,49 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   return (
     <Container>
       <Conversation>
-        {messages.slice(0, displayableMessageCount).map((message: Message | Card | Carousel | Widget, i: number) => {
-          if (message.type === 'widget') {
-            const WidgetComponent = widgets[message.widgetData.type] || DefaultWidget;
-            return <WidgetComponent key={i} {...message.widgetData.data}/>
-          } else if (message.type === 'message') {
-            return message.author === 'bot' ? (
-              <MessageBot key={i} message={message} sendAction={sendAction} />
-            ) : (
-              <MessageUser key={i}>{message.message}</MessageUser>
-            );
-          } else if (message.type === 'card') {
-            return (
-              <CardComponent
-                sendAction={sendAction}
-                key={i}
-                {...message}
-              />
-            );
-          } else if (message.type === 'carousel') {
-            return (
-              <CarouselComponent key={i}>
-                {message.cards.map((card: Card, ic: number) => (
-                  <CardComponent
-                    sendAction={sendAction}
-                    key={ic}
-                    {...card}
-                  />
-                ))}
-              </CarouselComponent>
-            );
-          }
-          return null;
-        })}
-        {loading && <Loader/>}
+        {messages
+          .slice(0, displayableMessageCount)
+          .map((message: Message | Card | Carousel | Widget, i: number) => {
+            if (message.type === 'widget') {
+              const WidgetComponent =
+                widgets[message.widgetData.type] || DefaultWidget;
+              return <WidgetComponent key={i} {...message.widgetData.data} />;
+            } else if (message.type === 'message') {
+              return message.author === 'bot' ? (
+                <MessageBot key={i} message={message} sendAction={sendAction} />
+              ) : (
+                <MessageUser key={i}>{message.message}</MessageUser>
+              );
+            } else if (message.type === 'card') {
+              return (
+                <CardComponent sendAction={sendAction} key={i} {...message} />
+              );
+            } else if (message.type === 'carousel') {
+              return (
+                <CarouselComponent key={i}>
+                  {message.cards.map((card: Card, ic: number) => (
+                    <CardComponent sendAction={sendAction} key={ic} {...card} />
+                  ))}
+                </CarouselComponent>
+              );
+            }
+            return null;
+          })}
+        {loading && <Loader />}
       </Conversation>
       {displayableMessageCount === messages.length && (
         <QuickReplyList>
           {quickReplies.map((qr: QuickReply, i: number) => (
-            <QR key={i} onClick={sendQuickReply.bind(null, qr.label, qr.payload)}>
+            <QR
+              key={i}
+              onClick={sendQuickReply.bind(null, qr.label, qr.payload)}
+            >
               {qr.label}
             </QR>
           ))}
         </QuickReplyList>
       )}
-      <ChatInput disabled={sseInitializing} onSubmit={sendMessage}/>
+      <ChatInput disabled={sseInitializing} onSubmit={sendMessage} />
     </Container>
   );
 };

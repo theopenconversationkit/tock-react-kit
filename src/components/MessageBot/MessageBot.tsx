@@ -1,5 +1,6 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import linkifyHtml from 'linkifyjs/html';
 import { prop } from 'styled-tools';
@@ -7,15 +8,19 @@ import { prop } from 'styled-tools';
 import TockTheme from 'styles/theme';
 import { Message as messageType, Button } from '../../TockContext';
 import QR from '../QuickReply';
-import QuickReplyList from "../QuickReplyList";
+import QuickReplyList from '../QuickReplyList';
 
-export const MessageContainer: StyledComponent<{}, {}, TockTheme> = styled.div`
+export const MessageContainer: StyledComponent<
+  unknown,
+  unknown,
+  TockTheme
+> = styled.div`
   width: 100%;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
 `;
 
-export const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
+export const Message: StyledComponent<unknown, unknown, TockTheme> = styled.div`
   display: inline-block;
   background: ${prop<any>('theme.palette.background.bot')};
   color: ${prop<any>('theme.palette.text.bot')};
@@ -37,7 +42,6 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
   message,
   sendAction,
 }: MessageProps) => {
-
   function getHtmlContent() {
     const content = message.message?.toString() || '';
     return linkifyHtml(content);
@@ -51,10 +55,7 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
       {Array.isArray(message.buttons) && message.buttons.length > 0 && (
         <QuickReplyList>
           {message.buttons.map((button: Button, i: number) => (
-            <QR
-              key={i}
-              onClick={sendAction.bind(null, button)}
-            >
+            <QR key={i} onClick={sendAction.bind(null, button)}>
               {button.label}
             </QR>
           ))}

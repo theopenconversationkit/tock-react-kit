@@ -1,4 +1,3 @@
-
 export interface TockThemeCardStyle {
   cardContainer?: string;
   cardTitle?: string;
@@ -7,6 +6,6 @@ export interface TockThemeCardStyle {
   cardButton?: string;
   buttonList?: string;
   buttonContainer?: string;
-};
+}
 
 export default TockThemeCardStyle;

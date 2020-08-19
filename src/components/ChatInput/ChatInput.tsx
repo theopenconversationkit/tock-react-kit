@@ -14,7 +14,7 @@ import { prop } from 'styled-tools';
 
 const InputOuterContainer: StyledComponent<
   DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.form`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
@@ -28,7 +28,7 @@ const InputOuterContainer: StyledComponent<
 
 const Input: StyledComponent<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.input`
   width: 100%;
@@ -45,7 +45,7 @@ const Input: StyledComponent<
 
   font-family: inherit;
   font-size: inherit;
-  
+
   &.disabled-input {
     background: ${prop<any>('theme.palette.background.inputDisabled')};
   }
@@ -55,7 +55,7 @@ const Input: StyledComponent<
 
 const Icon: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.button`
   position: absolute;
@@ -106,7 +106,12 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
 
   return (
     <InputOuterContainer onSubmit={submit}>
-      <Input disabled={disabled} className={disabled? 'disabled-input':undefined} value={value} onChange={({ target: { value } }) => setValue(value)} />
+      <Input
+        disabled={disabled}
+        className={disabled ? 'disabled-input' : undefined}
+        value={value}
+        onChange={({ target: { value } }) => setValue(value)}
+      />
       <Icon>
         <Send size={`calc(${theme.typography.fontSize} * 2)`} />
       </Icon>

@@ -1,4 +1,3 @@
-
 import TockThemeInputStyle from './tockThemeInputStyle';
 import TockThemeCardStyle from './tockThemeCardStyle';
 
@@ -12,4 +11,4 @@ export interface Overrides {
   messageUser?: string;
   quickReply?: string;
   chat?: string;
-};
+}
