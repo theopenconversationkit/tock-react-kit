@@ -36,6 +36,7 @@ const ItemContainer: StyledComponent<
   &::-webkit-scrollbar {
     display: none;
   }
+  scrollbar-width: none;
   ${props => (props.theme && props.theme.styles && props.theme.styles.carouselContainer) || ''}
 
   & > div, & > * {
