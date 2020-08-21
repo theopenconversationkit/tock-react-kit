@@ -1,35 +1,39 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React, { ReactNode } from 'react';
-import { readableColor } from 'polished';
-import TockTheme from '../../TockTheme';
+import { prop } from 'styled-tools';
 
-const MessageContainer: StyledComponent<{}, {}, TockTheme> = styled.div`
+import TockTheme from 'styles/theme';
+
+const MessageContainer: StyledComponent<
+  unknown,
+  unknown,
+  TockTheme
+> = styled.div`
   width: 100%;
-  max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
+  max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   text-align: right;
 `;
 
-const Message: StyledComponent<{}, {}, TockTheme> = styled.div`
+const Message: StyledComponent<unknown, unknown, TockTheme> = styled.div`
   display: inline-block;
-  background: ${props => (props.theme && props.theme.userColor) || 'white'};
-  color: ${props => readableColor((props.theme && props.theme.userColor) || 'white')};
+  background: ${prop<any>('theme.palette.background.user')};
+  color: ${prop<any>('theme.palette.text.user')};
   padding: 0.5em 1.5em;
   margin-right: 1em;
-  border-radius: ${props =>
-    (props.theme &&
-      props.theme.borderRadius &&
-      `${props.theme.borderRadius} ${props.theme.borderRadius} 0 ${props.theme.borderRadius}`) ||
-    '1em'};
+  border-radius: ${prop<any>('theme.sizing.borderRadius')};
+  border-bottom-right-radius: 0;
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.messageUser) || ''}
+  ${prop<any>('theme.overrides.messageUser', '')}
 `;
 
-const MessageUser: ({ children }: { children: ReactNode }) => JSX.Element = ({
-  children,
-}: {
+type Props = {
   children: ReactNode;
-}) => {
+};
+
+const MessageUser: ({ children }: Props) => JSX.Element = ({
+  children,
+}: Props) => {
   return (
     <MessageContainer>
       <Message>{children}</Message>

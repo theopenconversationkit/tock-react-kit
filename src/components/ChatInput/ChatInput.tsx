@@ -9,63 +9,53 @@ import React, {
   useState,
 } from 'react';
 import { Send } from 'react-feather';
-import TockTheme from 'TockTheme';
-import { invert, readableColor } from 'polished';
-
-const pxValueRegexp: RegExp = /^(\d+)px$/;
+import TockTheme from 'styles/theme';
+import { prop } from 'styled-tools';
 
 const InputOuterContainer: StyledComponent<
   DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.form`
-  max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
+  max-width: ${prop<any>('theme.sizing.conversation.width')};
   width: 100%;
   position: relative;
   margin: 0.5em auto;
   display: flex;
-  align-items: flex-end;
-
-  ${props =>
-    props.theme &&
-    props.theme.styles &&
-    props.theme.styles.chatInput &&
-    props.theme.styles.chatInput.container}
+  align-items: center;
+  ${prop<any>('theme.overrides.chatInput.container', '')}
 `;
 
 const Input: StyledComponent<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.input`
   width: 100%;
   height: 2em;
-  border-radius: ${props => (props.theme && props.theme.borderRadius) || '1em'};
+  flex: 1;
+  border-radius: ${prop<any>('theme.sizing.borderRadius')};
   padding: 0.5em 3em 0.5em 1em;
 
-  background: ${props => (props.theme && props.theme.inputColor) || 'white'};
-  color: ${props => readableColor((props.theme && props.theme.inputColor) || 'white')};
+  background: ${prop<any>('theme.palette.background.input')};
+  color: ${prop<any>('theme.palette.text.input')};
 
   border: none;
   outline: none;
 
   font-family: inherit;
   font-size: inherit;
-  
+
   &.disabled-input {
-    background: ${props => (props.theme && props.theme.disabledInputColor) || '#b6b4b4'};
+    background: ${prop<any>('theme.palette.background.inputDisabled')};
   }
 
-  ${props =>
-    props.theme &&
-    props.theme.styles &&
-    props.theme.styles.chatInput &&
-    props.theme.styles.chatInput.input}
+  ${prop<any>('theme.overrides.chatInput.input', '')}
 `;
 
 const Icon: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.button`
   position: absolute;
@@ -73,12 +63,12 @@ const Icon: StyledComponent<
   border: none;
   border-radius: 50%;
   right: 5px;
-
+  flex: 0;
   cursor: pointer;
 
   & svg {
-    stroke: ${props => (props.theme && props.theme.botColor) || 'black'};
-    fill: ${props => (props.theme && props.theme.userColor) || 'white'};
+    stroke: ${prop<any>('theme.palette.background.bot')};
+    fill: ${prop<any>('theme.palette.text.bot')};
   }
 
   & > svg {
@@ -88,16 +78,11 @@ const Icon: StyledComponent<
 
     &:hover,
     &:focus {
-      stroke: ${props => invert((props.theme && props.theme.botColor) || 'black')};
-      fill: ${props => invert((props.theme && props.theme.userColor) || 'white')};
+      stroke: ${prop<any>('theme.palette.text.bot')};
+      fill: ${prop<any>('theme.palette.background.bot')};
     }
   }
-
-  ${props =>
-    props.theme &&
-    props.theme.styles &&
-    props.theme.styles.chatInput &&
-    props.theme.styles.chatInput.icon}
+  ${prop<any>('theme.overrides.chatInput.icon', '')}
 `;
 
 export interface ChatInputProps {
@@ -111,10 +96,6 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
 }: ChatInputProps): JSX.Element => {
   const [value, setValue] = useState('');
   const theme: TockTheme = useTheme();
-  const fontSize: number =
-    theme.fontSize && pxValueRegexp.test(theme.fontSize)
-      ? parseInt(pxValueRegexp.exec(theme.fontSize)![0], 10)
-      : 16;
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (value) {
@@ -125,9 +106,14 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
 
   return (
     <InputOuterContainer onSubmit={submit}>
-      <Input disabled={disabled} className={disabled? 'disabled-input':undefined} value={value} onChange={({ target: { value } }) => setValue(value)} />
+      <Input
+        disabled={disabled}
+        className={disabled ? 'disabled-input' : undefined}
+        value={value}
+        onChange={({ target: { value } }) => setValue(value)}
+      />
       <Icon>
-        <Send size={fontSize * 2} />
+        <Send size={`calc(${theme.typography.fontSize} * 2)`} />
       </Icon>
     </InputOuterContainer>
   );

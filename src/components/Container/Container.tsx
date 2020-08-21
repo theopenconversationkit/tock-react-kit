@@ -1,28 +1,27 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import { DetailedHTMLProps, HTMLAttributes } from 'react';
-import TockTheme from 'TockTheme';
+import { prop } from 'styled-tools';
+
+import TockTheme from 'styles/theme';
 
 const Container: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div`
   width: 100%;
   height: 100%;
-  position: fixed;
   display: flex;
   flex-direction: column;
-
-  font-family: ${props =>
-    (props.theme && props.theme.fontFamily) || 'Arial, Helvetica, sans-serif'};
-  font-size: ${props =>(props.theme && props.theme.fontSize) || '16px'};
+  font-family: ${prop<any>('theme.typography.fontFamily')};
+  font-size: ${prop<any>('theme.typography.fontSize')};
 
   & > *:first-child {
     flex: 1;
     overflow-y: auto;
     ::-webkit-scrollbar {
-      width: 0px;  /* Remove scrollbar space */
-      background: transparent;  /* Optional: just make scrollbar invisible */
+      width: 0px; /* Remove scrollbar space */
+      background: transparent; /* Optional: just make scrollbar invisible */
     }
   }
 
@@ -34,7 +33,7 @@ const Container: StyledComponent<
     font: inherit;
   }
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.chat) || ''}
+  ${prop<any>('theme.overrides.chat', '')};
 `;
 
 export default Container;

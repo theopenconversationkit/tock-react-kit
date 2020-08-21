@@ -1,20 +1,16 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  ReactElement
-} from 'react';
+import React, { DetailedHTMLProps, HTMLAttributes, ReactElement } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
-import TockTheme from '../../TockTheme';
-import { opacify, readableColor } from 'polished';
-import { fontSize } from '../../utils';
+import { opacify } from 'polished';
+import { prop } from 'styled-tools';
 import { useTheme } from 'emotion-theming';
 import useCarousel from './hooks/useCarousel';
 import useArrowVisibility from './hooks/useArrowVisibility';
+import TockTheme from 'styles/theme';
 
 const ButtonContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div`
   margin: 0.4em 0;
@@ -23,7 +19,7 @@ const ButtonContainer: StyledComponent<
 
 const ItemContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div`
   display: flex;
@@ -37,19 +33,19 @@ const ItemContainer: StyledComponent<
     display: none;
   }
   scrollbar-width: none;
-  ${props => (props.theme && props.theme.styles && props.theme.styles.carouselContainer) || ''}
+  ${prop<any>('theme.overrides.carouselContainer', '')}
 
   & > div, & > * {
     margin-left: 1em;
     margin-right: 1em;
 
-    ${props => (props.theme && props.theme.styles && props.theme.styles.carouselItem) || ''}
+    ${prop<any>('theme.overrides.carouselItem', '')}
   }
 `;
 
 const Previous: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.button`
   position: absolute;
@@ -58,7 +54,7 @@ const Previous: StyledComponent<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${props => opacify(-0.8, (props.theme && props.theme.botColor) || 'black')};
+  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
   border: none;
   width: 4em;
   height: 4em;
@@ -68,22 +64,22 @@ const Previous: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${props => (props.theme && props.theme.botColor) || 'black'};
+    stroke: ${prop<any>('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
+      stroke: ${prop<any>('theme.palette.text.bot')};
     }
   }
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.carouselArrow) || ''}
+  ${prop<any>('theme.overrides.carouselArrow', '')};
 `;
 
 const Next: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.button`
   position: absolute;
@@ -92,7 +88,7 @@ const Next: StyledComponent<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${props => opacify(-0.8, (props.theme && props.theme.botColor) || 'black')};
+  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
   border: none;
   width: 4em;
   height: 4em;
@@ -102,45 +98,46 @@ const Next: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${props => (props.theme && props.theme.botColor) || 'black'};
+    stroke: ${prop<any>('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${props => readableColor((props.theme && props.theme.botColor) || 'black')};
+      stroke: ${prop<any>('theme.palette.text.bot')};
     }
   }
 
-  ${props => (props.theme && props.theme.styles && props.theme.styles.carouselArrow) || ''}
+  ${prop<any>('theme.overrides.carouselArrow', '')};
 `;
 
-const Carousel: (props: { children?: ReactElement<any>[] }) => JSX.Element = ({
+const Carousel: (props: { children?: ReactElement[] }) => JSX.Element = ({
   children,
 }: {
-  children?: ReactElement<any>[];
+  children?: ReactElement[];
 }) => {
   const theme: TockTheme = useTheme<TockTheme>();
-  const [
-    ref,
-    previous,
-    next
-  ] = useCarousel<HTMLDivElement>(children?.length)
-  const [leftVisible, rightVisible] = useArrowVisibility(ref.container, ref.items)
+  const [ref, previous, next] = useCarousel<HTMLDivElement>(children?.length);
+  const [leftVisible, rightVisible] = useArrowVisibility(
+    ref.container,
+    ref.items,
+  );
 
   return (
     <ButtonContainer>
       {leftVisible && (
         <Previous onClick={previous}>
-          <ArrowLeftCircle size={fontSize(theme) * 2} />
+          <ArrowLeftCircle size={`calc(${theme.typography.fontSize} * 2)`} />
         </Previous>
       )}
       <ItemContainer ref={ref.container}>
-        {children?.map((child, i) => React.cloneElement(child, { ref: ref.items[i] }, undefined))}
+        {children?.map((child, i) =>
+          React.cloneElement(child, { ref: ref.items[i] }, undefined),
+        )}
       </ItemContainer>
       {rightVisible && (
         <Next onClick={next}>
-          <ArrowRightCircle size={fontSize(theme) * 2} />
+          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} />
         </Next>
       )}
     </ButtonContainer>

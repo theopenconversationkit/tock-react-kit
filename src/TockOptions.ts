@@ -1,5 +1,5 @@
 export interface TockOptions {
-  timeoutBetweenMessage?: number,
+  timeoutBetweenMessage?: number;
   widgets?: any;
 }
 

@@ -1,4 +1,4 @@
-import {Dispatch, useCallback} from 'react';
+import { Dispatch, useCallback } from 'react';
 import {
   Button,
   Card,
@@ -12,21 +12,25 @@ import {
   useTockDispatch,
   useTockState,
   Widget,
-  WidgetData
+  WidgetData,
 } from './TockContext';
-import {Sse} from "./Sse";
+import { Sse } from './Sse';
 
 export interface UseTock {
   messages: (Message | Card | Carousel | Widget)[];
   quickReplies: QuickReply[];
   loading: boolean;
-  addMessage: (message: string, author: 'bot' | 'user', buttons?: Button[]) => void;
+  addMessage: (
+    message: string,
+    author: 'bot' | 'user',
+    buttons?: Button[],
+  ) => void;
   sendMessage: (message: string) => Promise<void>;
   addCard: (
     title: string,
     imageUrl?: string,
     subTitle?: string,
-    buttons?: { label: string; url?: string }[]
+    buttons?: { label: string; url?: string }[],
   ) => void;
   addCarousel: (cards: Card[]) => void;
   addWidget: (widgetData: WidgetData) => void;
@@ -38,14 +42,13 @@ export interface UseTock {
   sseInitializing: boolean;
 }
 
-
 function mapButton(button: any): Button {
-  if(button.type === "web_url") {
+  if (button.type === 'web_url') {
     return new UrlButton(button.title, button.url);
-  } else if(button.type === "postback") {
-    return new PostBackButton(button.title,button.payload);
-  } else if(button.type === "quick_reply") {
-    return new QuickReply(button.title,button.payload)
+  } else if (button.type === 'postback') {
+    return new PostBackButton(button.title, button.payload);
+  } else if (button.type === 'quick_reply') {
+    return new QuickReply(button.title, button.payload);
   } else {
     return new UrlButton(button.title, button.url);
   }
@@ -62,7 +65,13 @@ function mapCard(card: any): Card {
 }
 
 const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
-  const { messages, quickReplies, userId, loading, sseInitializing }: TockState = useTockState();
+  const {
+    messages,
+    quickReplies,
+    userId,
+    loading,
+    sseInitializing,
+  }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
 
   const startLoading: () => void = () => {
@@ -79,13 +88,17 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     });
   };
 
-  const handleBotResponse: (botResponse: any) => void = ({ responses }: any) => {
+  const handleBotResponse: (botResponse: any) => void = ({
+    responses,
+  }: any) => {
     if (Array.isArray(responses) && responses.length > 0) {
       const lastMessage: any = responses[responses.length - 1];
       if (lastMessage.buttons && lastMessage.buttons.length > 0) {
         dispatch({
           type: 'SET_QUICKREPLIES',
-          quickReplies: (lastMessage.buttons || []).filter((button: any) => button.type === "quick_reply").map(mapButton)
+          quickReplies: (lastMessage.buttons || [])
+            .filter((button: any) => button.type === 'quick_reply')
+            .map(mapButton),
         });
       } else {
         dispatch({
@@ -96,17 +109,19 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       dispatch({
         type: 'ADD_MESSAGE',
         messages: responses.map(({ text, card, carousel, widget }: any) => {
-          if(widget) {
-            return  {
+          if (widget) {
+            return {
               widgetData: widget,
-              type: 'widget'
-            }
+              type: 'widget',
+            };
           } else if (text) {
             return {
               author: 'bot',
               message: text,
               type: 'message',
-              buttons: (lastMessage.buttons || []).filter((button: any) => button.type !== "quick_reply").map(mapButton)
+              buttons: (lastMessage.buttons || [])
+                .filter((button: any) => button.type !== 'quick_reply')
+                .map(mapButton),
             } as Message;
           } else if (card) {
             return mapCard(card);
@@ -121,34 +136,45 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     }
   };
 
-  const handleBotResponseIfSseDisabled: (botResponse: any) => void = (botResponse: any) => {
+  const handleBotResponseIfSseDisabled: (botResponse: any) => void = (
+    botResponse: any,
+  ) => {
     if (!Sse.isEnable()) {
-      handleBotResponse(botResponse)
+      handleBotResponse(botResponse);
     }
   };
 
-  const addMessage: (message: string, author: 'bot' | 'user', buttons?: Button[]) => void = useCallback(
+  const addMessage: (
+    message: string,
+    author: 'bot' | 'user',
+    buttons?: Button[],
+  ) => void = useCallback(
     (message: string, author: 'bot' | 'user', buttons?: Button[]) =>
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: [{author, message, type: 'message', buttons: buttons}],
+        messages: [{ author, message, type: 'message', buttons: buttons }],
       }),
-    []
+    [],
   );
 
-  const sendMessage: (message: string, payload?: string) => Promise<void> = useCallback((message: string, payload?: string) => {
+  const sendMessage: (
+    message: string,
+    payload?: string,
+  ) => Promise<void> = useCallback((message: string, payload?: string) => {
     dispatch({
       type: 'ADD_MESSAGE',
       messages: [{ author: 'user', message, type: 'message' }],
     });
     startLoading();
-    let body = payload?{
-      payload: payload,
-      userId: userId,
-    }:{
-      query: message,
-      userId: userId,
-    };
+    const body = payload
+      ? {
+          payload: payload,
+          userId: userId,
+        }
+      : {
+          query: message,
+          userId: userId,
+        };
     return fetch(tockEndPoint, {
       body: JSON.stringify(body),
       method: 'POST',
@@ -156,12 +182,14 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         'Content-Type': 'application/json',
       },
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(handleBotResponseIfSseDisabled)
       .finally(stopLoading);
   }, []);
 
-  const sendReferralParameter: (referralParameter: string) => void = useCallback((referralParameter: string) => {
+  const sendReferralParameter: (
+    referralParameter: string,
+  ) => void = useCallback((referralParameter: string) => {
     startLoading();
     fetch(tockEndPoint, {
       body: JSON.stringify({
@@ -173,14 +201,14 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         'Content-Type': 'application/json',
       },
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(handleBotResponseIfSseDisabled)
       .finally(stopLoading);
   }, []);
 
   const sendQuickReply: (label: string, payload?: string) => Promise<void> = (
     label: string,
-    payload?: string
+    payload?: string,
   ) => {
     if (payload) {
       setQuickReplies([]);
@@ -196,7 +224,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
           'Content-Type': 'application/json',
         },
       })
-        .then(res => res.json())
+        .then((res) => res.json())
         .then(handleBotResponseIfSseDisabled)
         .finally(stopLoading);
     } else {
@@ -217,14 +245,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     title: string,
     imageUrl?: string,
     subTitle?: string,
-    buttons?: Button[]
+    buttons?: Button[],
   ) => void = useCallback(
-    (
-      title: string,
-      imageUrl?: string,
-      subTitle?: string,
-      buttons?: Button[]
-    ) =>
+    (title: string, imageUrl?: string, subTitle?: string, buttons?: Button[]) =>
       dispatch({
         type: 'ADD_MESSAGE',
         messages: [
@@ -237,7 +260,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
           },
         ],
       }),
-    []
+    [],
   );
 
   const addCarousel: (cards: Card[]) => void = useCallback(
@@ -251,7 +274,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
           },
         ],
       }),
-    []
+    [],
   );
 
   const addWidget: (widgetData: WidgetData) => void = useCallback(
@@ -261,13 +284,12 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         messages: [
           {
             type: 'widget',
-            widgetData: widgetData
-          }
+            widgetData: widgetData,
+          },
         ],
       }),
-    []
+    [],
   );
-
 
   const setQuickReplies: (quickReplies: QuickReply[]) => void = useCallback(
     (quickReplies: QuickReply[]) =>
@@ -275,18 +297,24 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         type: 'SET_QUICKREPLIES',
         quickReplies,
       }),
-    []
+    [],
   );
 
   const onSseStateChange: (state: number) => void = useCallback(
-      (state: number) =>
-          dispatch({
-            type: "SET_SSE_INITIALIZING",
-            sseInitializing: state === EventSource.CONNECTING
-          }), []
+    (state: number) =>
+      dispatch({
+        type: 'SET_SSE_INITIALIZING',
+        sseInitializing: state === EventSource.CONNECTING,
+      }),
+    [],
   );
 
-  const sseInitPromise = Sse.init(tockEndPoint, userId, handleBotResponse, onSseStateChange);
+  const sseInitPromise = Sse.init(
+    tockEndPoint,
+    userId,
+    handleBotResponse,
+    onSseStateChange,
+  );
 
   return {
     messages,
@@ -302,7 +330,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     sendAction,
     sendReferralParameter,
     sseInitPromise,
-    sseInitializing
+    sseInitializing,
   };
 };
 

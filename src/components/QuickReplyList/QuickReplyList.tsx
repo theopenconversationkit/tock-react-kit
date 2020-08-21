@@ -1,18 +1,20 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React, { ReactNode, DetailedHTMLProps, HTMLAttributes } from 'react';
-import TockTheme from 'TockTheme';
+import { prop } from 'styled-tools';
+
+import TockTheme from 'styles/theme';
 
 const QuickReplyListContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div`
-  max-width: ${props => (props.theme && props.theme.conversationWidth) || '720px'};
+  max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   overflow-x: unset;
   white-space: nowrap;
   text-align: left;
-  
+
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
@@ -30,7 +32,7 @@ const QuickReplyListContainer: StyledComponent<
 
 const QuickReplyListOuterContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  {},
+  unknown,
   TockTheme
 > = styled.div``;
 
