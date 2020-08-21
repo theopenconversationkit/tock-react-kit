@@ -1,7 +1,7 @@
 import _TockOptions from './TockOptions';
 import _TockTheme from './styles/theme';
 
-export { ThemeProvider } from 'emotion-theming';
+export { default as ThemeProvider } from 'styles/tockThemeProvider';
 export { default as Card, CardContainer, CardOuter } from './components/Card';
 export { default as Carousel } from './components/Carousel';
 export { default as Chat } from './components/Chat';

@@ -6,6 +6,7 @@ import TockContext from './TockContext';
 import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
+import { createTheme } from './index';
 
 export const renderChat: (
   container: HTMLElement,
@@ -21,7 +22,7 @@ export const renderChat: (
   options: TockOptions = {},
 ): void => {
   ReactDOM.render(
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={createTheme(theme)}>
       <TockContext>
         <Chat
           endPoint={endPoint}
