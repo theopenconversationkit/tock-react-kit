@@ -16,6 +16,7 @@ const ConversationContainer: StyledComponent<
 > = styled.div`
   overflow-y: scroll;
   scroll-behavior: smooth;
+  scrollbar-width: none;
 `;
 
 const Conversation: (
