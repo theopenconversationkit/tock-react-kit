@@ -1,5 +1,4 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import { useTheme } from 'emotion-theming';
 import React, {
   DetailedHTMLProps,
   FormEvent,
@@ -62,10 +61,11 @@ const Icon: StyledComponent<
   background: none;
   border: none;
   border-radius: 50%;
-  right: 5px;
+  right: 0;
   flex: 0;
   cursor: pointer;
-
+  height: 100%;
+  width: calc(${prop<any>('theme.typography.fontSize')} * 3);
   & svg {
     stroke: ${prop<any>('theme.palette.background.bot')};
     fill: ${prop<any>('theme.palette.text.bot')};
@@ -95,7 +95,6 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
   onSubmit,
 }: ChatInputProps): JSX.Element => {
   const [value, setValue] = useState('');
-  const theme: TockTheme = useTheme();
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (value) {
@@ -113,7 +112,7 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
         onChange={({ target: { value } }) => setValue(value)}
       />
       <Icon>
-        <Send size={`calc(${theme.typography.fontSize} * 2)`} />
+        <Send size="100%" />
       </Icon>
     </InputOuterContainer>
   );
