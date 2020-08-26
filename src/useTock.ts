@@ -35,7 +35,7 @@ export interface UseTock {
   addCarousel: (cards: Card[]) => void;
   addWidget: (widgetData: WidgetData) => void;
   setQuickReplies: (quickReplies: QuickReply[]) => void;
-  sendQuickReply: (label: string, payload?: string) => Promise<void>;
+  sendQuickReply: (button: Button) => Promise<void>;
   sendAction: (button: Button) => Promise<void>;
   sendReferralParameter: (referralParameter: string) => void;
   sseInitPromise: Promise<void>;
@@ -44,13 +44,18 @@ export interface UseTock {
 
 function mapButton(button: any): Button {
   if (button.type === 'web_url') {
-    return new UrlButton(button.title, button.url);
+    return new UrlButton(button.title, button.url, button.imageUrl);
   } else if (button.type === 'postback') {
-    return new PostBackButton(button.title, button.payload);
+    return new PostBackButton(button.title, button.payload, button.imageUrl);
   } else if (button.type === 'quick_reply') {
-    return new QuickReply(button.title, button.payload);
+    return new QuickReply(
+      button.title,
+      button.payload,
+      button.nlpText,
+      button.imageUrl,
+    );
   } else {
-    return new UrlButton(button.title, button.url);
+    return new UrlButton(button.title, button.url, button.imageUrl);
   }
 }
 
@@ -206,31 +211,40 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
       .finally(stopLoading);
   }, []);
 
-  const sendQuickReply: (label: string, payload?: string) => Promise<void> = (
-    label: string,
-    payload?: string,
+  const sendQuickReply: (button: Button) => Promise<void> = (
+    button: Button,
   ) => {
-    if (payload) {
+    if (button instanceof UrlButton) {
+      window.open(button.url, '_blank');
+      return Promise.resolve();
+    } else if (button.payload) {
       setQuickReplies([]);
-      addMessage(label, 'user');
+      addMessage(button.label, 'user');
       startLoading();
-      return fetch(tockEndPoint, {
-        body: JSON.stringify({
-          payload,
-          userId: userId,
-        }),
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => res.json())
-        .then(handleBotResponseIfSseDisabled)
-        .finally(stopLoading);
+      return sendPayload(button.payload);
     } else {
-      return sendMessage(label);
+      if (button instanceof QuickReply && button.nlpText) {
+        return sendMessage(button.nlpText);
+      }
+      return sendMessage(button.label);
     }
   };
+
+  function sendPayload(payload?: string) {
+    return fetch(tockEndPoint, {
+      body: JSON.stringify({
+        payload,
+        userId: userId,
+      }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then(handleBotResponseIfSseDisabled)
+      .finally(stopLoading);
+  }
 
   const sendAction: (button: Button) => Promise<void> = (button: Button) => {
     if (button instanceof UrlButton) {

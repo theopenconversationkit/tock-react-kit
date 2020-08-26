@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
-import { Card, Carousel, Message, QuickReply, Widget } from '../../TockContext';
+import {Card, Carousel, Message, QuickReply, Widget} from '../../TockContext';
 import useTock, { UseTock } from '../../useTock';
 import CardComponent from '../Card';
 import CarouselComponent from '../Carousel';
@@ -9,7 +8,7 @@ import Container from '../Container';
 import Conversation from '../Conversation';
 import MessageBot from '../MessageBot';
 import MessageUser from '../MessageUser';
-import QR from '../QuickReply';
+import QR, { QRImage } from '../QuickReply';
 import QuickReplyList from '../QuickReplyList';
 import Loader from '../Loader';
 import DefaultWidget from '../widgets/DefaultWidget';
@@ -90,10 +89,8 @@ const Chat: (props: ChatProps) => JSX.Element = ({
       {displayableMessageCount === messages.length && (
         <QuickReplyList>
           {quickReplies.map((qr: QuickReply, i: number) => (
-            <QR
-              key={i}
-              onClick={sendQuickReply.bind(null, qr.label, qr.payload)}
-            >
+            <QR key={i} onClick={sendQuickReply.bind(null, qr)}>
+              {qr.imageUrl && <QRImage src={qr.imageUrl} />}
               {qr.label}
             </QR>
           ))}

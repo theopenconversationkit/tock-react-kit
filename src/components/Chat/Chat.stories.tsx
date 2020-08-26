@@ -119,18 +119,39 @@ const useMessages = () => {
     addMessage('Message with url button', 'bot', [
       new UrlButton('Url Website', 'https://sncf.com'),
     ]);
+    addMessage('Message with postback button with image url', 'bot', [
+      new PostBackButton(
+        'Post back Website',
+        '',
+        'https://www.sncf.com/themes/sncfcom/img/favicon-32x32.png',
+      ),
+    ]);
     addMessage('Message with postback button', 'bot', [
       new PostBackButton('Post back Website', ''),
+    ]);
+    addMessage('Message with postback button with image url', 'bot', [
+      new PostBackButton(
+        'Post back Website',
+        '',
+        'https://www.sncf.com/themes/sncfcom/img/favicon-32x32.png',
+      ),
     ]);
 
     setQuickReplies([
       {
         payload: '',
-        label: 'Check out Tock',
+        label: 'QR with payload',
       },
       {
-        payload: '',
-        label: "Tock's GitHub",
+        label: 'Nlp QR',
+      },
+      {
+        label: 'QR with NLP',
+        nlpText: 'nlp text',
+      },
+      {
+        label: 'QR with image Url',
+        imageUrl: 'https://www.sncf.com/themes/sncfcom/img/favicon-32x32.png',
       },
     ]);
   }, [addMessage, setQuickReplies]);
