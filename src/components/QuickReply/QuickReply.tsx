@@ -1,5 +1,9 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import React, {
+  DetailedHTMLProps,
+  HTMLAttributes,
+  ImgHTMLAttributes,
+} from 'react';
 import { prop } from 'styled-tools';
 
 import TockTheme from 'styles/theme';
@@ -35,6 +39,19 @@ type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >;
+
+export const QRImage: StyledComponent<
+  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+  unknown,
+  TockTheme
+> = styled.img`
+  margin-right: inherit;
+  max-width: 15px;
+  max-height: 15px;
+  vertical-align: middle;
+
+  ${prop<any>('theme.overrides.quickReplyImage', '')};
+`;
 
 const QuickReply: (props: Props) => JSX.Element = (props: Props) => (
   <QuickReplyButton {...props} />

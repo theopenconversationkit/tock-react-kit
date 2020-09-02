@@ -7,7 +7,7 @@ import { prop } from 'styled-tools';
 
 import TockTheme from 'styles/theme';
 import { Message as messageType, Button } from '../../TockContext';
-import QR from '../QuickReply';
+import QR, { QRImage } from '../QuickReply';
 import QuickReplyList from '../QuickReplyList';
 
 export const MessageContainer: StyledComponent<
@@ -56,6 +56,7 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
         <QuickReplyList>
           {message.buttons.map((button: Button, i: number) => (
             <QR key={i} onClick={sendAction.bind(null, button)}>
+              {button.imageUrl ? <QRImage src={button.imageUrl} /> : null}
               {button.label}
             </QR>
           ))}

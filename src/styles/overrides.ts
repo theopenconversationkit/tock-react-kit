@@ -10,5 +10,6 @@ export interface Overrides {
   messageBot?: string;
   messageUser?: string;
   quickReply?: string;
+  quickReplyImage?: string;
   chat?: string;
 }
