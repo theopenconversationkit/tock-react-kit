@@ -5,7 +5,13 @@ import typescript from 'rollup-plugin-typescript';
 
 export default {
   input: 'src/index.ts',
-  external: ['react', 'react-dom'],
+  external: [
+    'react',
+    'react-dom',
+    '@emotion/core',
+    '@emotion/styled',
+    'emotion-theming'
+  ],
   output: [
     {
       file: 'build/tock-react-kit.umd.js',
@@ -14,6 +20,9 @@ export default {
       globals: {
         react: 'React',
         'react-dom': 'ReactDOM',
+        '@emotion/styled': 'emotionStyled',
+        '@emotion/core': 'emotionCore',
+        'emotion-theming': 'emotionTheming',
       },
     },
     {
