@@ -52,10 +52,7 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
         <div dangerouslySetInnerHTML={{ __html: getHtmlContent() }} />
       </Message>
       {Array.isArray(message.buttons) && message.buttons.length > 0 && (
-        <QuickReplyList
-          items={message.buttons}
-          onItemClick={onAction}
-        />
+        <QuickReplyList items={message.buttons} onItemClick={onAction} />
       )}
     </MessageContainer>
   );

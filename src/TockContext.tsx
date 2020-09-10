@@ -83,11 +83,11 @@ export enum MessageType {
   message = 'message',
   card = 'card',
   carousel = 'carousel',
-  widget = 'widget'
+  widget = 'widget',
 }
 
 export interface Message {
-  type: MessageType
+  type: MessageType;
 }
 
 export interface TextMessage extends Message {
@@ -97,7 +97,7 @@ export interface TextMessage extends Message {
   buttons?: Button[];
 }
 
-export interface Card extends Message  {
+export interface Card extends Message {
   imageUrl?: string;
   title: string;
   subTitle?: string;
@@ -105,12 +105,12 @@ export interface Card extends Message  {
   type: MessageType.card;
 }
 
-export interface Carousel extends Message  {
+export interface Carousel extends Message {
   cards: Card[];
   type: MessageType.carousel;
 }
 
-export interface Widget extends Message  {
+export interface Widget extends Message {
   widgetData: WidgetData;
   type: MessageType.widget;
 }

@@ -40,27 +40,25 @@ const QuickReplyListOuterContainer: StyledComponent<
 > = styled.div``;
 
 type Props = {
-  items: Button[],
-  onItemClick: (button: Button) => void
-}
+  items: Button[];
+  onItemClick: (button: Button) => void;
+};
 
-const QuickReplyList = ({
-  items,
-  onItemClick
-} : Props) => {
-  const renderItem = useCallback((item: Button, index: number) => (
-    <QuickReply
-      key={`${item.label}-${index}`}
-      onClick={onItemClick.bind(null, item)}
-      {...item}
-    />
-  ), [onItemClick])
+const QuickReplyList = ({ items, onItemClick }: Props) => {
+  const renderItem = useCallback(
+    (item: Button, index: number) => (
+      <QuickReply
+        key={`${item.label}-${index}`}
+        onClick={onItemClick.bind(null, item)}
+        {...item}
+      />
+    ),
+    [onItemClick],
+  );
 
   return (
     <QuickReplyListOuterContainer>
-      <QuickReplyListContainer>
-        {items.map(renderItem)}
-      </QuickReplyListContainer>
+      <QuickReplyListContainer>{items.map(renderItem)}</QuickReplyListContainer>
     </QuickReplyListOuterContainer>
   );
 };

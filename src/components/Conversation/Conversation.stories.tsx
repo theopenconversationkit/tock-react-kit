@@ -3,20 +3,14 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 
-import useTock, { UseTock} from '../../useTock';
+import useTock, { UseTock } from '../../useTock';
 import { MessageType, PostBackButton, UrlButton } from '../../TockContext';
 import Product from '../widgets/ProductWidget/Product';
 import Conversation from './Conversation';
 
 export const useExampleMessages = () => {
   const tock: UseTock = useTock('');
-  const {
-    addMessage,
-    addCard,
-    addCarousel,
-    addWidget,
-    setQuickReplies
-  } = tock
+  const { addMessage, addCard, addCarousel, addWidget, setQuickReplies } = tock;
   useEffect(() => {
     const product: Product = {
       name: 'Product name',
@@ -155,29 +149,27 @@ export const useExampleMessages = () => {
       },
     ]);
   }, []);
-}
-
-const useRenderProps = () => {
-  useExampleMessages()
-  return useTock('')
 };
 
-const Wrapper = ({ children }: { children: (tock: UseTock) => JSX.Element }) : JSX.Element => {
-  const tock = useRenderProps()
-  return children(tock)
+const useRenderProps = () => {
+  useExampleMessages();
+  return useTock('');
+};
+
+const Wrapper = ({
+  children,
+}: {
+  children: (tock: UseTock) => JSX.Element;
+}): JSX.Element => {
+  const tock = useRenderProps();
+  return children(tock);
 };
 
 storiesOf('Conversation', module)
   .addDecorator(withKnobs())
   .add('With messages', () => (
     <Wrapper>
-      {({
-        messages,
-        loading,
-        quickReplies,
-        sendAction,
-        sendQuickReply
-      }) => (
+      {({ messages, loading, quickReplies, sendAction, sendQuickReply }) => (
         <Conversation
           messages={messages}
           messageDelay={500}

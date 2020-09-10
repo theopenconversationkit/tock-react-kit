@@ -1,7 +1,4 @@
-import React, {
-  DetailedHTMLProps,
-  HTMLAttributes
-} from 'react';
+import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
 import styled from '@emotion/styled';
 
 import DefaultWidget from '../widgets/DefaultWidget';
@@ -22,13 +19,13 @@ import type {
   MessageType,
   TextMessage,
   Widget,
-  QuickReply as CQuickReply
+  QuickReply as CQuickReply,
 } from 'TockContext';
 
 const ConversationOuterContainer = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 const ConversationInnerContainer = styled.div`
   flex-grow: 1;
@@ -39,85 +36,70 @@ const ConversationInnerContainer = styled.div`
 `;
 
 interface RenderOptions {
-  widgets?: any,
-  onAction: (button: Button) => void
+  widgets?: any;
+  onAction: (button: Button) => void;
 }
 
 const renderWidget = (message: Widget, options: RenderOptions) => {
   const Widget = options?.widgets[message.widgetData.type] ?? DefaultWidget;
-  return (
-    <Widget
-      {...message.widgetData.data}
-    />
-  );
-}
+  return <Widget {...message.widgetData.data} />;
+};
 
 const renderMessage = (message: TextMessage, options: RenderOptions) => {
   if (message.author === 'bot') {
-    return (
-      <MessageBot
-        message={message}
-        onAction={options.onAction}
-      />
-    )
+    return <MessageBot message={message} onAction={options.onAction} />;
   }
-  return (
-    <MessageUser>
-      {message.message}
-    </MessageUser>
-  );
-}
+  return <MessageUser>{message.message}</MessageUser>;
+};
 
 const renderCard = (card: ICard, options: RenderOptions) => (
-  <Card
-    onAction={options.onAction}
-    {...card}
-  />
-)
+  <Card onAction={options.onAction} {...card} />
+);
 
 const renderCarousel = (carousel: ICarousel, options: RenderOptions) => (
   <Carousel>
     {carousel.cards.map((card: ICard, index: number) => (
-      <Card
-        key={index}
-        onAction={options.onAction}
-        {...card}
-      />
+      <Card key={index} onAction={options.onAction} {...card} />
     ))}
   </Carousel>
-)
+);
 
 interface Renderer {
-  (message: Message, options: RenderOptions): JSX.Element
+  (message: Message, options: RenderOptions): JSX.Element;
 }
 
-const MESSAGE_RENDERER : {
-  [key in MessageType]: Renderer
+const MESSAGE_RENDERER: {
+  [key in MessageType]: Renderer;
 } = {
   widget: renderWidget,
   message: renderMessage,
   card: renderCard,
-  carousel: renderCarousel
-}
+  carousel: renderCarousel,
+};
 
-const makeRenderMessage = (options: RenderOptions) => (message: Message | ICard | ICarousel | Widget, index: number) => {
-  const render: Renderer = MESSAGE_RENDERER[message.type]
-  if (!render) return null
-  return React.cloneElement(
-    render(message, options),
-    { key: `${message.type}-${index}` }
-  )  
-}
+const makeRenderMessage = (options: RenderOptions) => (
+  message: Message | ICard | ICarousel | Widget,
+  index: number,
+) => {
+  const render: Renderer = MESSAGE_RENDERER[message.type];
+  if (!render) return null;
+  return React.cloneElement(render(message, options), {
+    key: `${message.type}-${index}`,
+  });
+};
 
-type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
-  messages: Message[]
-  messageDelay: number
-  widgets?: any
-  loading?: boolean
-  quickReplies: CQuickReply[]
-  onAction: (button: Button) => void
-  onQuickReplyClick: (button: Button) => void
-}
+type Props = DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> & {
+  messages: Message[];
+  messageDelay: number;
+  widgets?: any;
+  loading?: boolean;
+  quickReplies: CQuickReply[];
+  onAction: (button: Button) => void;
+  onQuickReplyClick: (button: Button) => void;
+};
 
 const Conversation = ({
   messages,
@@ -128,28 +110,27 @@ const Conversation = ({
   onQuickReplyClick,
   quickReplies,
   ...rest
-} : Props) => {
-  const displayableMessageCount = useIntervalCounter(0, messages.length, messageDelay)
-  const displayableMessages = messages.slice(0, displayableMessageCount)
-  const scrollContainer = useScrollBehaviour([displayableMessages])
+}: Props) => {
+  const displayableMessageCount = useIntervalCounter(
+    0,
+    messages.length,
+    messageDelay,
+  );
+  const displayableMessages = messages.slice(0, displayableMessageCount);
+  const scrollContainer = useScrollBehaviour([displayableMessages]);
   const renderMessage = makeRenderMessage({
     widgets,
-    onAction
-  })
+    onAction,
+  });
 
   return (
     <ConversationOuterContainer {...rest}>
       <ConversationInnerContainer ref={scrollContainer}>
         {displayableMessages.map(renderMessage)}
-        {loading && (
-          <Loader />
-        )}
+        {loading && <Loader />}
       </ConversationInnerContainer>
       {displayableMessageCount === messages.length && (
-        <QuickReplyList
-          items={quickReplies}
-          onItemClick={onQuickReplyClick}
-        />
+        <QuickReplyList items={quickReplies} onItemClick={onQuickReplyClick} />
       )}
     </ConversationOuterContainer>
   );

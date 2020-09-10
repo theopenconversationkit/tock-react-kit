@@ -1,8 +1,5 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import {
-  DetailedHTMLProps,
-  ImgHTMLAttributes,
-} from 'react';
+import { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
 import { prop } from 'styled-tools';
 
 import TockTheme from 'styles/theme';

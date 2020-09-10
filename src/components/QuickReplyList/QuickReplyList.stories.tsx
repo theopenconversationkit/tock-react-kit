@@ -17,7 +17,7 @@ storiesOf('Quick reply', module)
         { label: 'Quick Reply 2' },
         { label: 'Quick Reply 3' },
         { label: 'Quick Reply 4' },
-        { label: 'Quick Reply 5' }
+        { label: 'Quick Reply 5' },
       ]}
     />
   ));

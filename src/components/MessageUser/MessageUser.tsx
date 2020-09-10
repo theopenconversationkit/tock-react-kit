@@ -31,7 +31,7 @@ type Props = {
   children: ReactNode;
 };
 
-const MessageUser = ({ children } : Props) => (
+const MessageUser = ({ children }: Props) => (
   <MessageContainer>
     <Message>{children}</Message>
   </MessageContainer>

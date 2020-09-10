@@ -158,7 +158,14 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     (message: string, author: 'bot' | 'user', buttons?: Button[]) =>
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: [{ author, message, type: MessageType.message, buttons: buttons } as TextMessage],
+        messages: [
+          {
+            author,
+            message,
+            type: MessageType.message,
+            buttons: buttons,
+          } as TextMessage,
+        ],
       }),
     [],
   );
@@ -169,7 +176,9 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
   ) => Promise<void> = useCallback((message: string, payload?: string) => {
     dispatch({
       type: 'ADD_MESSAGE',
-      messages: [{ author: 'user', message, type: MessageType.message } as TextMessage],
+      messages: [
+        { author: 'user', message, type: MessageType.message } as TextMessage,
+      ],
     });
     startLoading();
     const body = payload
