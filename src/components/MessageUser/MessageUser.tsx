@@ -31,14 +31,10 @@ type Props = {
   children: ReactNode;
 };
 
-const MessageUser: ({ children }: Props) => JSX.Element = ({
-  children,
-}: Props) => {
-  return (
-    <MessageContainer>
-      <Message>{children}</Message>
-    </MessageContainer>
-  );
-};
+const MessageUser = ({ children } : Props) => (
+  <MessageContainer>
+    <Message>{children}</Message>
+  </MessageContainer>
+);
 
 export default MessageUser;

@@ -1,4 +1,4 @@
 import QuickReply from './QuickReply';
 
-export * from './QuickReply';
+export { default as QuickReplyImage } from './QuickReplyImage';
 export default QuickReply;

@@ -11,7 +11,7 @@ const CARD_COUNT = 30;
 const cards: CardProps[] = Array.from(Array(CARD_COUNT)).map((_, i) => ({
   title: `Card #${i}`,
   imageUrl: 'https://avatars0.githubusercontent.com/u/48585267?s=200&v=4',
-  sendAction: onButtonClick,
+  onAction: onButtonClick,
 }));
 
 storiesOf('Carousel', module).add('Default', () => (

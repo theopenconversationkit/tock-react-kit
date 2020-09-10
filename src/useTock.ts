@@ -4,20 +4,21 @@ import {
   Card,
   Carousel,
   Message,
+  MessageType,
   PostBackButton,
   QuickReply,
+  TextMessage,
   TockAction,
   TockState,
   UrlButton,
   useTockDispatch,
   useTockState,
-  Widget,
   WidgetData,
 } from './TockContext';
 import { Sse } from './Sse';
 
 export interface UseTock {
-  messages: (Message | Card | Carousel | Widget)[];
+  messages: Message[];
   quickReplies: QuickReply[];
   loading: boolean;
   addMessage: (
@@ -65,7 +66,7 @@ function mapCard(card: any): Card {
     subTitle: card.subTitle,
     imageUrl: card.file ? card.file.url : null,
     buttons: card.buttons.map((button: any) => mapButton(button)),
-    type: 'card',
+    type: MessageType.card,
   } as Card;
 }
 
@@ -117,13 +118,13 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
           if (widget) {
             return {
               widgetData: widget,
-              type: 'widget',
+              type: MessageType.widget,
             };
           } else if (text) {
             return {
               author: 'bot',
               message: text,
-              type: 'message',
+              type: MessageType.message,
               buttons: (lastMessage.buttons || [])
                 .filter((button: any) => button.type !== 'quick_reply')
                 .map(mapButton),
@@ -133,7 +134,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
           } else {
             return {
               cards: carousel.cards.map(mapCard),
-              type: 'carousel',
+              type: MessageType.carousel,
             } as Carousel;
           }
         }),
@@ -157,7 +158,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     (message: string, author: 'bot' | 'user', buttons?: Button[]) =>
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: [{ author, message, type: 'message', buttons: buttons }],
+        messages: [{ author, message, type: MessageType.message, buttons: buttons } as TextMessage],
       }),
     [],
   );
@@ -168,7 +169,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
   ) => Promise<void> = useCallback((message: string, payload?: string) => {
     dispatch({
       type: 'ADD_MESSAGE',
-      messages: [{ author: 'user', message, type: 'message' }],
+      messages: [{ author: 'user', message, type: MessageType.message } as TextMessage],
     });
     startLoading();
     const body = payload
@@ -270,7 +271,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
             imageUrl,
             subTitle,
             buttons,
-            type: 'card',
+            type: MessageType.card,
           },
         ],
       }),
@@ -283,7 +284,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         type: 'ADD_MESSAGE',
         messages: [
           {
-            type: 'carousel',
+            type: MessageType.carousel,
             cards,
           },
         ],
@@ -297,7 +298,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
         type: 'ADD_MESSAGE',
         messages: [
           {
-            type: 'widget',
+            type: MessageType.widget,
             widgetData: widgetData,
           },
         ],

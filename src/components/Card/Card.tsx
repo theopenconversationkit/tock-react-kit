@@ -117,11 +117,11 @@ export interface CardProps {
   subTitle?: string;
   imageUrl?: string;
   buttons?: Button[];
-  sendAction: (button: Button) => void;
+  onAction: (button: Button) => void;
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(function cardRender(
-  { title, subTitle, imageUrl, buttons, sendAction }: CardProps,
+  { title, subTitle, imageUrl, buttons, onAction }: CardProps,
   ref,
 ) {
   return (
@@ -139,8 +139,8 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(function cardRender(
             {buttons.map((button, index) => (
               <li key={index}>
                 <Button
-                  onClick={sendAction.bind(null, button)}
-                  onKeyPress={sendAction.bind(null, button)}
+                  onClick={onAction.bind(null, button)}
+                  onKeyPress={onAction.bind(null, button)}
                 >
                   {button.label}
                 </Button>
