@@ -33,6 +33,9 @@ const ConversationInnerContainer = styled.div`
   overflow-y: scroll;
   scroll-behavior: smooth;
   scrollbar-width: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 interface RenderOptions {
