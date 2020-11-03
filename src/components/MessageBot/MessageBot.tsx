@@ -5,9 +5,8 @@ import React from 'react';
 import linkifyHtml from 'linkifyjs/html';
 import { prop } from 'styled-tools';
 
-import TockTheme from 'styles/theme';
-import { Message as messageType, Button } from '../../TockContext';
-import QR, { QRImage } from '../QuickReply';
+import TockTheme from '../../styles/theme';
+import { TextMessage, Button } from '../../TockContext';
 import QuickReplyList from '../QuickReplyList';
 
 export const MessageContainer: StyledComponent<
@@ -34,13 +33,13 @@ export const Message: StyledComponent<unknown, unknown, TockTheme> = styled.div`
 `;
 
 export interface MessageProps {
-  message: messageType;
-  sendAction: (button: Button) => void;
+  message: TextMessage;
+  onAction: (button: Button) => void;
 }
 
 const MessageBot: (props: MessageProps) => JSX.Element = ({
   message,
-  sendAction,
+  onAction,
 }: MessageProps) => {
   function getHtmlContent() {
     const content = message.message?.toString() || '';
@@ -53,14 +52,7 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
         <div dangerouslySetInnerHTML={{ __html: getHtmlContent() }} />
       </Message>
       {Array.isArray(message.buttons) && message.buttons.length > 0 && (
-        <QuickReplyList>
-          {message.buttons.map((button: Button, i: number) => (
-            <QR key={i} onClick={sendAction.bind(null, button)}>
-              {button.imageUrl ? <QRImage src={button.imageUrl} /> : null}
-              {button.label}
-            </QR>
-          ))}
-        </QuickReplyList>
+        <QuickReplyList items={message.buttons} onItemClick={onAction} />
       )}
     </MessageContainer>
   );

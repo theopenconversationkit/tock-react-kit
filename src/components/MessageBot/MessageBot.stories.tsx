@@ -1,5 +1,6 @@
 import { storiesOf } from '@storybook/react';
 import React from 'react';
+import { MessageType } from '../../TockContext';
 import MessageBot from './MessageBot';
 
 const message = 'A bot message';
@@ -28,11 +29,11 @@ storiesOf('Bot message', module)
       message={{
         author: 'bot',
         message: message,
-        type: 'message',
+        type: MessageType.message,
         buttons: [],
       }}
       /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-      sendAction={() => {}}
+      onAction={() => {}}
     />
   ))
   .add('With HTML content', () => (
@@ -40,10 +41,10 @@ storiesOf('Bot message', module)
       message={{
         author: 'bot',
         message: html,
-        type: 'message',
+        type: MessageType.message,
         buttons: [],
       }}
       /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-      sendAction={() => {}}
+      onAction={() => {}}
     />
   ));

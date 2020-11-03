@@ -79,29 +79,40 @@ export class UrlButton {
 
 export type Button = QuickReply | PostBackButton | UrlButton;
 
+export enum MessageType {
+  message = 'message',
+  card = 'card',
+  carousel = 'carousel',
+  widget = 'widget',
+}
+
 export interface Message {
+  type: MessageType;
+}
+
+export interface TextMessage extends Message {
   author: 'bot' | 'user';
   message: string;
-  type: 'message';
+  type: MessageType.message;
   buttons?: Button[];
 }
 
-export interface Card {
+export interface Card extends Message {
   imageUrl?: string;
   title: string;
   subTitle?: string;
   buttons?: Button[];
-  type: 'card';
+  type: MessageType.card;
 }
 
-export interface Carousel {
+export interface Carousel extends Message {
   cards: Card[];
-  type: 'carousel';
+  type: MessageType.carousel;
 }
 
-export interface Widget {
+export interface Widget extends Message {
   widgetData: WidgetData;
-  type: 'widget';
+  type: MessageType.widget;
 }
 
 export interface WidgetData {

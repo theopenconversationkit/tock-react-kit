@@ -11,14 +11,14 @@ storiesOf('Card', module)
       title="Card title"
       subTitle="Card subtitle"
       imageUrl="https://avatars0.githubusercontent.com/u/48585267?s=200&v=4"
-      sendAction={onButtonClick}
+      onAction={onButtonClick}
     />
   ))
   .add('Without subtitle', () => (
     <Card
       title="Card title"
       imageUrl="https://avatars0.githubusercontent.com/u/48585267?s=200&v=4"
-      sendAction={onButtonClick}
+      onAction={onButtonClick}
     />
   ))
   .add('With buttons', () => (
@@ -26,7 +26,7 @@ storiesOf('Card', module)
       title="Card title"
       subTitle="Card subtitle"
       imageUrl="https://avatars0.githubusercontent.com/u/48585267?s=200&v=4"
-      sendAction={onButtonClick}
+      onAction={onButtonClick}
       buttons={[
         {
           label: 'Website',
