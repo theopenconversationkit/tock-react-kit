@@ -15,6 +15,7 @@
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --fix --quiet",
     "prepare": "rollup -c --environment BUILD:production",
     "version": "auto-changelog -p && git add CHANGELOG.md",
+    "test": "echo 'Tests coming soon ...'",
     "test-release": "np --preview",
     "release": "np"
   },
