@@ -10,7 +10,7 @@ Create web UIs for Tock chatbots
 
 ## Quick Start
 
-Include `react`, `react-dom`, `@emotion-core`, `@emotion-styled`, `@emotion-react`, `emotion-theming` and `tock-react-kit` in an HTML page.
+Include `react`, `react-dom`, `@emotion-core`, `@emotion-styled`, `emotion-theming` and `tock-react-kit` in an HTML page.
 _React must be at least version 16.8 (must have hooks)_
 
 ```html
