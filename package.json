@@ -1,6 +1,6 @@
 {
   "name": "tock-react-kit",
-  "version": "20.3.4",
+  "version": "20.9.1",
   "description": "React UI library for Tock Node chatbots",
   "main": "build/tock-react-kit.umd.js",
   "module": "build/tock-react-kit.esm.js",
@@ -33,6 +33,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
     "@storybook/addon-actions": "^6.0.28",
     "@storybook/addon-backgrounds": "^6.0.28",
     "@storybook/addon-knobs": "^6.0.28",
@@ -48,6 +50,7 @@
     "auto-changelog": "^2.2.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.1.0",
+    "emotion-theming": "^10.0.27",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
@@ -57,9 +60,6 @@
     "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "@emotion/core": "^10.0.28",
-    "@emotion/styled": "^10.0.27",
-    "emotion-theming": "^10.0.27",
     "rollup": "^2.23.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -68,11 +68,11 @@
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "react": ">=16.13",
-    "react-dom": ">=16.13",
     "@emotion/core": ">=10.0.0",
     "@emotion/styled": ">=10.0.0",
-    "emotion-theming": ">=10.0.0"
+    "emotion-theming": ">=10.0.0",
+    "react": ">=16.13",
+    "react-dom": ">=16.13"
   },
   "auto-changelog": {
     "includeBranch": [
