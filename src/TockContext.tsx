@@ -133,7 +133,8 @@ export interface TockAction {
     | 'SET_QUICKREPLIES'
     | 'ADD_MESSAGE'
     | 'SET_LOADING'
-    | 'SET_SSE_INITIALIZING';
+    | 'SET_SSE_INITIALIZING'
+    | 'CLEAR_MESSAGES';
   quickReplies?: QuickReply[];
   messages?: (Message | Card | Carousel | Widget)[];
   loading?: boolean;
@@ -174,6 +175,14 @@ export const tockReducer: Reducer<TockState, TockAction> = (
         return {
           ...state,
           sseInitializing: action.sseInitializing,
+        };
+      }
+      break;
+    case 'CLEAR_MESSAGES':
+      if (state.messages) {
+        return {
+          ...state,
+          messages: [],
         };
       }
       break;

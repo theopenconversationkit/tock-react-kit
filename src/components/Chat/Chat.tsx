@@ -50,5 +50,4 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     </Container>
   );
 };
-
 export default Chat;
