@@ -27,6 +27,7 @@ export interface UseTock {
     buttons?: Button[],
   ) => void;
   sendMessage: (message: string) => Promise<void>;
+  clearMessages: () => void;
   addCard: (
     title: string,
     imageUrl?: string,
@@ -70,7 +71,7 @@ function mapCard(card: any): Card {
   } as Card;
 }
 
-const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
+const useTock: (tockEndPoint?: string) => UseTock = (tockEndPoint?: string) => {
   const {
     messages,
     quickReplies,
@@ -166,6 +167,14 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
             buttons: buttons,
           } as TextMessage,
         ],
+      }),
+    [],
+  );
+
+  const clearMessages: () => void = useCallback(
+    () =>
+      dispatch({
+        type: 'CLEAR_MESSAGES',
       }),
     [],
   );
@@ -344,6 +353,7 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     messages,
     quickReplies,
     loading,
+    clearMessages,
     addCard,
     addCarousel,
     addMessage,
