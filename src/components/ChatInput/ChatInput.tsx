@@ -7,9 +7,10 @@ import React, {
   InputHTMLAttributes,
   useState,
 } from 'react';
-import { Send } from 'react-feather';
+import { Send, Trash2 } from 'react-feather';
 import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
+import useTock, { UseTock } from '../../useTock';
 
 const InputOuterContainer: StyledComponent<
   DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>,
@@ -52,7 +53,41 @@ const Input: StyledComponent<
   ${prop<any>('theme.overrides.chatInput.input', '')}
 `;
 
-const Icon: StyledComponent<
+const SubmitIcon: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
+  unknown,
+  TockTheme
+> = styled.button`
+  position: absolute;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  right: calc(${prop<any>('theme.typography.fontSize')} * 2);
+  flex: 0;
+  cursor: pointer;
+  height: 100%;
+  width: calc(${prop<any>('theme.typography.fontSize')} * 3);
+  & svg {
+    stroke: ${prop<any>('theme.palette.background.bot')};
+    fill: ${prop<any>('theme.palette.text.bot')};
+  }
+
+  & > svg {
+    position: relative;
+    top: 0;
+    right: 0;
+    height: 80%;
+
+    &:hover,
+    &:focus {
+      stroke: ${prop<any>('theme.palette.text.bot')};
+      fill: ${prop<any>('theme.palette.background.bot')};
+    }
+  }
+  ${prop<any>('theme.overrides.chatInput.icon', '')}
+`;
+
+const ClearIcon: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
   unknown,
   TockTheme
@@ -73,8 +108,8 @@ const Icon: StyledComponent<
 
   & > svg {
     position: relative;
-    top: 3px;
-    right: 2px;
+    top: 0;
+    right: 0;
 
     &:hover,
     &:focus {
@@ -94,6 +129,7 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
   disabled,
   onSubmit,
 }: ChatInputProps): JSX.Element => {
+  const { clearMessages }: UseTock = useTock();
   const [value, setValue] = useState('');
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -111,9 +147,12 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
         value={value}
         onChange={({ target: { value } }) => setValue(value)}
       />
-      <Icon>
+      <SubmitIcon>
         <Send size="100%" />
-      </Icon>
+      </SubmitIcon>
+      <ClearIcon>
+        <Trash2 size="25px" color={'white'} onClick={clearMessages} />
+      </ClearIcon>
     </InputOuterContainer>
   );
 };

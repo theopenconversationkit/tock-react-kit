@@ -27,6 +27,7 @@ export interface UseTock {
     buttons?: Button[],
   ) => void;
   sendMessage: (message: string) => Promise<void>;
+  clearMessages: () => void;
   addCard: (
     title: string,
     imageUrl?: string,
@@ -179,6 +180,14 @@ const useTock: (
 
   const getExtraHeaders: () => Promise<Record<string, string>> =
     extraHeadersProvider ?? (async () => ({}));
+
+  const clearMessages: () => void = useCallback(
+    () =>
+      dispatch({
+        type: 'CLEAR_MESSAGES',
+      }),
+    [],
+  );
 
   const sendMessage: (
     message: string,
@@ -380,6 +389,7 @@ const useTock: (
     messages,
     quickReplies,
     loading,
+    clearMessages,
     addCard,
     addCarousel,
     addMessage,
