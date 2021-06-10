@@ -8,6 +8,7 @@ export interface ChatProps {
   endPoint: string;
   referralParameter?: string;
   timeoutBetweenMessage?: number;
+  openingMessage?: string;
   widgets?: any;
 }
 
@@ -15,6 +16,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   endPoint,
   referralParameter,
   timeoutBetweenMessage = 700,
+  openingMessage = undefined,
   widgets = {},
 }: ChatProps) => {
   const {
@@ -25,9 +27,16 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sendQuickReply,
     sendAction,
     sendReferralParameter,
+    sendOpeningMessage,
     sseInitPromise,
     sseInitializing,
   }: UseTock = useTock(endPoint);
+  useEffect(() => {
+    // When the chat gets initialized for the first time, initiate the welcome sequence
+    if (messages.length === 0 && openingMessage) {
+      sendOpeningMessage(openingMessage);
+    }
+  }, []);
 
   useEffect(() => {
     if (referralParameter) {
