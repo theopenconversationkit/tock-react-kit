@@ -217,10 +217,11 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockOptions`
 
-| Property name                            | Type              | Description                                               |
-|------------------------------------------|-------------------|-----------------------------------------------------------|
-| `timeoutBetweenMessage`                  | `number?`         | Timeout between message                                   |
-| `widgets`                                | `any?`            | Custom display component                                  |
+| Property name                            | Type              | Description                                                      |
+|------------------------------------------|-------------------|------------------------------------------------------------------|
+| `openingMessage`                         | `string?`         | Initial message to send to the bot to trigger a welcome sequence |
+| `timeoutBetweenMessage`                  | `number?`         | Timeout between message                                          |
+| `widgets`                                | `any?`            | Custom display component                                         |
 
 ## Create custom widget
 
