@@ -217,10 +217,18 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockOptions`
 
-| Property name                            | Type              | Description                                               |
-|------------------------------------------|-------------------|-----------------------------------------------------------|
-| `timeoutBetweenMessage`                  | `number?`         | Timeout between message                                   |
-| `widgets`                                | `any?`            | Custom display component                                  |
+| Property name                            | Type              | Description                                                      |
+|------------------------------------------|-------------------|------------------------------------------------------------------|
+| `openingMessage`                         | `string?`         | Initial message to send to the bot to trigger a welcome sequence |
+| `timeoutBetweenMessage`                  | `number?`         | Timeout between message                                          |
+| `widgets`                                | `any?`            | Custom display component                                         |
+
+The optional `openingMessage` is a sentence, automatically sent to the bot when the conversation starts.
+This is typically used to provide a welcoming or onboarding message to the user:
+- configured in _Tock Studio_ or managed like any other Tock story,
+- not requiring the user to make a sentence first.
+
+This opening message is not displayed, so that the bot seem to start the conversation.
 
 ## Create custom widget
 
