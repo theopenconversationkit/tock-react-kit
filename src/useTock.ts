@@ -1,4 +1,4 @@
-import { Dispatch, useCallback } from 'react';
+import {Dispatch, useCallback} from 'react';
 import {
   Button,
   Card,
@@ -15,7 +15,7 @@ import {
   useTockState,
   WidgetData,
 } from './TockContext';
-import { Sse } from './Sse';
+import {Sse} from './Sse';
 
 export interface UseTock {
   messages: Message[];
@@ -70,7 +70,13 @@ function mapCard(card: any): Card {
   } as Card;
 }
 
-const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
+const useTock: (
+  tockEndPoint: string,
+  extraHeadersProvider?: () => Promise<Record<string, string>>,
+) => UseTock = (
+  tockEndPoint: string,
+  extraHeadersProvider?: () => Promise<Record<string, string>>,
+) => {
   const {
     messages,
     quickReplies,
@@ -170,37 +176,45 @@ const useTock: (tockEndPoint: string) => UseTock = (tockEndPoint: string) => {
     [],
   );
 
+  const getExtraHeaders: () => Promise<Record<string, string>> =
+    extraHeadersProvider ?? (async () => ({}));
+
   const sendMessage: (
     message: string,
     payload?: string,
-  ) => Promise<void> = useCallback((message: string, payload?: string) => {
-    dispatch({
-      type: 'ADD_MESSAGE',
-      messages: [
-        { author: 'user', message, type: MessageType.message } as TextMessage,
-      ],
-    });
-    startLoading();
-    const body = payload
-      ? {
-          payload: payload,
-          userId: userId,
-        }
-      : {
-          query: message,
-          userId: userId,
-        };
-    return fetch(tockEndPoint, {
-      body: JSON.stringify(body),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then(handleBotResponseIfSseDisabled)
-      .finally(stopLoading);
-  }, []);
+  ) => Promise<void> = useCallback(
+    async (message: string, payload?: string) => {
+      dispatch({
+        type: 'ADD_MESSAGE',
+        messages: [
+          { author: 'user', message, type: MessageType.message } as TextMessage,
+        ],
+      });
+      startLoading();
+      const body = payload
+        ? {
+            payload: payload,
+            userId: userId,
+          }
+        : {
+            query: message,
+            userId: userId,
+          };
+
+      return fetch(tockEndPoint, {
+        body: JSON.stringify(body),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(await getExtraHeaders()),
+        },
+      })
+        .then((res) => res.json())
+        .then(handleBotResponseIfSseDisabled)
+        .finally(stopLoading);
+    },
+    [],
+  );
 
   const sendReferralParameter: (
     referralParameter: string,

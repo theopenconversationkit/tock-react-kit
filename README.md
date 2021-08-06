@@ -217,10 +217,11 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockOptions`
 
-| Property name                            | Type              | Description                                               |
-|------------------------------------------|-------------------|-----------------------------------------------------------|
-| `timeoutBetweenMessage`                  | `number?`         | Timeout between message                                   |
-| `widgets`                                | `any?`            | Custom display component                                  |
+| Property name                            | Type                                  | Description                                               |
+|------------------------------------------|---------------------------------------|-----------------------------------------------------------|
+| `extraHeadersProvider`                   | `() => Promise<Record<string, string>`| Provider of extra HTTP headers for outgoing requests      |
+| `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                   |
+| `widgets`                                | `any?`                                | Custom display component                                  |
 
 ## Create custom widget
 

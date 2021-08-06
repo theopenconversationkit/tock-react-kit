@@ -9,6 +9,7 @@ export interface ChatProps {
   referralParameter?: string;
   timeoutBetweenMessage?: number;
   widgets?: any;
+  extraHeadersProvider?: () => Promise<Record<string, string>>;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -16,6 +17,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   referralParameter,
   timeoutBetweenMessage = 700,
   widgets = {},
+  extraHeadersProvider = undefined,
 }: ChatProps) => {
   const {
     messages,
@@ -27,7 +29,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sendReferralParameter,
     sseInitPromise,
     sseInitializing,
-  }: UseTock = useTock(endPoint);
+  }: UseTock = useTock(endPoint, extraHeadersProvider);
 
   useEffect(() => {
     if (referralParameter) {
