@@ -112,7 +112,7 @@ If the chat does not suit your needs you can also use the components separately.
 
 ## API Reference
 
-### `renderChat(element, tockBotApiUrl, themeOptions)`
+### `renderChat(element, tockBotApiUrl, referralParameter, theme, options)`
 
 Renders an entire chat in a target element.
 
@@ -226,24 +226,65 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockOptions`
 
-| Property name                            | Type              | Description                                                      |
-|------------------------------------------|-------------------|------------------------------------------------------------------|
-| `openingMessage`                         | `string?`         | Initial message to send to the bot to trigger a welcome sequence |
-| `timeoutBetweenMessage`                  | `number?`         | Timeout between message                                          |
-| `widgets`                                | `any?`            | Custom display component                                         |
+| Property name                            | Type                                  | Description                                                      |
+|------------------------------------------|---------------------------------------|------------------------------------------------------------------|
+| `openingMessage`                         | `string?`                             | Initial message to send to the bot to trigger a welcome sequence |
+| `extraHeadersProvider`                   | `() => Promise<Record<string, string>`| Provider of extra HTTP headers for outgoing requests      |
+| `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
+| `widgets`                                | `any?`                                | Custom display component                                         |
+
+#### Opening message
 
 The optional `openingMessage` is a sentence, automatically sent to the bot when the conversation starts.
 This is typically used to provide a welcoming or onboarding message to the user:
 - configured in _Tock Studio_ or managed like any other Tock story,
 - not requiring the user to make a sentence first.
 
-This opening message is not displayed, so that the bot seem to start the conversation.
+The `openingMessage` parameter is a sentence from the user to the bot, actually not displayed in conversation.
+It is not the configured answer from the bot.
 
-## Create custom widget
+Example:
+
+```js
+renderChat(
+    document.getElementById('chat'), 
+    '<TOCK_BOT_API_URL>', 
+    'referralParameter',
+    {},
+    { openingMessage: 'hello my bot' },
+);
+```
+
+In this example, when the user opens/loads the page embedding the `tock-react-kit`, a message from the bot is 
+automatically retrieved and displayed, starting the conversation: actually, the bot message configured for 
+any user sending the sentence _"hello my bot"_.
+
+#### Extra headers
+
+The optional `extraHeadersProvider` makes it possible to provide additional HTTP headers, 
+to message requests from the Web page (`tock-react-kit` component) to the Bot (Tock Bot API).
+
+Example:
+
+```js
+renderChat(
+    document.getElementById('chat'), 
+    '<TOCK_BOT_API_URL>', 
+    'referralParameter',
+    {},
+    { extraHeadersProvider: (async () => ({'my-custom-header': 'some value'})) },
+);
+```
+
+This is typically used to pass tokens or custom values to the Bot backend.
+
+> Note that extra headers should be allowed by the backend's CORS setup for the application to work as intended.
+ 
+#### Custom widgets
 
 Tock web connector can send custom messages :
 
-```
+```json
 {
   data: {
     departure: 'Paris',

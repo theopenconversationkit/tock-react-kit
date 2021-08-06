@@ -30,6 +30,7 @@ export const renderChat: (
           timeoutBetweenMessage={options.timeoutBetweenMessage}
           openingMessage={options.openingMessage}
           widgets={options.widgets}
+          extraHeadersProvider={options.extraHeadersProvider}
         />
       </TockContext>
     </ThemeProvider>,

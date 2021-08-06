@@ -10,6 +10,7 @@ export interface ChatProps {
   timeoutBetweenMessage?: number;
   openingMessage?: string;
   widgets?: any;
+  extraHeadersProvider?: () => Promise<Record<string, string>>;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -18,6 +19,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   timeoutBetweenMessage = 700,
   openingMessage = undefined,
   widgets = {},
+  extraHeadersProvider = undefined,
 }: ChatProps) => {
   const {
     messages,
@@ -30,7 +32,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sendOpeningMessage,
     sseInitPromise,
     sseInitializing,
-  }: UseTock = useTock(endPoint);
+  }: UseTock = useTock(endPoint, extraHeadersProvider);
   useEffect(() => {
     // When the chat gets initialized for the first time, initiate the welcome sequence
     if (messages.length === 0 && openingMessage) {
