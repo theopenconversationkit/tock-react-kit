@@ -1,7 +1,8 @@
 import { ThemeProvider, ThemeProviderProps } from 'emotion-theming';
 import * as React from 'react';
 import deepmerge from 'deepmerge';
-import { createTheme, TockTheme } from '../index';
+import TockTheme from './theme';
+import { default as createTheme } from './createTheme';
 
 export default function TockThemeProvider<Theme>(
   props: ThemeProviderProps<Theme>,
