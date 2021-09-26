@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
-import { withKnobs } from '@storybook/addon-knobs';
 
 import useTock, { UseTock } from '../../useTock';
 import { MessageType, PostBackButton, UrlButton } from '../../TockContext';
@@ -165,20 +164,18 @@ const Wrapper = ({
   return children(tock);
 };
 
-storiesOf('Conversation', module)
-  .addDecorator(withKnobs())
-  .add('With messages', () => (
-    <Wrapper>
-      {({ messages, loading, quickReplies, sendAction, sendQuickReply }) => (
-        <Conversation
-          messages={messages}
-          messageDelay={500}
-          widgets={{}}
-          loading={loading}
-          quickReplies={quickReplies}
-          onAction={sendAction}
-          onQuickReplyClick={sendQuickReply}
-        />
-      )}
-    </Wrapper>
-  ));
+storiesOf('Conversation', module).add('With messages', () => (
+  <Wrapper>
+    {({ messages, loading, quickReplies, sendAction, sendQuickReply }) => (
+      <Conversation
+        messages={messages}
+        messageDelay={500}
+        widgets={{}}
+        loading={loading}
+        quickReplies={quickReplies}
+        onAction={sendAction}
+        onQuickReplyClick={sendQuickReply}
+      />
+    )}
+  </Wrapper>
+));
