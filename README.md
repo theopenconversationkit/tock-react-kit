@@ -2,7 +2,16 @@
 
 # Tock React Kit
 
-Create web UIs for Tock chatbots
+A toolkit to easily embed [Tock](https://doc.tock.ai) chatbots into Web pages.
+
+The toolkit provides:
+- very simple integration, as a bare script or React module
+- connection and dialog with a backend Tock Bot API (using SSE if available)
+- user interface for conversations, including default widgets and animations
+- customizable styles
+
+The toolkit is currently used in production by various conversational assistants from SNCF, Enedis and more
+(see [Tock showcase](http://doc.tock.ai/tock/en/about/showcase/)).
 
 ## Prerequisites
 
