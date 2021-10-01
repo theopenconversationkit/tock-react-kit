@@ -6,7 +6,7 @@ import TockContext from './TockContext';
 import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
-import { createTheme } from './index';
+import { default as createTheme } from './styles/createTheme';
 
 export const renderChat: (
   container: HTMLElement,

@@ -1,6 +1,5 @@
 import { storiesOf } from '@storybook/react';
 import React, { ReactNode } from 'react';
-import { withKnobs } from '@storybook/addon-knobs';
 import styled from '@emotion/styled';
 
 import ProductWidget from '../widgets/ProductWidget';
@@ -35,7 +34,6 @@ const FullscreenContainer = styled.div`
 `;
 
 storiesOf('Chat app', module)
-  .addDecorator(withKnobs)
   .add('Default full screen', () => (
     <Wrapper>
       <FullscreenContainer>
