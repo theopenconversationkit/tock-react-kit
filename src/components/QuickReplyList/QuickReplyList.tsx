@@ -15,7 +15,6 @@ const QuickReplyListContainer: StyledComponent<
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   overflow-x: unset;
-  white-space: nowrap;
   text-align: left;
 
   overflow: auto;
