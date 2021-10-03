@@ -55,4 +55,10 @@ export namespace Sse {
   export function isEnable(): boolean {
     return sseIsEnabled;
   }
+
+  export function disable(): Promise<void> {
+    sseIsEnabled = false;
+    notInitialised = false;
+    return Promise.resolve();
+  }
 }

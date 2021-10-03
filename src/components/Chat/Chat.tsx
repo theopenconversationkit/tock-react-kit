@@ -11,6 +11,7 @@ export interface ChatProps {
   openingMessage?: string;
   widgets?: any;
   extraHeadersProvider?: () => Promise<Record<string, string>>;
+  disableSse?: boolean;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -20,6 +21,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   openingMessage = undefined,
   widgets = {},
   extraHeadersProvider = undefined,
+  disableSse = false,
 }: ChatProps) => {
   const {
     messages,
@@ -32,7 +34,8 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sendOpeningMessage,
     sseInitPromise,
     sseInitializing,
-  }: UseTock = useTock(endPoint, extraHeadersProvider);
+  }: UseTock = useTock(endPoint, extraHeadersProvider, disableSse);
+
   useEffect(() => {
     // When the chat gets initialized for the first time, initiate the welcome sequence
     if (messages.length === 0 && openingMessage) {

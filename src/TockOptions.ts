@@ -6,6 +6,7 @@ export interface TockOptions {
   extraHeadersProvider?: () => Promise<Record<string, string>>;
   timeoutBetweenMessage?: number;
   widgets?: any;
+  disableSse?: boolean;
 }
 
 export default TockOptions;
