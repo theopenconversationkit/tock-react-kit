@@ -37,17 +37,16 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   }: UseTock = useTock(endPoint, extraHeadersProvider, disableSse);
 
   useEffect(() => {
-    // When the chat gets initialized for the first time, initiate the welcome sequence
-    if (messages.length === 0 && openingMessage) {
-      sendOpeningMessage(openingMessage);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (referralParameter) {
-      sseInitPromise.then(() => sendReferralParameter(referralParameter));
-    }
-  }, [sendReferralParameter, referralParameter]);
+    // When the chat gets initialized for the first time, process optional referral|opening message
+    sseInitPromise.then(() => {
+      if (referralParameter) {
+        sendReferralParameter(referralParameter);
+      }
+      if (messages.length === 0 && openingMessage) {
+        sendOpeningMessage(openingMessage);
+      }
+    });
+  }, [referralParameter]);
 
   return (
     <Container>

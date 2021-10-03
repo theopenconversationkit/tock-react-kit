@@ -250,7 +250,7 @@ Example:
 renderChat(
     document.getElementById('chat'), 
     '<TOCK_BOT_API_URL>', 
-    'referralParameter',
+    undefined,
     {},
     { openingMessage: 'hello my bot' },
 );
@@ -271,7 +271,7 @@ Example:
 renderChat(
     document.getElementById('chat'), 
     '<TOCK_BOT_API_URL>', 
-    'referralParameter',
+    undefined,
     {},
     { extraHeadersProvider: (async () => ({'my-custom-header': 'some value'})) },
 );
@@ -313,9 +313,9 @@ const TrainCardWidget = ({departure, arrival}) => {
 };
 
 renderChat(
-    document.getElementById('chat'), 
-    '<TOCK_BOT_API_URL>', 
-    'referralParameter', 
+    document.getElementById('chat'),
+    '<TOCK_BOT_API_URL>',
+    undefined,
     {}, 
     {
         widgets: {
