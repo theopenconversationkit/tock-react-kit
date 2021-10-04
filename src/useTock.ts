@@ -75,9 +75,11 @@ function mapCard(card: any): Card {
 const useTock: (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
+  disableSse?: boolean,
 ) => UseTock = (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
+  disableSse?: boolean,
 ) => {
   const {
     messages,
@@ -378,12 +380,10 @@ const useTock: (
     [],
   );
 
-  const sseInitPromise = Sse.init(
-    tockEndPoint,
-    userId,
-    handleBotResponse,
-    onSseStateChange,
-  );
+  const sseInitPromise =
+    disableSse == true
+      ? Sse.disable()
+      : Sse.init(tockEndPoint, userId, handleBotResponse, onSseStateChange);
 
   return {
     messages,

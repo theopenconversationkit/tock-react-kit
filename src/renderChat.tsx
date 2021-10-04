@@ -31,6 +31,7 @@ export const renderChat: (
           openingMessage={options.openingMessage}
           widgets={options.widgets}
           extraHeadersProvider={options.extraHeadersProvider}
+          disableSse={options.disableSse}
         />
       </TockContext>
     </ThemeProvider>,

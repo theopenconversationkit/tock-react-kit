@@ -229,9 +229,10 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | Property name                            | Type                                  | Description                                                      |
 |------------------------------------------|---------------------------------------|------------------------------------------------------------------|
 | `openingMessage`                         | `string?`                             | Initial message to send to the bot to trigger a welcome sequence |
-| `extraHeadersProvider`                   | `() => Promise<Record<string, string>`| Provider of extra HTTP headers for outgoing requests      |
+| `extraHeadersProvider`                   | `() => Promise<Record<string, string>`| Provider of extra HTTP headers for outgoing requests             |
 | `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
 | `widgets`                                | `any?`                                | Custom display component                                         |
+| `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
 
 #### Opening message
 
@@ -321,5 +322,25 @@ renderChat(
             TrainCardWidget
         }
     }
+);
+```
+
+#### SSE
+
+By default, the `tock-react-kit` tries to connect to the Bot through [Server-sent events](https://en.wikipedia.org/wiki/Server-sent_events).
+If an error occurs, it probably means the Bot does not accept SSE, and the `tock-react-kit` switches to classic requests.
+
+The optional `disableSse`parameter makes it possible to disable SSE before even trying, possibly preventing a `404` error 
+from console (when the Bot does not accept SSE).
+
+Example:
+
+```js
+renderChat(
+    document.getElementById('chat'), 
+    '<TOCK_BOT_API_URL>', 
+    undefined,
+    {},
+    { disableSse: true },
 );
 ```
