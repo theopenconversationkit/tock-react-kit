@@ -42,7 +42,7 @@ export interface UseTock {
   sendReferralParameter: (referralParameter: string) => void;
   sseInitPromise: Promise<void>;
   sseInitializing: boolean;
-  sendOpeningMessage: (msg: string) => void;
+  sendOpeningMessage: (msg: string) => Promise<void>;
 }
 
 function mapButton(button: any): Button {
@@ -194,14 +194,21 @@ const useTock: (
   const sendMessage: (
     message: string,
     payload?: string,
+    displayMessage?: boolean,
   ) => Promise<void> = useCallback(
-    async (message: string, payload?: string) => {
-      dispatch({
-        type: 'ADD_MESSAGE',
-        messages: [
-          { author: 'user', message, type: MessageType.message } as TextMessage,
-        ],
-      });
+    async (message: string, payload?: string, displayMessage = true) => {
+      if (displayMessage) {
+        dispatch({
+          type: 'ADD_MESSAGE',
+          messages: [
+            {
+              author: 'user',
+              message,
+              type: MessageType.message,
+            } as TextMessage,
+          ],
+        });
+      }
       startLoading();
       const body = payload
         ? {
@@ -292,25 +299,8 @@ const useTock: (
   };
 
   // Sends an initial message to the backend, to trigger a welcome message
-  const sendOpeningMessage: (msg: string) => void = (msg) => {
-    send(msg);
-  };
-
-  // Sends a message directly to the bot backend, without it appearing in the chat
-  const send: (message: string) => void = (message) => {
-    fetch(tockEndPoint, {
-      body: JSON.stringify({
-        query: message,
-        userId,
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then(handleBotResponse);
-  };
+  const sendOpeningMessage: (msg: string) => Promise<void> = (msg) =>
+    sendMessage(msg, undefined, false);
 
   const addCard: (
     title: string,
