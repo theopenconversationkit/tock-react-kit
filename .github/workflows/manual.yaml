@@ -1,0 +1,46 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release: "X.Y.Z" or "prerelease" for beta'
+        required: true
+        default: 'prerelease'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag number
+        id: get_tag
+        run: echo ::set-output name=TAG::$(echo $GITHUB_REF | cut -d / -f 3)
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 13
+          registry-url: https://registry.npmjs.org/
+      - name: Cache node modules
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - run: yarn install
+      - run: git config --local user.email "action@github.com"
+      - run: git config --local user.name "GitHub Action"
+      #- run: yarn config set version-sign-git-tag true
+      - run: |
+              if [ ${{ github.event.inputs.version }} == "prerelease" ]; then
+                  yarn run release ${{ github.event.inputs.version }} --tag=beta
+              else
+                  yarn run release ${{ github.event.inputs.version }}
+              fi 
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
