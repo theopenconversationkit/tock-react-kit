@@ -1,17 +1,39 @@
-![Publish](https://github.com/theopenconversationkit/tock-react-kit/workflows/Publish/badge.svg?branch=master&event=repository_dispatch)
+![Event Release](https://github.com/theopenconversationkit/tock-react-kit/workflows/Publish/badge.svg?branch=master&event=repository_dispatch)
+![Manual Release](https://github.com/theopenconversationkit/tock-react-kit/workflows/Manual%20Release/badge.svg?branch=master&event=workflow_dispatch)
+[![Dependencies](https://img.shields.io/librariesio/release/npm/tock-react-kit)](https://img.shields.io/librariesio/release/npm/tock-react-kit)
+
+[![Latest release](https://img.shields.io/npm/v/tock-react-kit)](https://img.shields.io/npm/v/tock-react-kit)
+[![Release Date](https://img.shields.io/github/release-date/theopenconversationkit/tock-react-kit)](https://github.com/theopenconversationkit/tock-react-kit/releases)
+[![NPM Downloads](https://img.shields.io/npm/dy/tock-react-kit)](https://img.shields.io/npm/dy/tock-react-kit)
+
+[![Gitter](https://badges.gitter.im/tockchat/Lobby.svg)](https://gitter.im/tockchat/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
+[![Contributors](https://img.shields.io/github/contributors-anon/theopenconversationkit/tock-react-kit)](https://github.com/theopenconversationkit/tock-react-kit/graphs/contributors)
+[![Commit Activity](https://img.shields.io/github/commit-activity/y/theopenconversationkit/tock-react-kit)](https://github.com/theopenconversationkit/tock-react-kit/pulse/monthly)
+
+[![Home](https://img.shields.io/website?label=home&down_message=offline&up_message=doc.tock.ai&url=https%3A%2F%2Fdoc.tock.ai)](https://doc.tock.ai)
+[![Demo](https://img.shields.io/website?label=demo&down_message=offline&up_message=live&url=https%3A%2F%2Fdoc.tock.ai)](https://doc.tock.ai)
+[![License](https://img.shields.io/github/license/theopenconversationkit/tock-react-kit)](https://github.com/theopenconversationkit/tock-react-kit/blob/master/LICENSE)
 
 # Tock React Kit
+
+<img alt="Tock Logo" src="http://doc.tock.ai/tock/en/assets/images/logo.svg" style="width: 150px;"><br>
 
 A toolkit to easily embed [Tock](https://doc.tock.ai) chatbots into Web pages.
 
 The toolkit provides:
-- very simple integration, as a bare script or React module
-- connection and dialog with a backend Tock Bot API (using SSE if available)
+- simple integration, as a script or React module
+- connection/dialog with a Tock bot using _Bot API_ (using SSE if available)
 - user interface for conversations, including default widgets and animations
 - customizable styles
 
 The toolkit is currently used in production by various conversational assistants from SNCF, Enedis and more
 (see [Tock showcase](http://doc.tock.ai/tock/en/about/showcase/)).
+
+🏠 Home: [https://doc.tock.ai](https://doc.tock.ai)
+
+▶️ Live demo: [Web frontend](https://doc.tock.ai) / [bot backend](https://demo.tock.ai)
+
+💬 Contact: [https://gitter.im/tockchat/Lobby](https://gitter.im/tockchat/Lobby)
 
 ## Prerequisites
 
