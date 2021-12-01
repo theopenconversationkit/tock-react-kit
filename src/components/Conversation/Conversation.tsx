@@ -7,6 +7,7 @@ import MessageUser from '../MessageUser';
 import Card from '../Card';
 import Carousel from '../Carousel';
 import Loader from '../Loader';
+import Image from '../Image';
 import QuickReplyList from '../QuickReplyList';
 import InlineQuickReplyList from '../InlineQuickReplyList';
 import useIntervalCounter from './hooks/useIntervalCounter';
@@ -19,6 +20,7 @@ import type {
   Card as ICard,
   Carousel as ICarousel,
   Message,
+  Image as IImage,
   MessageType,
   TextMessage,
   Widget,
@@ -61,6 +63,10 @@ const renderMessage = (message: TextMessage, options: RenderOptions) => {
   return <MessageUser>{message.message}</MessageUser>;
 };
 
+const renderImage = (image: IImage) => {
+  return <Image {...image} />;
+};
+
 const renderCard = (card: ICard, options: RenderOptions) => (
   <Card onAction={options.onAction} {...card} />
 );
@@ -92,6 +98,7 @@ const MESSAGE_RENDERER: {
   message: renderMessage,
   card: renderCard,
   carousel: renderCarousel,
+  image: renderImage,
 };
 
 const makeRenderMessage = (

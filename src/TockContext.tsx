@@ -84,6 +84,7 @@ export enum MessageType {
   card = 'card',
   carousel = 'carousel',
   widget = 'widget',
+  image = 'image',
 }
 
 export interface Message {
@@ -121,9 +122,15 @@ export interface WidgetData {
   type: string;
 }
 
+export interface Image extends Message {
+  imageUrl?: string;
+  title: string;
+  type: MessageType.image;
+}
+
 export interface TockState {
   quickReplies: QuickReply[];
-  messages: (Message | Card | Carousel | Widget)[];
+  messages: (Message | Card | Carousel | Widget | Image)[];
   userId: string;
   loading: boolean;
   sseInitializing: boolean;
@@ -137,7 +144,7 @@ export interface TockAction {
     | 'SET_SSE_INITIALIZING'
     | 'CLEAR_MESSAGES';
   quickReplies?: QuickReply[];
-  messages?: (Message | Card | Carousel | Widget)[];
+  messages?: (Message | Card | Carousel | Widget | Image)[];
   loading?: boolean;
   sseInitializing?: boolean;
 }
