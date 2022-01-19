@@ -12,4 +12,5 @@ export interface Overrides {
   quickReply?: string;
   quickReplyImage?: string;
   chat?: string;
+  quickReplyArrow?: string;
 }

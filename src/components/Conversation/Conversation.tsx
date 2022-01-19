@@ -8,8 +8,11 @@ import Card from '../Card';
 import Carousel from '../Carousel';
 import Loader from '../Loader';
 import QuickReplyList from '../QuickReplyList';
+import InlineQuickReplyList from '../InlineQuickReplyList';
 import useIntervalCounter from './hooks/useIntervalCounter';
 import useScrollBehaviour from './hooks/useScrollBehaviour';
+import { useTheme } from 'emotion-theming';
+import TockTheme from 'styles/theme';
 
 import type {
   Button,
@@ -125,6 +128,7 @@ const Conversation = ({
       messages.length,
       messageDelay,
     );
+    const theme: TockTheme = useTheme<TockTheme>();
     const displayableMessages = messages.slice(0, displayableMessageCount);
     const scrollContainer = useScrollBehaviour([displayableMessages]);
     const renderMessage = makeRenderMessage({
@@ -139,9 +143,16 @@ const Conversation = ({
           {displayableMessages.map(renderMessage)}
           {loading && <Loader />}
         </ConversationInnerContainer>
-        {displayableMessageCount === messages.length && (
-          <QuickReplyList items={quickReplies} onItemClick={onQuickReplyClick} />
+        {displayableMessageCount === messages.length && theme.inlineQuickReplies !== true && (
+          <QuickReplyList
+          items={quickReplies}
+          onItemClick={onQuickReplyClick} />
         )}
+        {displayableMessageCount === messages.length && theme.inlineQuickReplies === true && (
+          <InlineQuickReplyList
+          items={quickReplies}
+          onItemClick={onQuickReplyClick} />
+      )}
       </ConversationOuterContainer>
     );
   } else {

@@ -8,6 +8,7 @@ export default interface TockTheme {
   sizing: Sizing;
   typography: Typography;
   overrides?: Overrides;
+  inlineQuickReplies?: boolean;
 }
 
 export type TockThemeOptions = {
@@ -15,4 +16,5 @@ export type TockThemeOptions = {
   sizing?: SizingOptions;
   typography?: TypographyOptions;
   overrides?: Overrides;
+  inlineQuickReplies?: boolean;
 };

@@ -1,5 +1,5 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import React, { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
 import { prop } from 'styled-tools';
 
 import { Button } from '../../TockContext';
@@ -44,13 +44,17 @@ type Props = DetailedHTMLProps<
 > &
   Button;
 
-const QuickReply = ({ imageUrl, label, ...rest }: Props) => (
-  <QuickReplyButtonContainer>
-    <QuickReplyButton {...rest}>
-      {imageUrl && <QuickReplyImage src={imageUrl} />}
-      {label}
-    </QuickReplyButton>
-  </QuickReplyButtonContainer>
+const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
+  ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => (
+    <QuickReplyButtonContainer>
+      <QuickReplyButton ref={ref} {...rest}>
+        {imageUrl && <QuickReplyImage src={imageUrl} />}
+        {label}
+      </QuickReplyButton>
+    </QuickReplyButtonContainer>
+  ),
 );
+
+QuickReply.displayName = 'QuickReply';
 
 export default QuickReply;
