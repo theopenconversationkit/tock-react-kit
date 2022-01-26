@@ -256,6 +256,7 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `widgets`                                | `any?`                                | Custom display component                                         |
 | `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
 | `accessibility`                          | `TockAccessibility`                   | Object for overriding role and label accessibility attributes    |
+| `sessionStorage`                         | `boolean?`                            | Enable history session storage                                   |
 
 #### `TockAccessibility`
 
@@ -287,6 +288,29 @@ renderChat(
     },
 );
 ```
+
+#### Session storage
+
+The optional `sessionStorage` makes it possible to provide a history session of messages.
+This history loads at the creation of the chat and is stored in the locale storage of the browser.
+
+The `sessionStorage` parameter is a boolean, by default set to false.
+
+Example:
+
+```js
+renderChat(
+    document.getElementById('chat'),
+    '<TOCK_BOT_API_URL>',
+    undefined,
+    {},
+    { sessionStorage: true },
+);
+```
+
+> If sensitive information appear in conversation, do not use this option.
+>
+> If browser disable or cannot handle locale storage, the chat will not store messages.
 
 #### Opening message
 

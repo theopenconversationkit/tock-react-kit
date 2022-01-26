@@ -14,6 +14,7 @@ import {
   useTockDispatch,
   useTockState,
   WidgetData,
+  Widget
 } from './TockContext';
 import { Sse } from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
@@ -41,9 +42,10 @@ export interface UseTock {
   sendQuickReply: (button: Button) => Promise<void>;
   sendAction: (button: Button) => Promise<void>;
   sendReferralParameter: (referralParameter: string) => void;
+  sendOpeningMessage: (msg: string) => Promise<void>;
+  addHistory: (history: Array<any>, quickReplyHistory: Array<any>) => void;
   sseInitPromise: Promise<void>;
   sseInitializing: boolean;
-  sendOpeningMessage: (msg: string) => Promise<void>;
 }
 
 function mapButton(button: any): Button {
@@ -63,7 +65,7 @@ function mapButton(button: any): Button {
   }
 }
 
-function mapCard(card: any): Card {
+function mapCard(card: any, recordResponseToLocaleSession: (card: any) => void): Card {
   return {
     title: card.title,
     subTitle: card.subTitle,
@@ -77,10 +79,12 @@ const useTock: (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
+  sessionStorage?: boolean,
 ) => UseTock = (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
+  sessionStorage?: boolean,
 ) => {
   const {
     messages,
@@ -106,50 +110,68 @@ const useTock: (
     });
   };
 
+  const recordResponseToLocaleSession: (message: any) => void = (message: any) => {
+    let history: any = window.localStorage.getItem("tockMessageHistory");
+    if (!history) {
+        history = [];
+    } else {
+        history = JSON.parse(history);
+    }
+    if (history.length >= 10) {
+      history.shift();
+    }
+    history.push(message);
+    window.localStorage.setItem('tockMessageHistory', JSON.stringify(history));
+  };
+
   const handleBotResponse: (botResponse: any) => void = ({
     responses,
   }: any) => {
     if (Array.isArray(responses) && responses.length > 0) {
       const lastMessage: any = responses[responses.length - 1];
-      if (lastMessage.buttons && lastMessage.buttons.length > 0) {
-        dispatch({
-          type: 'SET_QUICKREPLIES',
-          quickReplies: (lastMessage.buttons || [])
-            .filter((button: any) => button.type === 'quick_reply')
-            .map(mapButton),
-        });
-      } else {
-        dispatch({
-          type: 'SET_QUICKREPLIES',
-          quickReplies: [],
-        });
+      const quickReplies = (lastMessage.buttons || [])
+        .filter((button: any) => button.type === 'quick_reply')
+        .map(mapButton);
+      dispatch({
+        type: 'SET_QUICKREPLIES',
+        quickReplies: quickReplies,
+      });
+      if (sessionStorage) {
+        window.localStorage.setItem('tockQuickReplyHistory', JSON.stringify(quickReplies));
       }
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: responses.map(({ text, card, carousel, widget }: any) => {
-          if (widget) {
-            return {
-              widgetData: widget,
-              type: MessageType.widget,
-            };
-          } else if (text) {
-            return {
-              author: 'bot',
-              message: text,
-              type: MessageType.message,
-              buttons: (lastMessage.buttons || [])
-                .filter((button: any) => button.type !== 'quick_reply')
-                .map(mapButton),
-            } as Message;
-          } else if (card) {
-            return mapCard(card);
-          } else {
-            return {
-              cards: carousel.cards.map(mapCard),
-              type: MessageType.carousel,
-            } as Carousel;
-          }
-        }),
+        messages: responses.map(
+          ({ text, card, carousel, widget }: any) => {
+            let message: Message;
+            if (widget) {
+              message = {
+                widgetData: widget,
+                type: MessageType.widget,
+              } as Widget;
+            } else if (text) {
+              message = {
+                author: 'bot',
+                message: text,
+                type: MessageType.message,
+                buttons: (lastMessage.buttons || [])
+                  .filter((button: any) => button.type !== 'quick_reply')
+                  .map(mapButton),
+              } as Message;
+            } else if (card) {
+              message = mapCard(card, recordResponseToLocaleSession);
+            } else {
+              message = {
+                cards: carousel.cards.map((card: any) => mapCard(card, recordResponseToLocaleSession)),
+                type: MessageType.carousel,
+              } as Carousel;
+            }
+            if (sessionStorage) {
+              recordResponseToLocaleSession(message);
+            }
+            return message;
+          },
+        ),
       });
     }
   };
@@ -192,14 +214,18 @@ const useTock: (
   ) => Promise<void> = useCallback(
     async (message: string, payload?: string, displayMessage = true) => {
       if (displayMessage) {
+        const messageToDispatch = {
+          author: 'user',
+          message,
+          type: MessageType.message,
+        } as TextMessage;
+        if (sessionStorage) {
+          recordResponseToLocaleSession(messageToDispatch);
+        }
         dispatch({
           type: 'ADD_MESSAGE',
           messages: [
-            {
-              author: 'user',
-              message,
-              type: MessageType.message,
-            } as TextMessage,
+            messageToDispatch,
           ],
         });
       }
@@ -256,6 +282,9 @@ const useTock: (
       return Promise.resolve();
     } else if (button.payload) {
       setQuickReplies([]);
+      if (sessionStorage) {
+        recordResponseToLocaleSession({author: 'user', message: button.label, type: MessageType.message});
+      }
       addMessage(button.label, 'user');
       startLoading();
       return sendPayload(button.payload);
@@ -369,6 +398,21 @@ const useTock: (
       ? Sse.disable()
       : Sse.init(tockEndPoint, userId, handleBotResponse, onSseStateChange);
 
+  const addHistory: (messageHistory: Array<Message>, quickReplyHistory: Array<QuickReply>) => void = useCallback(
+    (history: Array<Message>, quickReplyHistory: Array<QuickReply>) => {
+      dispatch({
+        type: 'ADD_MESSAGE',
+        messages: history.map((message: Message) => {
+          message.isSessionMessage = true;
+          return message;
+        }),
+      });
+      setQuickReplies(quickReplyHistory);
+      stopLoading();
+    },
+    [],
+  );
+
   return {
     messages,
     quickReplies,
@@ -384,6 +428,7 @@ const useTock: (
     sendAction,
     sendReferralParameter,
     sendOpeningMessage,
+    addHistory,
     sseInitPromise,
     sseInitializing,
   };

@@ -88,6 +88,7 @@ export enum MessageType {
 
 export interface Message {
   type: MessageType;
+  isSessionMessage?: boolean;
 }
 
 export interface TextMessage extends Message {

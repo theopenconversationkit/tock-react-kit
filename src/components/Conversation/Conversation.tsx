@@ -119,30 +119,36 @@ const Conversation = ({
   accessibility,
   ...rest
 }: Props) => {
-  const displayableMessageCount = useIntervalCounter(
-    0,
-    messages.length,
-    messageDelay,
-  );
-  const displayableMessages = messages.slice(0, displayableMessageCount);
-  const scrollContainer = useScrollBehaviour([displayableMessages]);
-  const renderMessage = makeRenderMessage({
-    widgets,
-    onAction,
-  },
-  accessibility);
+  if (messages && messages.length !== 0) {
+    const displayableMessageCount = useIntervalCounter(
+    messages.filter((message) => message.isSessionMessage === true).length,
+      messages.length,
+      messageDelay,
+    );
+    const displayableMessages = messages.slice(0, displayableMessageCount);
+    const scrollContainer = useScrollBehaviour([displayableMessages]);
+    const renderMessage = makeRenderMessage({
+      widgets,
+      onAction,
+    },
+    accessibility);
 
-  return (
-    <ConversationOuterContainer aria-live='polite' aria-atomic='false' aria-relevant='additions' {...rest}>
-      <ConversationInnerContainer ref={scrollContainer}>
-        {displayableMessages.map(renderMessage)}
-        {loading && <Loader />}
-      </ConversationInnerContainer>
-      {displayableMessageCount === messages.length && (
-        <QuickReplyList items={quickReplies} onItemClick={onQuickReplyClick} />
-      )}
-    </ConversationOuterContainer>
-  );
+    return (
+      <ConversationOuterContainer aria-live='polite' aria-atomic='false' aria-relevant='additions' {...rest}>
+        <ConversationInnerContainer ref={scrollContainer}>
+          {displayableMessages.map(renderMessage)}
+          {loading && <Loader />}
+        </ConversationInnerContainer>
+        {displayableMessageCount === messages.length && (
+          <QuickReplyList items={quickReplies} onItemClick={onQuickReplyClick} />
+        )}
+      </ConversationOuterContainer>
+    );
+  } else {
+    return(
+      <ConversationOuterContainer aria-live='polite' aria-atomic='false' aria-relevant='additions' {...rest}></ConversationOuterContainer>
+    );
+  }
 };
 
 export default Conversation;
