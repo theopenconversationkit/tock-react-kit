@@ -12,6 +12,7 @@ export interface ChatProps {
   widgets?: any;
   extraHeadersProvider?: () => Promise<Record<string, string>>;
   disableSse?: boolean;
+  sessionStorage?: boolean;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -22,6 +23,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   widgets = {},
   extraHeadersProvider = undefined,
   disableSse = false,
+  sessionStorage = false,
 }: ChatProps) => {
   const {
     messages,
@@ -32,9 +34,10 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sendAction,
     sendReferralParameter,
     sendOpeningMessage,
+    addHistory,
     sseInitPromise,
     sseInitializing,
-  }: UseTock = useTock(endPoint, extraHeadersProvider, disableSse);
+  }: UseTock = useTock(endPoint, extraHeadersProvider, disableSse, sessionStorage);
 
   useEffect(() => {
     // When the chat gets initialized for the first time, process optional referral|opening message
@@ -42,8 +45,12 @@ const Chat: (props: ChatProps) => JSX.Element = ({
       if (referralParameter) {
         sendReferralParameter(referralParameter);
       }
-      if (messages.length === 0 && openingMessage) {
+      const history = window.localStorage.getItem('tockMessageHistory');
+      if (messages.length === 0 && openingMessage && (sessionStorage == false || !history)) {
         sendOpeningMessage(openingMessage);
+      }
+      if (sessionStorage === true && history) {
+        addHistory(JSON.parse(history), JSON.parse(window.localStorage.getItem('tockQuickReplyHistory') || '[]'));
       }
     });
   }, [referralParameter]);

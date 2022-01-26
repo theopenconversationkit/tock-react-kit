@@ -7,6 +7,7 @@ import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
 import { default as createTheme } from './styles/createTheme';
+import { storageAvailable } from './utils';
 
 export const renderChat: (
   container: HTMLElement,
@@ -32,6 +33,7 @@ export const renderChat: (
           widgets={options.widgets}
           extraHeadersProvider={options.extraHeadersProvider}
           disableSse={options.disableSse}
+          sessionStorage={options.sessionStorage && storageAvailable('localStorage')}
         />
       </TockContext>
     </ThemeProvider>,

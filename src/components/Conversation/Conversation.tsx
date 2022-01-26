@@ -114,29 +114,35 @@ const Conversation = ({
   quickReplies,
   ...rest
 }: Props) => {
-  const displayableMessageCount = useIntervalCounter(
-    0,
-    messages.length,
-    messageDelay,
-  );
-  const displayableMessages = messages.slice(0, displayableMessageCount);
-  const scrollContainer = useScrollBehaviour([displayableMessages]);
-  const renderMessage = makeRenderMessage({
-    widgets,
-    onAction,
-  });
+  if (messages && messages.length !== 0) {
+    const displayableMessageCount =  useIntervalCounter(
+      messages.filter((message) => message.isSessionMessage === true).length,
+      messages.length,
+      messageDelay,
+    );
+    const displayableMessages = messages.slice(0, displayableMessageCount);
+    const scrollContainer = useScrollBehaviour([displayableMessages]);
+    const renderMessage = makeRenderMessage({
+      widgets,
+      onAction,
+    });
 
-  return (
-    <ConversationOuterContainer {...rest}>
-      <ConversationInnerContainer ref={scrollContainer}>
-        {displayableMessages.map(renderMessage)}
-        {loading && <Loader />}
-      </ConversationInnerContainer>
-      {displayableMessageCount === messages.length && (
-        <QuickReplyList items={quickReplies} onItemClick={onQuickReplyClick} />
-      )}
-    </ConversationOuterContainer>
-  );
+    return (
+      <ConversationOuterContainer {...rest}>
+        <ConversationInnerContainer ref={scrollContainer}>
+          { displayableMessages.map(renderMessage)}
+          {loading && <Loader />}
+        </ConversationInnerContainer>
+        {displayableMessageCount === messages.length && (
+          <QuickReplyList items={quickReplies} onItemClick={onQuickReplyClick} />
+        )}
+      </ConversationOuterContainer>
+    );
+  } else {
+    return(
+      <ConversationOuterContainer {...rest}></ConversationOuterContainer>
+    );
+  }
 };
 
 export default Conversation;
