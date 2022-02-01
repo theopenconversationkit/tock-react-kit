@@ -193,17 +193,26 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `Sizing`
 
-| Property name   | Type               | Description                                                  |
-|-----------------|--------------------|--------------------------------------------------------------|
-| `loaderSize`    | `string?`          | Loader component size                                        |
-| `borderRadius`  | `string?`          | Border radius used in various chat components                |
-| `conversation`  | `Shape`            | Object for customising chat size (see below)                 |
+| Property name          | Type               | Description                                                  |
+|------------------------|--------------------|--------------------------------------------------------------|
+| `loaderSize`           | `string?`          | Loader component size                                        |
+| `borderRadius`         | `string?`          | Border radius used in various chat components                |
+| `conversation`         | `Shape`            | Object for customising chat size (see below)                 |
+| `autoCarouselResizing` | `CarouselResizing` | Object for auto resizing the carousel to max height of card  |
 
 #### `Shape`
 
 | Property name   | Type               | Description                                                  |
 |-----------------|--------------------|--------------------------------------------------------------|
 | `width`         | `string?`          | CSS max-width of the chat interface                          |
+
+#### `CarouselResizing`
+
+| Property name   | Type                | Description                                                      |
+|-----------------|---------------------|------------------------------------------------------------------|
+| `active`        | `boolean?`          | Enable the carousel resizing, by default false                   |
+| `marginDelta`   | `string?`           | CSS size of top plus bottom margin of card if override           |
+| `paddingDelta`  | `string?`           | CSS size of top plus bottom padding of card if override          |
 
 #### `Typography`
 
@@ -255,6 +264,35 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
 | `widgets`                                | `any?`                                | Custom display component                                         |
 | `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
+
+#### Auto Resizing Carousel Cards
+
+The optional `autoCarouselResizing` makes it possible to resize the height of the cards in a carousel to the
+highest card height of it automatically.
+
+Example:
+
+```js
+renderChat(
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {
+    sizing: {
+        autoCarouselResizing: {
+          active: true,
+          marginDelta: '1em',
+          paddingDelta: '1em',
+        },
+    }
+  },
+);
+```
+
+This is typically used to align cards with a various number of buttons or text length.
+
+> Note that if you enable this option, do not override height and if you have overridden margin or/and padding
+> use the options marginDelta and paddingDelta to calculate the delta between the height container and your card
 
 #### Opening message
 

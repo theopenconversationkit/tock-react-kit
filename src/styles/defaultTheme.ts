@@ -23,6 +23,11 @@ const defaultTheme: TockTheme = {
     conversation: {
       width: '720px',
     },
+    autoCarouselResizing: {
+      active: false,
+      marginDelta: "0",
+      paddingDelta: "1em",
+    }
   },
   typography: {
     fontFamily: 'Segoe UI, Arial, Helvetica, sans-serif',

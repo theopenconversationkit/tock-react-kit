@@ -116,32 +116,36 @@ const Carousel: (props: { children?: ReactElement[] }) => JSX.Element = ({
 }: {
   children?: ReactElement[];
 }) => {
-  const theme: TockTheme = useTheme<TockTheme>();
-  const [ref, previous, next] = useCarousel<HTMLDivElement>(children?.length);
-  const [leftVisible, rightVisible] = useArrowVisibility(
-    ref.container,
-    ref.items,
-  );
-
-  return (
-    <ButtonContainer>
-      {leftVisible && (
-        <Previous onClick={previous}>
-          <ArrowLeftCircle size={`calc(${theme.typography.fontSize} * 2)`} />
-        </Previous>
-      )}
-      <ItemContainer ref={ref.container}>
-        {children?.map((child, i) =>
-          React.cloneElement(child, { ref: ref.items[i] }, undefined),
+  if (children !== undefined && children?.length > 0) {
+    const theme: TockTheme = useTheme<TockTheme>();
+    const [ref, previous, next] = useCarousel<HTMLDivElement>(children?.length);
+    const [leftVisible, rightVisible] = useArrowVisibility(
+      ref.container,
+      ref.items,
+    );
+    const height = (theme.sizing.autoCarouselResizing.active) ? ref.container.current?.clientHeight : 0;
+    return (
+      <ButtonContainer>
+        {leftVisible && (
+          <Previous onClick={previous}>
+            <ArrowLeftCircle size={`calc(${theme.typography.fontSize} * 2)`} />
+          </Previous>
         )}
-      </ItemContainer>
-      {rightVisible && (
-        <Next onClick={next}>
-          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} />
-        </Next>
-      )}
-    </ButtonContainer>
-  );
+        <ItemContainer ref={ref.container}>
+          {children?.map((child, i) =>
+            React.cloneElement(child, { ref: ref.items[i], height: (height !== undefined && height !== null && height !== 0) ? `${height}px` : undefined }, undefined),
+          )}
+        </ItemContainer>
+        {rightVisible && (
+          <Next onClick={next}>
+            <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} />
+          </Next>
+        )}
+      </ButtonContainer>
+    );
+  } else {
+    return <ButtonContainer></ButtonContainer>;
+  }
 };
 
 export default Carousel;

@@ -5,9 +5,11 @@ import React, {
   ImgHTMLAttributes,
 } from 'react';
 import TockTheme from 'styles/theme';
+import { useTheme } from 'emotion-theming';
 import { prop } from 'styled-tools';
 
 import { Button } from '../../TockContext';
+import useResizeHeight from './hooks/useResizeHeight';
 
 export const CardOuter: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
@@ -117,16 +119,21 @@ export interface CardProps {
   subTitle?: string;
   imageUrl?: string;
   buttons?: Button[];
+  height?: string;
   onAction: (button: Button) => void;
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(function cardRender(
-  { title, subTitle, imageUrl, buttons, onAction }: CardProps,
+  { title, subTitle, imageUrl, buttons, height, onAction }: CardProps,
   ref,
 ) {
+  const theme: TockTheme = useTheme<TockTheme>();
+  const resizedHeight = useResizeHeight(height);
+  const heightCSS: React.CSSProperties = ((resizedHeight !== undefined) ? { height: `calc(${resizedHeight} - ${theme.sizing.autoCarouselResizing.marginDelta} - ${theme.sizing.autoCarouselResizing.paddingDelta})` } : {});
+
   return (
     <CardOuter ref={ref}>
-      <CardContainer>
+      <CardContainer style={heightCSS}>
         {imageUrl && <CardImage src={imageUrl} alt={title} />}
         <CardTitle>{title}</CardTitle>
         {subTitle && (
