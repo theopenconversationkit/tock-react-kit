@@ -255,6 +255,38 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
 | `widgets`                                | `any?`                                | Custom display component                                         |
 | `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
+| `accessibility`                          | `TockAccessibility`                   | Object for overriding role and label accessibility attributes    |
+
+#### `TockAccessibility`
+
+| Property name                     | Type                   | Description                                                                                       |
+|-----------------------------------|------------------------|---------------------------------------------------------------------------------------------------|
+| `carouselRoleDescription`         | `string?`              | Message of the carousel aria-roledescription attribute (overrides 'Carousel')                     |
+| `slideRoleDescription`            | `string?`              | Message of the slide carousel aria-roledescription attribute (overrides 'Slide')                  |
+| `previousCarouselButtonLabel`     | `string?`              | Message of the carousel previous button image aria-label attribute (overrides 'Previous slides')  |
+| `nextCarouselButtonLabel`         | `string?`              | Message of the carousel next button image aria-label attribute (overrides 'Next slides')          |
+| `sendButtonLabel`                 | `string?`              | Message of the send message button image aria-label attribute (overrides 'Send a message')        |
+| `clearButtonLabel`                | `string?`              | Message of the clear messages button image aria-label attribute (overrides 'Clear messages')      |
+
+#### Accessibility
+
+The optional `accessibility` makes it possible to override default messages for some aria attributes.
+
+Example :
+
+```js
+renderChat(
+    document.getElementById('chat'),
+    '<TOCK_BOT_API_URL>',
+    undefined,
+    {},
+    { accessibility: {
+        carouselRoleDescription: 'Carousel',
+        slideRoleDescription: 'Resultat',
+      },
+    },
+);
+```
 
 #### Opening message
 

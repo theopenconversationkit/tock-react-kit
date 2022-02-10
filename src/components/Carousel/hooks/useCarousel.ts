@@ -1,4 +1,4 @@
-import { RefObject, useRef, useCallback } from 'react';
+import { RefObject, useRef, useCallback, useEffect } from 'react';
 import useRefs from './useRefs';
 import useMeasures, { Measure } from './useMeasures';
 
@@ -19,10 +19,32 @@ function getMeanX(
   return Math.round((previous.x + previous.width + target.x) / 2);
 }
 
+function setAriaAttributes(
+  measures: Measure[],
+  itemRefs: RefObject<HTMLElement>[],
+  targetIndex: number,
+  width: number,
+) {
+  if (width !== 0) {
+    itemRefs.forEach(item => {
+      const offsetLeftItem = item.current?.offsetLeft || 0;
+
+      if (offsetLeftItem < measures[targetIndex].x || (offsetLeftItem + (item.current?.offsetWidth || 0) > measures[targetIndex].x + width)) {
+        item.current?.setAttribute('aria-hidden', 'true');
+        item.current?.setAttribute('tabIndex', '-1');
+      } else {
+        item.current?.removeAttribute('aria-hidden');
+        item.current?.removeAttribute('tabIndex');
+      }
+    });
+  }
+}
+
 function scrollStep(
   direction: 'NEXT' | 'PREVIOUS',
   container: HTMLElement | null,
   measures: Measure[],
+  itemRefs: RefObject<HTMLElement>[],
 ) {
   if (!container) return;
   const x = container.scrollLeft;
@@ -36,6 +58,7 @@ function scrollStep(
       measures[targetIndex],
       measures[targetIndex - 1],
     );
+    setAriaAttributes(measures, itemRefs, targetIndex, width);
   } else {
     const firstLeftHidden = measures
       .slice()
@@ -51,6 +74,7 @@ function scrollStep(
       measures[targetIndex - 1],
       measures[targetIndex],
     );
+    setAriaAttributes(measures, itemRefs, targetIndex, width);
   }
 }
 
@@ -60,14 +84,20 @@ export default function useCarousel<T>(itemCount = 0): CarouselReturn<T> {
   const measures = useMeasures(itemRefs);
 
   const previous = useCallback(
-    () => scrollStep('PREVIOUS', containerRef.current, measures),
+    () => scrollStep('PREVIOUS', containerRef.current, measures, itemRefs),
     [containerRef, measures],
   );
 
   const next = useCallback(
-    () => scrollStep('NEXT', containerRef.current, measures),
+    () => scrollStep('NEXT', containerRef.current, measures, itemRefs),
     [containerRef, measures],
   );
+
+  useEffect(() => {
+    if (measures !== undefined && measures.length !== 0) {
+      setAriaAttributes(measures, itemRefs, 0, (containerRef.current as HTMLElement | null)?.clientWidth || 0);
+    }
+  }, [measures]);
 
   return [
     {

@@ -7,6 +7,10 @@ import { Button } from '../../TockContext';
 import TockTheme from 'styles/theme';
 import QuickReplyImage from './QuickReplyImage';
 
+const QuickReplyButtonContainer = styled.li`
+  list-style: none;
+`;
+
 const QuickReplyButton: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
   unknown,
@@ -41,10 +45,12 @@ type Props = DetailedHTMLProps<
   Button;
 
 const QuickReply = ({ imageUrl, label, ...rest }: Props) => (
-  <QuickReplyButton {...rest}>
-    {imageUrl && <QuickReplyImage src={imageUrl} />}
-    {label}
-  </QuickReplyButton>
+  <QuickReplyButtonContainer>
+    <QuickReplyButton {...rest}>
+      {imageUrl && <QuickReplyImage src={imageUrl} />}
+      {label}
+    </QuickReplyButton>
+  </QuickReplyButtonContainer>
 );
 
 export default QuickReply;

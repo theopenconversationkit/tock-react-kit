@@ -7,21 +7,23 @@ import { useTheme } from 'emotion-theming';
 import useCarousel from './hooks/useCarousel';
 import useArrowVisibility from './hooks/useArrowVisibility';
 import TockTheme from 'styles/theme';
+import TockAccessibility from 'TockAccessibility';
 
 const ButtonContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
   unknown,
   TockTheme
-> = styled.div`
+> = styled.li`
   margin: 0.4em 0;
   position: relative;
+  list-style: none;
 `;
 
 const ItemContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
   unknown,
   TockTheme
-> = styled.div`
+> = styled.ul`
   display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -29,13 +31,14 @@ const ItemContainer: StyledComponent<
   scroll-behavior: smooth;
   touch-action: pan-x pan-y;
   position: relative;
+  padding: 0;
   &::-webkit-scrollbar {
     display: none;
   }
   scrollbar-width: none;
   ${prop<any>('theme.overrides.carouselContainer', '')}
 
-  & > div, & > * {
+  & > li, & > * {
     margin-left: 1em;
     margin-right: 1em;
 
@@ -111,13 +114,15 @@ const Next: StyledComponent<
   ${prop<any>('theme.overrides.carouselArrow', '')};
 `;
 
-const Carousel: (props: { children?: ReactElement[] }) => JSX.Element = ({
+const Carousel: (props: { children?: ReactElement[] , accessibility?: TockAccessibility}) => JSX.Element = ({
   children,
+  accessibility,
 }: {
   children?: ReactElement[];
+  accessibility?: TockAccessibility;
 }) => {
   const theme: TockTheme = useTheme<TockTheme>();
-  const [ref, previous, next] = useCarousel<HTMLDivElement>(children?.length);
+  const [ref, previous, next] = useCarousel<HTMLUListElement>(children?.length);
   const [leftVisible, rightVisible] = useArrowVisibility(
     ref.container,
     ref.items,
@@ -127,17 +132,17 @@ const Carousel: (props: { children?: ReactElement[] }) => JSX.Element = ({
     <ButtonContainer>
       {leftVisible && (
         <Previous onClick={previous}>
-          <ArrowLeftCircle size={`calc(${theme.typography.fontSize} * 2)`} />
+          <ArrowLeftCircle size={`calc(${theme.typography.fontSize} * 2)`} role='img' aria-label={accessibility?.previousCarouselButtonLabel || 'Previous slides'} focusable='false'/>
         </Previous>
       )}
-      <ItemContainer ref={ref.container}>
+      <ItemContainer ref={ref.container} role='group' aria-roledescription={accessibility?.carouselRoleDescription || 'Carousel'}>
         {children?.map((child, i) =>
-          React.cloneElement(child, { ref: ref.items[i] }, undefined),
+          React.cloneElement(child, { ref: ref.items[i], roleDescription: accessibility?.slideRoleDescription }, undefined),
         )}
       </ItemContainer>
       {rightVisible && (
         <Next onClick={next}>
-          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} />
+          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} role='img' aria-label={accessibility?.nextCarouselButtonLabel || 'Next slides'} focusable='false'/>
         </Next>
       )}
     </ButtonContainer>

@@ -3,6 +3,7 @@ import useTock, { UseTock } from '../../useTock';
 import ChatInput from '../ChatInput';
 import Container from '../Container';
 import Conversation from '../Conversation';
+import TockAccessibility from "../../TockAccessibility";
 
 export interface ChatProps {
   endPoint: string;
@@ -12,6 +13,7 @@ export interface ChatProps {
   widgets?: any;
   extraHeadersProvider?: () => Promise<Record<string, string>>;
   disableSse?: boolean;
+  accessibility?: TockAccessibility;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -22,6 +24,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   widgets = {},
   extraHeadersProvider = undefined,
   disableSse = false,
+  accessibility = {},
 }: ChatProps) => {
   const {
     messages,
@@ -58,8 +61,9 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         quickReplies={quickReplies}
         onAction={sendAction}
         onQuickReplyClick={sendQuickReply}
+        accessibility={accessibility}
       />
-      <ChatInput disabled={sseInitializing} onSubmit={sendMessage} />
+      <ChatInput disabled={sseInitializing} onSubmit={sendMessage} accessibility={accessibility}/>
     </Container>
   );
 };

@@ -32,6 +32,7 @@ export const renderChat: (
           widgets={options.widgets}
           extraHeadersProvider={options.extraHeadersProvider}
           disableSse={options.disableSse}
+          accessibility={options.accessibility}
         />
       </TockContext>
     </ThemeProvider>,

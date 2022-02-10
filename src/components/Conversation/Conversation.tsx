@@ -21,13 +21,16 @@ import type {
   Widget,
   QuickReply as CQuickReply,
 } from 'TockContext';
+import TockAccessibility from 'TockAccessibility';
 
 const ConversationOuterContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const ConversationInnerContainer = styled.div`
+const ConversationInnerContainer = styled.ul`
+  padding: 0;
+  margin: 0;
   flex-grow: 1;
   flex-shrink: 1;
   overflow-y: scroll;
@@ -59,8 +62,8 @@ const renderCard = (card: ICard, options: RenderOptions) => (
   <Card onAction={options.onAction} {...card} />
 );
 
-const renderCarousel = (carousel: ICarousel, options: RenderOptions) => (
-  <Carousel>
+const renderCarousel = (carousel: ICarousel, options: RenderOptions, accessibility?: TockAccessibility) => (
+  <Carousel accessibility={accessibility}>
     {carousel.cards.map((card: ICard, index: number) => (
       <Card key={index} onAction={options.onAction} {...card} />
     ))}
@@ -68,7 +71,7 @@ const renderCarousel = (carousel: ICarousel, options: RenderOptions) => (
 );
 
 interface Renderer {
-  (message: Message, options: RenderOptions): JSX.Element;
+  (message: Message, options: RenderOptions, accessibility?: TockAccessibility): JSX.Element;
 }
 
 const MESSAGE_RENDERER: {
@@ -80,13 +83,13 @@ const MESSAGE_RENDERER: {
   carousel: renderCarousel,
 };
 
-const makeRenderMessage = (options: RenderOptions) => (
+const makeRenderMessage = (options: RenderOptions, accessibility?: TockAccessibility) => (
   message: Message | ICard | ICarousel | Widget,
   index: number,
 ) => {
   const render: Renderer = MESSAGE_RENDERER[message.type];
   if (!render) return null;
-  return React.cloneElement(render(message, options), {
+  return React.cloneElement(render(message, options, accessibility), {
     key: `${message.type}-${index}`,
   });
 };
@@ -102,6 +105,7 @@ type Props = DetailedHTMLProps<
   quickReplies: CQuickReply[];
   onAction: (button: Button) => void;
   onQuickReplyClick: (button: Button) => void;
+  accessibility?: TockAccessibility;
 };
 
 const Conversation = ({
@@ -112,6 +116,7 @@ const Conversation = ({
   widgets,
   onQuickReplyClick,
   quickReplies,
+  accessibility,
   ...rest
 }: Props) => {
   const displayableMessageCount = useIntervalCounter(
@@ -124,10 +129,11 @@ const Conversation = ({
   const renderMessage = makeRenderMessage({
     widgets,
     onAction,
-  });
+  },
+  accessibility);
 
   return (
-    <ConversationOuterContainer {...rest}>
+    <ConversationOuterContainer aria-live='polite' aria-atomic='false' aria-relevant='additions' {...rest}>
       <ConversationInnerContainer ref={scrollContainer}>
         {displayableMessages.map(renderMessage)}
         {loading && <Loader />}
