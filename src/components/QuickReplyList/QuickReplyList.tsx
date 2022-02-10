@@ -7,10 +7,10 @@ import QuickReply from '../QuickReply/QuickReply';
 import TockTheme from '../../styles/theme';
 
 const QuickReplyListContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
   unknown,
   TockTheme
-> = styled.div`
+> = styled.ul`
   flex-shrink: 0;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
@@ -24,8 +24,7 @@ const QuickReplyListContainer: StyledComponent<
   &::-webkit-scrollbar {
     display: none;
   }
-  padding-left: 1em;
-  padding-right: 1em;
+  padding: 0 1em;
 
   & > * {
     display: inline-block;

@@ -8,11 +8,12 @@ const MessageContainer: StyledComponent<
   unknown,
   unknown,
   TockTheme
-> = styled.div`
+> = styled.li`
   width: 100%;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   text-align: right;
+  list-style: none;
 `;
 
 const Message: StyledComponent<unknown, unknown, TockTheme> = styled.div`

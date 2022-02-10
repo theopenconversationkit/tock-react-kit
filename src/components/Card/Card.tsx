@@ -10,12 +10,13 @@ import { prop } from 'styled-tools';
 import { Button } from '../../TockContext';
 
 export const CardOuter: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
   unknown,
   TockTheme
-> = styled.div`
+> = styled.li`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
+  list-style: none;
 `;
 
 export const CardContainer: StyledComponent<
@@ -34,23 +35,27 @@ export const CardContainer: StyledComponent<
 `;
 
 const CardTitle: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>,
   unknown,
   TockTheme
-> = styled.h3`
+> = styled.span`
   margin: 0.5em 0;
   font-size: 1.5em;
+  font-weight: bold;
+  display: block;
 
   ${prop<any>('theme.overrides.card.cardTitle', '')};
 `;
 
 const CardSubTitle: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>,
   unknown,
   TockTheme
-> = styled.h4`
+> = styled.span`
   margin: 0.5em 0;
   font-size: 1em;
+  font-weight: bold;
+  display: block;
 
   ${prop<any>('theme.overrides.card.cardSubTitle', '')};
 `;
@@ -117,15 +122,16 @@ export interface CardProps {
   subTitle?: string;
   imageUrl?: string;
   buttons?: Button[];
+  roleDescription?: string;
   onAction: (button: Button) => void;
 }
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(function cardRender(
-  { title, subTitle, imageUrl, buttons, onAction }: CardProps,
+const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
+  { title, subTitle, imageUrl, buttons, roleDescription, onAction }: CardProps,
   ref,
 ) {
   return (
-    <CardOuter ref={ref}>
+    <CardOuter ref={ref} role={(ref == undefined) ? undefined : 'group'} aria-roledescription={(ref == undefined) ? undefined : ((roleDescription) ? roleDescription : 'Slide')}>
       <CardContainer>
         {imageUrl && <CardImage src={imageUrl} alt={title} />}
         <CardTitle>{title}</CardTitle>

@@ -1,3 +1,5 @@
+import TockAccessibility from "TockAccessibility";
+
 export interface TockOptions {
   // An initial message to send to the backend to trigger a welcome sequence
   openingMessage?: string;
@@ -7,6 +9,7 @@ export interface TockOptions {
   timeoutBetweenMessage?: number;
   widgets?: any;
   disableSse?: boolean;
+  accessibility?: TockAccessibility;
 }
 
 export default TockOptions;

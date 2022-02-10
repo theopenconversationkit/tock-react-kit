@@ -11,6 +11,7 @@ import { Send, Trash2 } from 'react-feather';
 import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
 import useTock, { UseTock } from '../../useTock';
+import TockAccessibility from 'TockAccessibility';
 
 const InputOuterContainer: StyledComponent<
   DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>,
@@ -84,6 +85,7 @@ const SubmitIcon: StyledComponent<
       fill: ${prop<any>('theme.palette.background.bot')};
     }
   }
+
   ${prop<any>('theme.overrides.chatInput.icon', '')}
 `;
 
@@ -123,11 +125,13 @@ const ClearIcon: StyledComponent<
 export interface ChatInputProps {
   disabled?: boolean;
   onSubmit: (message: string) => void;
+  accessibility?: TockAccessibility;
 }
 
 const ChatInput: (props: ChatInputProps) => JSX.Element = ({
   disabled,
   onSubmit,
+  accessibility,
 }: ChatInputProps): JSX.Element => {
   const { clearMessages }: UseTock = useTock();
   const [value, setValue] = useState('');
@@ -146,12 +150,12 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
         className={disabled ? 'disabled-input' : undefined}
         value={value}
         onChange={({ target: { value } }) => setValue(value)}
-      />
+        />
       <SubmitIcon>
-        <Send size="100%" />
+        <Send size="100%" role='img' aria-label={accessibility?.sendButtonLabel || 'Send a message'} focusable='false' />
       </SubmitIcon>
       <ClearIcon>
-        <Trash2 size="25px" color={'white'} onClick={clearMessages} />
+        <Trash2 size="25px" color={'white'} onClick={clearMessages} role='img' aria-label={accessibility?.clearButtonLabel || 'Clear messages'} focusable='false' />
       </ClearIcon>
     </InputOuterContainer>
   );
