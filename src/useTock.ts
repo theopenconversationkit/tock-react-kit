@@ -78,12 +78,12 @@ const useTock: (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
-  sessionStorage?: boolean,
+  localStorage?: boolean,
 ) => UseTock = (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
-  sessionStorage?: boolean,
+  localStorage?: boolean,
 ) => {
   const {
     messages,
@@ -134,7 +134,7 @@ const useTock: (
         type: 'SET_QUICKREPLIES',
         quickReplies: quickReplies,
       });
-      if (sessionStorage) {
+      if (localStorage) {
         window.localStorage.setItem('tockQuickReplyHistory', JSON.stringify(quickReplies));
       }
       dispatch({
@@ -164,7 +164,7 @@ const useTock: (
                 type: MessageType.carousel,
               } as Carousel;
             }
-            if (sessionStorage) {
+            if (localStorage) {
               recordResponseToLocaleSession(message);
             }
             return message;
@@ -225,7 +225,7 @@ const useTock: (
           message,
           type: MessageType.message,
         } as TextMessage;
-        if (sessionStorage) {
+        if (localStorage) {
           recordResponseToLocaleSession(messageToDispatch);
         }
         dispatch({
@@ -288,7 +288,7 @@ const useTock: (
       return Promise.resolve();
     } else if (button.payload) {
       setQuickReplies([]);
-      if (sessionStorage) {
+      if (localStorage) {
         recordResponseToLocaleSession({author: 'user', message: button.label, type: MessageType.message});
       }
       addMessage(button.label, 'user');

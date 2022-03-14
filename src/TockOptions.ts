@@ -7,7 +7,7 @@ export interface TockOptions {
   timeoutBetweenMessage?: number;
   widgets?: any;
   disableSse?: boolean;
-  sessionStorage?: boolean;
+  localStorage?: boolean;
 }
 
 export default TockOptions;

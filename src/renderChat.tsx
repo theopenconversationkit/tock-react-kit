@@ -33,7 +33,7 @@ export const renderChat: (
           widgets={options.widgets}
           extraHeadersProvider={options.extraHeadersProvider}
           disableSse={options.disableSse}
-          sessionStorage={options.sessionStorage && storageAvailable('localStorage')}
+          localStorage={options.localStorage && storageAvailable('localStorage')}
         />
       </TockContext>
     </ThemeProvider>,
