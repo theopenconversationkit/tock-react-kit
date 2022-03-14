@@ -142,7 +142,7 @@ const Carousel: (props: { children?: ReactElement[] , accessibility?: TockAccess
       </ItemContainer>
       {rightVisible && (
         <Next onClick={next}>
-          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} role='img' aria-label={accessibility?.previousCarouselButtonLabel || 'Next slides'} focusable='false'/>
+          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} role='img' aria-label={accessibility?.nextCarouselButtonLabel || 'Next slides'} focusable='false'/>
         </Next>
       )}
     </ButtonContainer>
