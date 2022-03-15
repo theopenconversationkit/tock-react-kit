@@ -255,9 +255,9 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
 | `widgets`                                | `any?`                                | Custom display component                                         |
 | `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
-| `localStorage`                         | `boolean?`                            | Enable history session storage                                   |
+| `localStorage`                           | `boolean?`                            | Enable history local storage                                     |
 
-#### Session storage
+#### Local storage
 
 The optional `localStorage` makes it possible to provide a history session of messages.
 This history loads at the creation of the chat and is stored in the locale storage of the browser.
