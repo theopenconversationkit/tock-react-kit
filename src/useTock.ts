@@ -16,6 +16,7 @@ import {
   WidgetData,
 } from './TockContext';
 import { Sse } from './Sse';
+import useLocalTools, { UseLocalTools } from './useLocalTools';
 
 export interface UseTock {
   messages: Message[];
@@ -89,6 +90,7 @@ const useTock: (
     sseInitializing,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
+  const { clearMessages }: UseLocalTools = useLocalTools();
 
   const startLoading: () => void = () => {
     dispatch({
@@ -182,14 +184,6 @@ const useTock: (
 
   const getExtraHeaders: () => Promise<Record<string, string>> =
     extraHeadersProvider ?? (async () => ({}));
-
-  const clearMessages: () => void = useCallback(
-    () =>
-      dispatch({
-        type: 'CLEAR_MESSAGES',
-      }),
-    [],
-  );
 
   const sendMessage: (
     message: string,
