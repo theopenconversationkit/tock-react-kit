@@ -10,7 +10,7 @@ import React, {
 import { Send, Trash2 } from 'react-feather';
 import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
-import useTock, { UseTock } from '../../useTock';
+import useLocalTools, { UseLocalTools } from '../../useLocalTools';
 
 const InputOuterContainer: StyledComponent<
   DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>,
@@ -129,7 +129,7 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
   disabled,
   onSubmit,
 }: ChatInputProps): JSX.Element => {
-  const { clearMessages }: UseTock = useTock();
+  const { clearMessages }: UseLocalTools = useLocalTools();
   const [value, setValue] = useState('');
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
