@@ -6,7 +6,7 @@ storiesOf('Inline Quick reply', module)
   .add('Single QR', () => (
     <InlineQuickReplyList
       onItemClick={Function.bind(null)}
-      items={[{ label: 'Inline Quick Reply'}]}
+      items={[{ label: 'Inline Quick Reply' }]}
     />
   ))
   .add('Multiple QRs', () => (

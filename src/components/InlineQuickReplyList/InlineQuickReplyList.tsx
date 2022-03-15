@@ -15,7 +15,7 @@ const InlineQuickReplyListContainer: StyledComponent<
   unknown,
   TockTheme
 > = styled.div`
-  display:flex;
+  display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   justify-content: start;
@@ -107,17 +107,18 @@ const InlineQuickReplyListOuterContainer: StyledComponent<
   unknown,
   TockTheme
 > = styled.div`
-  position: relative;`
-;
-
+  position: relative;
+`;
 type Props = {
-    items: Button[];
-    onItemClick: (button: Button) => void;
+  items: Button[];
+  onItemClick: (button: Button) => void;
 };
 
 const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
   const theme: TockTheme = useTheme<TockTheme>();
-  const [ref, previous, next] = useCarouselQuickReply<HTMLDivElement>(items?.length);
+  const [ref, previous, next] = useCarouselQuickReply<HTMLDivElement>(
+    items?.length,
+  );
 
   const [leftVisible, rightVisible] = useArrowVisibility(
     ref.container,
@@ -133,11 +134,15 @@ const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
       )}
       <InlineQuickReplyListContainer ref={ref.container}>
         {items.map((child, index) =>
-          React.cloneElement(<QuickReply
-            key={`${child.label}-${index}`}
-            onClick={onItemClick.bind(null, child)}
-            {...child}
-          />, { ref: ref.items[index] }, undefined)
+          React.cloneElement(
+            <QuickReply
+              key={`${child.label}-${index}`}
+              onClick={onItemClick.bind(null, child)}
+              {...child}
+            />,
+            { ref: ref.items[index] },
+            undefined,
+          ),
         )}
       </InlineQuickReplyListContainer>
       {rightVisible && (

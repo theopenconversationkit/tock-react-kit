@@ -32,7 +32,7 @@ function scrollStep(
     const targetIndex = measures.findIndex(
       (measure) => measure.x + measure.width > x + width,
     );
-    
+
     container.scrollLeft = getMeanX(
       measures[targetIndex],
       measures[targetIndex - 1],
@@ -55,7 +55,9 @@ function scrollStep(
   }
 }
 
-export default function useCarouselQuickReply<T>(itemCount = 0): CarouselQuickReplyReturn<T> {
+export default function useCarouselQuickReply<T>(
+  itemCount = 0,
+): CarouselQuickReplyReturn<T> {
   const containerRef = useRef(null);
   const itemRefs = useButtonRefs(itemCount);
   const measures = useButtonMeasures(itemRefs);

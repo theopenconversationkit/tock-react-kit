@@ -65,7 +65,11 @@ const renderCard = (card: ICard, options: RenderOptions) => (
   <Card onAction={options.onAction} {...card} />
 );
 
-const renderCarousel = (carousel: ICarousel, options: RenderOptions, accessibility?: TockAccessibility) => (
+const renderCarousel = (
+  carousel: ICarousel,
+  options: RenderOptions,
+  accessibility?: TockAccessibility,
+) => (
   <Carousel accessibility={accessibility}>
     {carousel.cards.map((card: ICard, index: number) => (
       <Card key={index} onAction={options.onAction} {...card} />
@@ -74,7 +78,11 @@ const renderCarousel = (carousel: ICarousel, options: RenderOptions, accessibili
 );
 
 interface Renderer {
-  (message: Message, options: RenderOptions, accessibility?: TockAccessibility): JSX.Element;
+  (
+    message: Message,
+    options: RenderOptions,
+    accessibility?: TockAccessibility,
+  ): JSX.Element;
 }
 
 const MESSAGE_RENDERER: {
@@ -86,10 +94,10 @@ const MESSAGE_RENDERER: {
   carousel: renderCarousel,
 };
 
-const makeRenderMessage = (options: RenderOptions, accessibility?: TockAccessibility) => (
-  message: Message | ICard | ICarousel | Widget,
-  index: number,
-) => {
+const makeRenderMessage = (
+  options: RenderOptions,
+  accessibility?: TockAccessibility,
+) => (message: Message | ICard | ICarousel | Widget, index: number) => {
   const render: Renderer = MESSAGE_RENDERER[message.type];
   if (!render) return null;
   return React.cloneElement(render(message, options, accessibility), {
@@ -131,33 +139,49 @@ const Conversation = ({
     const theme: TockTheme = useTheme<TockTheme>();
     const displayableMessages = messages.slice(0, displayableMessageCount);
     const scrollContainer = useScrollBehaviour([displayableMessages]);
-    const renderMessage = makeRenderMessage({
-      widgets,
-      onAction,
-    },
-    accessibility);
+    const renderMessage = makeRenderMessage(
+      {
+        widgets,
+        onAction,
+      },
+      accessibility,
+    );
 
     return (
-      <ConversationOuterContainer aria-live='polite' aria-atomic='false' aria-relevant='additions' {...rest}>
+      <ConversationOuterContainer
+        aria-live="polite"
+        aria-atomic="false"
+        aria-relevant="additions"
+        {...rest}
+      >
         <ConversationInnerContainer ref={scrollContainer}>
           {displayableMessages.map(renderMessage)}
           {loading && <Loader />}
         </ConversationInnerContainer>
-        {displayableMessageCount === messages.length && theme.inlineQuickReplies !== true && (
-          <QuickReplyList
-          items={quickReplies}
-          onItemClick={onQuickReplyClick} />
-        )}
-        {displayableMessageCount === messages.length && theme.inlineQuickReplies === true && (
-          <InlineQuickReplyList
-          items={quickReplies}
-          onItemClick={onQuickReplyClick} />
-      )}
+        {displayableMessageCount === messages.length &&
+          theme.inlineQuickReplies !== true && (
+            <QuickReplyList
+              items={quickReplies}
+              onItemClick={onQuickReplyClick}
+            />
+          )}
+        {displayableMessageCount === messages.length &&
+          theme.inlineQuickReplies === true && (
+            <InlineQuickReplyList
+              items={quickReplies}
+              onItemClick={onQuickReplyClick}
+            />
+          )}
       </ConversationOuterContainer>
     );
   } else {
-    return(
-      <ConversationOuterContainer aria-live='polite' aria-atomic='false' aria-relevant='additions' {...rest}></ConversationOuterContainer>
+    return (
+      <ConversationOuterContainer
+        aria-live="polite"
+        aria-atomic="false"
+        aria-relevant="additions"
+        {...rest}
+      ></ConversationOuterContainer>
     );
   }
 };

@@ -14,12 +14,14 @@ const measureElement = (element: HTMLButtonElement | null): Measure => ({
   y: element?.offsetTop || 0,
 });
 
-export default function useButtonMeasures(refs: RefObject<HTMLButtonElement>[]): Measure[] {
+export default function useButtonMeasures(
+  refs: RefObject<HTMLButtonElement>[],
+): Measure[] {
   const [measures, setMeasures] = useState<Measure[]>([]);
 
   useEffect(() => {
-    const nextMeasures = refs.map((ref) =>  {
-      return measureElement(ref.current)
+    const nextMeasures = refs.map((ref) => {
+      return measureElement(ref.current);
     });
     setMeasures(nextMeasures);
   }, [refs]);
