@@ -46,7 +46,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         sendReferralParameter(referralParameter);
       }
       const history = window.localStorage.getItem('tockMessageHistory');
-      if (messages.length === 0 && openingMessage && (localStorage == false || !history)) {
+      if (messages.length === 0 && openingMessage && (localStorage === false || !history)) {
         sendOpeningMessage(openingMessage);
       }
       if (localStorage === true && history) {

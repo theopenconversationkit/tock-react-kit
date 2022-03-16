@@ -64,7 +64,7 @@ function mapButton(button: any): Button {
   }
 }
 
-function mapCard(card: any, recordResponseToLocaleSession: (card: any) => void): Card {
+function mapCard(card: any): Card {
   return {
     title: card.title,
     subTitle: card.subTitle,
@@ -157,10 +157,10 @@ const useTock: (
                   .map(mapButton),
               } as Message;
             } else if (card) {
-              message = mapCard(card, recordResponseToLocaleSession);
+              message = mapCard(card);
             } else {
               message = {
-                cards: carousel.cards.map((card: any) => mapCard(card, recordResponseToLocaleSession)),
+                cards: carousel.cards.map((card: any) => mapCard(card)),
                 type: MessageType.carousel,
               } as Carousel;
             }
