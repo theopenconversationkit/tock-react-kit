@@ -37,7 +37,7 @@ export interface UseTock {
     subTitle?: string,
     buttons?: { label: string; url?: string }[],
   ) => void;
-  addImage: (title: string, imageUrl?: string) => void;
+  addImage: (title: string, url?: string) => void;
   addCarousel: (cards: Card[]) => void;
   addWidget: (widgetData: WidgetData) => void;
   setQuickReplies: (quickReplies: QuickReply[]) => void;
@@ -79,8 +79,8 @@ function mapCard(card: any): Card {
 
 function mapImage(image: any): Image {
   return {
-    title: image.title ? image.file.title : null,
-    imageUrl: image.file ? image.file.url : null,
+    title: image.file?.title,
+    url: image.file?.url,
     type: MessageType.image,
   } as Image;
 }
@@ -216,14 +216,14 @@ const useTock: (
     [],
   );
 
-  const addImage: (title: string, imageUrl: string) => void = useCallback(
-    (title: string, imageUrl: string) =>
+  const addImage: (title: string, url: string) => void = useCallback(
+    (title: string, url: string) =>
       dispatch({
         type: 'ADD_MESSAGE',
         messages: [
           {
             title,
-            imageUrl,
+            url,
             type: MessageType.image,
           } as Image,
         ],

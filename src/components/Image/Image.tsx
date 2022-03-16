@@ -44,19 +44,19 @@ export const CardContainer: StyledComponent<
 
 export interface ImageProps {
   title: string;
-  imageUrl?: string;
+  url?: string;
 }
 
 const Image = React.forwardRef<HTMLDivElement, ImageProps>(function imageRender(
-  { title, imageUrl }: ImageProps,
+  { title, url }: ImageProps,
   ref,
 ) {
   return (
     <CardOuter ref={ref}>
       <CardContainer>
-        {imageUrl && (
-          <a target="_blank" href={imageUrl} rel="noreferrer">
-            <CardImage src={imageUrl} alt={title} />
+        {url && (
+          <a target="_blank" href={url} rel="noreferrer">
+            <CardImage src={url} alt={title} />
           </a>
         )}
       </CardContainer>
