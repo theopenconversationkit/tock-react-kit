@@ -281,7 +281,7 @@ renderChat(
     undefined,
     {},
     { accessibility: {
-        carouselRoleDescription: 'Carrousel',
+        carouselRoleDescription: 'Carousel',
         slideRoleDescription: 'Resultat',
       },
     },
