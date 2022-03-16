@@ -134,15 +134,12 @@ const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
       )}
       <InlineQuickReplyListContainer ref={ref.container}>
         {items.map((child, index) =>
-          React.cloneElement(
             <QuickReply
               key={`${child.label}-${index}`}
               onClick={onItemClick.bind(null, child)}
               {...child}
-            />,
-            { ref: ref.items[index] },
-            undefined,
-          ),
+              ref={ref.items[index]}
+            />
         )}
       </InlineQuickReplyListContainer>
       {rightVisible && (
