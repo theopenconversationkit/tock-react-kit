@@ -409,7 +409,7 @@ const useTock: (
       dispatch({
         type: 'ADD_MESSAGE',
         messages: history.map((message: Message) => {
-          message.isSessionMessage = true;
+          message.isStoredInLocalStorage = true;
           return message;
         }),
       });
