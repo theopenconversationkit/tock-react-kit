@@ -34,7 +34,7 @@ export const renderChat: (
           extraHeadersProvider={options.extraHeadersProvider}
           disableSse={options.disableSse}
           accessibility={options.accessibility}
-          sessionStorage={options.sessionStorage && storageAvailable('localStorage')}
+          localStorage={options.localStorage && storageAvailable('localStorage')}
         />
       </TockContext>
     </ThemeProvider>,

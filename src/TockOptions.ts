@@ -10,7 +10,7 @@ export interface TockOptions {
   widgets?: any;
   disableSse?: boolean;
   accessibility?: TockAccessibility;
-  sessionStorage?: boolean;
+  localStorage?: boolean;
 }
 
 export default TockOptions;

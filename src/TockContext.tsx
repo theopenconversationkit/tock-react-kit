@@ -88,7 +88,7 @@ export enum MessageType {
 
 export interface Message {
   type: MessageType;
-  isSessionMessage?: boolean;
+  isStoredInLocalStorage?: boolean;
 }
 
 export interface TextMessage extends Message {

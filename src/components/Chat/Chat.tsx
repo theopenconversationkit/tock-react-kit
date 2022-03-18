@@ -14,7 +14,7 @@ export interface ChatProps {
   extraHeadersProvider?: () => Promise<Record<string, string>>;
   disableSse?: boolean;
   accessibility?: TockAccessibility;
-  sessionStorage?: boolean;
+  localStorage?: boolean;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -26,7 +26,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   extraHeadersProvider = undefined,
   disableSse = false,
   accessibility = {},
-  sessionStorage = false,
+  localStorage = false,
 }: ChatProps) => {
   const {
     messages,
@@ -40,7 +40,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     addHistory,
     sseInitPromise,
     sseInitializing,
-  }: UseTock = useTock(endPoint, extraHeadersProvider, disableSse, sessionStorage);
+  }: UseTock = useTock(endPoint, extraHeadersProvider, disableSse, localStorage);
 
   useEffect(() => {
     // When the chat gets initialized for the first time, process optional referral|opening message
@@ -49,10 +49,10 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         sendReferralParameter(referralParameter);
       }
       const history = window.localStorage.getItem('tockMessageHistory');
-      if (messages.length === 0 && openingMessage && (sessionStorage == false || !history)) {
+      if (messages.length === 0 && openingMessage && (localStorage === false || !history)) {
         sendOpeningMessage(openingMessage);
       }
-      if (sessionStorage === true && history) {
+      if (localStorage === true && history) {
         addHistory(JSON.parse(history), JSON.parse(window.localStorage.getItem('tockQuickReplyHistory') || '[]'));
       }
     });
