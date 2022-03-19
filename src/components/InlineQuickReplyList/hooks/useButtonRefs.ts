@@ -14,7 +14,7 @@ export default function useButtonRefs(count: number): Refs {
 
   useEffect(() => {
     setRefs((refs) =>
-      Array.from({length: count}, (_, i) => refs[i] || createRef()),
+      Array.from({ length: count }, (_, i) => refs[i] || createRef()),
     );
   }, [count]);
 

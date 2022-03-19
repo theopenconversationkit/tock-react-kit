@@ -114,7 +114,10 @@ const Next: StyledComponent<
   ${prop<any>('theme.overrides.carouselArrow', '')};
 `;
 
-const Carousel: (props: { children?: ReactElement[] , accessibility?: TockAccessibility}) => JSX.Element = ({
+const Carousel: (props: {
+  children?: ReactElement[];
+  accessibility?: TockAccessibility;
+}) => JSX.Element = ({
   children,
   accessibility,
 }: {
@@ -132,17 +135,42 @@ const Carousel: (props: { children?: ReactElement[] , accessibility?: TockAccess
     <ButtonContainer>
       {leftVisible && (
         <Previous onClick={previous}>
-          <ArrowLeftCircle size={`calc(${theme.typography.fontSize} * 2)`} role='img' aria-label={accessibility?.previousCarouselButtonLabel || 'Previous slides'} focusable='false'/>
+          <ArrowLeftCircle
+            size={`calc(${theme.typography.fontSize} * 2)`}
+            role="img"
+            aria-label={
+              accessibility?.previousCarouselButtonLabel || 'Previous slides'
+            }
+            focusable="false"
+          />
         </Previous>
       )}
-      <ItemContainer ref={ref.container} role='group' aria-roledescription={accessibility?.carouselRoleDescription || 'Carousel'}>
+      <ItemContainer
+        ref={ref.container}
+        role="group"
+        aria-roledescription={
+          accessibility?.carouselRoleDescription || 'Carousel'
+        }
+      >
         {children?.map((child, i) =>
-          React.cloneElement(child, { ref: ref.items[i], roleDescription: accessibility?.slideRoleDescription }, undefined),
+          React.cloneElement(
+            child,
+            {
+              ref: ref.items[i],
+              roleDescription: accessibility?.slideRoleDescription,
+            },
+            undefined,
+          ),
         )}
       </ItemContainer>
       {rightVisible && (
         <Next onClick={next}>
-          <ArrowRightCircle size={`calc(${theme.typography.fontSize} * 2)`} role='img' aria-label={accessibility?.nextCarouselButtonLabel || 'Next slides'} focusable='false'/>
+          <ArrowRightCircle
+            size={`calc(${theme.typography.fontSize} * 2)`}
+            role="img"
+            aria-label={accessibility?.nextCarouselButtonLabel || 'Next slides'}
+            focusable="false"
+          />
         </Next>
       )}
     </ButtonContainer>

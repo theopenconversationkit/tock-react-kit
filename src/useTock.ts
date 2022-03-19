@@ -120,12 +120,14 @@ const useTock: (
     });
   };
 
-  const recordResponseToLocaleSession: (message: any) => void = (message: any) => {
-    let history: any = window.localStorage.getItem("tockMessageHistory");
+  const recordResponseToLocaleSession: (message: any) => void = (
+    message: any,
+  ) => {
+    let history: any = window.localStorage.getItem('tockMessageHistory');
     if (!history) {
-        history = [];
+      history = [];
     } else {
-        history = JSON.parse(history);
+      history = JSON.parse(history);
     }
     if (history.length >= 10) {
       history.shift();
@@ -147,7 +149,10 @@ const useTock: (
         quickReplies: quickReplies,
       });
       if (localStorage) {
-        window.localStorage.setItem('tockQuickReplyHistory', JSON.stringify(quickReplies));
+        window.localStorage.setItem(
+          'tockQuickReplyHistory',
+          JSON.stringify(quickReplies),
+        );
       }
       dispatch({
         type: 'ADD_MESSAGE',
@@ -251,9 +256,7 @@ const useTock: (
         }
         dispatch({
           type: 'ADD_MESSAGE',
-          messages: [
-            messageToDispatch,
-          ],
+          messages: [messageToDispatch],
         });
       }
       startLoading();
@@ -310,7 +313,11 @@ const useTock: (
     } else if (button.payload) {
       setQuickReplies([]);
       if (localStorage) {
-        recordResponseToLocaleSession({author: 'user', message: button.label, type: MessageType.message});
+        recordResponseToLocaleSession({
+          author: 'user',
+          message: button.label,
+          type: MessageType.message,
+        });
       }
       addMessage(button.label, 'user');
       startLoading();
@@ -425,7 +432,10 @@ const useTock: (
       ? Sse.disable()
       : Sse.init(tockEndPoint, userId, handleBotResponse, onSseStateChange);
 
-  const addHistory: (messageHistory: Array<Message>, quickReplyHistory: Array<QuickReply>) => void = useCallback(
+  const addHistory: (
+    messageHistory: Array<Message>,
+    quickReplyHistory: Array<QuickReply>,
+  ) => void = useCallback(
     (history: Array<Message>, quickReplyHistory: Array<QuickReply>) => {
       dispatch({
         type: 'ADD_MESSAGE',

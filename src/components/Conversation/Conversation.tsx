@@ -139,7 +139,8 @@ const Conversation = ({
 }: Props) => {
   if (messages && messages.length !== 0) {
     const displayableMessageCount = useIntervalCounter(
-    messages.filter((message) => message.isStoredInLocalStorage === true).length,
+      messages.filter((message) => message.isStoredInLocalStorage === true)
+        .length,
       messages.length,
       messageDelay,
     );

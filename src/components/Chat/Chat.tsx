@@ -3,7 +3,7 @@ import useTock, { UseTock } from '../../useTock';
 import ChatInput from '../ChatInput';
 import Container from '../Container';
 import Conversation from '../Conversation';
-import TockAccessibility from "../../TockAccessibility";
+import TockAccessibility from '../../TockAccessibility';
 
 export interface ChatProps {
   endPoint: string;
@@ -40,7 +40,12 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     addHistory,
     sseInitPromise,
     sseInitializing,
-  }: UseTock = useTock(endPoint, extraHeadersProvider, disableSse, localStorage);
+  }: UseTock = useTock(
+    endPoint,
+    extraHeadersProvider,
+    disableSse,
+    localStorage,
+  );
 
   useEffect(() => {
     // When the chat gets initialized for the first time, process optional referral|opening message
@@ -49,11 +54,20 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         sendReferralParameter(referralParameter);
       }
       const history = window.localStorage.getItem('tockMessageHistory');
-      if (messages.length === 0 && openingMessage && (localStorage === false || !history)) {
+      if (
+        messages.length === 0 &&
+        openingMessage &&
+        (localStorage === false || !history)
+      ) {
         sendOpeningMessage(openingMessage);
       }
       if (localStorage === true && history) {
-        addHistory(JSON.parse(history), JSON.parse(window.localStorage.getItem('tockQuickReplyHistory') || '[]'));
+        addHistory(
+          JSON.parse(history),
+          JSON.parse(
+            window.localStorage.getItem('tockQuickReplyHistory') || '[]',
+          ),
+        );
       }
     });
   }, [referralParameter]);
@@ -70,7 +84,11 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         onQuickReplyClick={sendQuickReply}
         accessibility={accessibility}
       />
-      <ChatInput disabled={sseInitializing} onSubmit={sendMessage} accessibility={accessibility}/>
+      <ChatInput
+        disabled={sseInitializing}
+        onSubmit={sendMessage}
+        accessibility={accessibility}
+      />
     </Container>
   );
 };
