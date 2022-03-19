@@ -151,10 +151,22 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
         onChange={({ target: { value } }) => setValue(value)}
       />
       <SubmitIcon>
-        <Send size="100%" role='img' aria-label={accessibility?.sendButtonLabel || 'Send a message'} focusable='false' />
+        <Send
+          size="100%"
+          role="img"
+          aria-label={accessibility?.sendButtonLabel || 'Send a message'}
+          focusable="false"
+        />
       </SubmitIcon>
       <ClearIcon>
-        <Trash2 size="25px" color={'white'} onClick={clearMessages} role='img' aria-label={accessibility?.clearButtonLabel || 'Clear messages'} focusable='false' />
+        <Trash2
+          size="25px"
+          color={'white'}
+          onClick={clearMessages}
+          role="img"
+          aria-label={accessibility?.clearButtonLabel || 'Clear messages'}
+          focusable="false"
+        />
       </ClearIcon>
     </InputOuterContainer>
   );

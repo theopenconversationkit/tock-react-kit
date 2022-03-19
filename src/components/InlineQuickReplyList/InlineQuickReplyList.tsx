@@ -133,14 +133,14 @@ const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
         </Previous>
       )}
       <InlineQuickReplyListContainer ref={ref.container}>
-        {items.map((child, index) =>
-            <QuickReply
-              key={`${child.label}-${index}`}
-              onClick={onItemClick.bind(null, child)}
-              {...child}
-              ref={ref.items[index]}
-            />
-        )}
+        {items.map((child, index) => (
+          <QuickReply
+            key={`${child.label}-${index}`}
+            onClick={onItemClick.bind(null, child)}
+            {...child}
+            ref={ref.items[index]}
+          />
+        ))}
       </InlineQuickReplyListContainer>
       {rightVisible && (
         <Next onClick={next}>

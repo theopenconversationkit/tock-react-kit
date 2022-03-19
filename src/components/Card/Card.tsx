@@ -131,7 +131,17 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
   ref,
 ) {
   return (
-    <CardOuter ref={ref} role={(ref == undefined) ? undefined : 'group'} aria-roledescription={(ref == undefined) ? undefined : ((roleDescription) ? roleDescription : 'Slide')}>
+    <CardOuter
+      ref={ref}
+      role={ref == undefined ? undefined : 'group'}
+      aria-roledescription={
+        ref == undefined
+          ? undefined
+          : roleDescription
+          ? roleDescription
+          : 'Slide'
+      }
+    >
       <CardContainer>
         {imageUrl && <CardImage src={imageUrl} alt={title} />}
         <CardTitle>{title}</CardTitle>

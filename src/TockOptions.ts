@@ -1,4 +1,4 @@
-import TockAccessibility from "TockAccessibility";
+import TockAccessibility from 'TockAccessibility';
 
 export interface TockOptions {
   // An initial message to send to the backend to trigger a welcome sequence

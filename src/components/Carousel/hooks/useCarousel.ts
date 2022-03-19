@@ -26,10 +26,14 @@ function setAriaAttributes(
   width: number,
 ) {
   if (width !== 0) {
-    itemRefs.forEach(item => {
+    itemRefs.forEach((item) => {
       const offsetLeftItem = item.current?.offsetLeft || 0;
 
-      if (offsetLeftItem < measures[targetIndex].x || (offsetLeftItem + (item.current?.offsetWidth || 0) > measures[targetIndex].x + width)) {
+      if (
+        offsetLeftItem < measures[targetIndex].x ||
+        offsetLeftItem + (item.current?.offsetWidth || 0) >
+          measures[targetIndex].x + width
+      ) {
         item.current?.setAttribute('aria-hidden', 'true');
         item.current?.setAttribute('tabIndex', '-1');
       } else {
@@ -95,7 +99,12 @@ export default function useCarousel<T>(itemCount = 0): CarouselReturn<T> {
 
   useEffect(() => {
     if (measures !== undefined && measures.length !== 0) {
-      setAriaAttributes(measures, itemRefs, 0, (containerRef.current as HTMLElement | null)?.clientWidth || 0);
+      setAriaAttributes(
+        measures,
+        itemRefs,
+        0,
+        (containerRef.current as HTMLElement | null)?.clientWidth || 0,
+      );
     }
   }, [measures]);
 
