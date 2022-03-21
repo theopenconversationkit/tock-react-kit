@@ -79,11 +79,14 @@ export class UrlButton {
 
 export type Button = QuickReply | PostBackButton | UrlButton;
 
+export type Messages = Message | Card | Carousel | Widget | Image;
+
 export enum MessageType {
   message = 'message',
   card = 'card',
   carousel = 'carousel',
   widget = 'widget',
+  image = 'image',
 }
 
 export interface Message {
@@ -121,9 +124,15 @@ export interface WidgetData {
   type: string;
 }
 
+export interface Image extends Message {
+  url?: string;
+  title: string;
+  type: MessageType.image;
+}
+
 export interface TockState {
   quickReplies: QuickReply[];
-  messages: (Message | Card | Carousel | Widget)[];
+  messages: Messages[];
   userId: string;
   loading: boolean;
   sseInitializing: boolean;
@@ -137,7 +146,7 @@ export interface TockAction {
     | 'SET_SSE_INITIALIZING'
     | 'CLEAR_MESSAGES';
   quickReplies?: QuickReply[];
-  messages?: (Message | Card | Carousel | Widget)[];
+  messages?: Messages[];
   loading?: boolean;
   sseInitializing?: boolean;
 }

@@ -9,7 +9,14 @@ import Conversation from './Conversation';
 
 export const useExampleMessages = () => {
   const tock: UseTock = useTock('');
-  const { addMessage, addCard, addCarousel, addWidget, setQuickReplies } = tock;
+  const {
+    addMessage,
+    addCard,
+    addCarousel,
+    addWidget,
+    setQuickReplies,
+    addImage,
+  } = tock;
   useEffect(() => {
     const product: Product = {
       name: 'Product name',
@@ -129,6 +136,11 @@ export const useExampleMessages = () => {
         'https://www.sncf.com/themes/sncfcom/img/favicon-32x32.png',
       ),
     ]);
+    addMessage('Send an image clickable...', 'bot');
+    addImage(
+      'Image 👺',
+      'https://www.sncf.com/sites/default/files/styles/crop_header_edito/public/2018-10/Resized_20180920_135209_921.jpg',
+    );
 
     setQuickReplies([
       {

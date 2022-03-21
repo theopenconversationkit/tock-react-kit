@@ -14,7 +14,8 @@ import {
   useTockDispatch,
   useTockState,
   WidgetData,
-  Widget
+  Widget,
+  Image
 } from './TockContext';
 import { Sse } from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
@@ -36,6 +37,7 @@ export interface UseTock {
     subTitle?: string,
     buttons?: { label: string; url?: string }[],
   ) => void;
+  addImage: (title: string, url?: string) => void;
   addCarousel: (cards: Card[]) => void;
   addWidget: (widgetData: WidgetData) => void;
   setQuickReplies: (quickReplies: QuickReply[]) => void;
@@ -73,6 +75,14 @@ function mapCard(card: any): Card {
     buttons: card.buttons.map((button: any) => mapButton(button)),
     type: MessageType.card,
   } as Card;
+}
+
+function mapImage(image: any): Image {
+  return {
+    title: image.file?.title,
+    url: image.file?.url,
+    type: MessageType.image,
+  } as Image;
 }
 
 const useTock: (
@@ -142,7 +152,7 @@ const useTock: (
       dispatch({
         type: 'ADD_MESSAGE',
         messages: responses.map(
-          ({ text, card, carousel, widget }: any) => {
+          ({ text, card, carousel, widget, image }: any) => {
             let message: Message;
             if (widget) {
               message = {
@@ -160,6 +170,8 @@ const useTock: (
               } as Message;
             } else if (card) {
               message = mapCard(card);
+            } else if (image) {
+              message = mapImage(image);
             } else {
               message = {
                 cards: carousel.cards.map((card: any) => mapCard(card)),
@@ -199,6 +211,21 @@ const useTock: (
             type: MessageType.message,
             buttons: buttons,
           } as TextMessage,
+        ],
+      }),
+    [],
+  );
+
+  const addImage: (title: string, url: string) => void = useCallback(
+    (title: string, url: string) =>
+      dispatch({
+        type: 'ADD_MESSAGE',
+        messages: [
+          {
+            title,
+            url,
+            type: MessageType.image,
+          } as Image,
         ],
       }),
     [],
@@ -421,6 +448,7 @@ const useTock: (
     addCard,
     addCarousel,
     addMessage,
+    addImage,
     addWidget,
     sendMessage,
     setQuickReplies,
