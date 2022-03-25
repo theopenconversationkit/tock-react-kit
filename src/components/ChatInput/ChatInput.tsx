@@ -10,7 +10,6 @@ import React, {
 import { Send, Trash2 } from 'react-feather';
 import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
-import useLocalTools, { UseLocalTools } from '../../useLocalTools';
 import TockAccessibility from 'TockAccessibility';
 
 const InputOuterContainer: StyledComponent<
@@ -125,14 +124,15 @@ export interface ChatInputProps {
   disabled?: boolean;
   onSubmit: (message: string) => void;
   accessibility?: TockAccessibility;
+  clearMessages: () => void;
 }
 
 const ChatInput: (props: ChatInputProps) => JSX.Element = ({
   disabled,
   onSubmit,
   accessibility,
+  clearMessages,
 }: ChatInputProps): JSX.Element => {
-  const { clearMessages }: UseLocalTools = useLocalTools();
   const [value, setValue] = useState('');
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

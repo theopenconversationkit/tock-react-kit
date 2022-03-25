@@ -40,6 +40,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     addHistory,
     sseInitPromise,
     sseInitializing,
+    clearMessages,
   }: UseTock = useTock(
     endPoint,
     extraHeadersProvider,
@@ -88,6 +89,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         disabled={sseInitializing}
         onSubmit={sendMessage}
         accessibility={accessibility}
+        clearMessages={clearMessages}
       />
     </Container>
   );
