@@ -104,7 +104,7 @@ const useTock: (
     sseInitializing,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
-  const { clearMessages }: UseLocalTools = useLocalTools();
+  const { clearMessages }: UseLocalTools = useLocalTools(localStorage);
 
   const startLoading: () => void = () => {
     dispatch({
