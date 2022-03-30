@@ -11,10 +11,10 @@ import useArrowVisibility from '../Carousel/hooks/useArrowVisibility';
 import QuickReply from '../QuickReply/QuickReply';
 
 const InlineQuickReplyListContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
   unknown,
   TockTheme
-> = styled.div`
+> = styled.ul`
   display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -116,7 +116,7 @@ type Props = {
 
 const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
   const theme: TockTheme = useTheme<TockTheme>();
-  const [ref, previous, next] = useCarouselQuickReply<HTMLDivElement>(
+  const [ref, previous, next] = useCarouselQuickReply<HTMLUListElement>(
     items?.length,
   );
 
