@@ -101,7 +101,8 @@
     "postcss": "7.0.36",
     "node-fetch": "2.6.7",
     "ansi-regex": "5.0.1",
-    "trim": "0.0.3"
+    "trim": "0.0.3",
+    "minimist": "1.2.6"
   },
   "auto-changelog": {
     "includeBranch": [

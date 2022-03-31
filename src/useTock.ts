@@ -15,7 +15,7 @@ import {
   useTockState,
   WidgetData,
   Widget,
-  Image
+  Image,
 } from './TockContext';
 import { Sse } from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
