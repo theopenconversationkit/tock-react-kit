@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v21.9.1-1](https://github.com/theopenconversationkit/tock-react-kit/compare/v21.9.1-0...v21.9.1-1)
+
+- [DOC] Fix color sample [`fea1602`](https://github.com/theopenconversationkit/tock-react-kit/commit/fea160298242aecaf6a63ecd4128779071e61095)
+
 #### [v21.9.1-0](https://github.com/theopenconversationkit/tock-react-kit/compare/v21.9.0...v21.9.1-0)
 
-- Lint [`6acd98d`](https://github.com/theopenconversationkit/tock-react-kit/commit/6acd98d059bc46616541a3a8549859e67683c3f9)
+> 23 March 2022
 
 ### [v21.9.0](https://github.com/theopenconversationkit/tock-react-kit/compare/v20.9.1...v21.9.0)
 
