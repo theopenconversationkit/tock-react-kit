@@ -2,9 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v22.3.0](https://github.com/theopenconversationkit/tock-react-kit/compare/v21.9.1-1...v22.3.0)
+
 #### [v21.9.1-1](https://github.com/theopenconversationkit/tock-react-kit/compare/v21.9.1-0...v21.9.1-1)
 
-- [DOC] Fix color sample [`fea1602`](https://github.com/theopenconversationkit/tock-react-kit/commit/fea160298242aecaf6a63ecd4128779071e61095)
+> 4 April 2022
 
 #### [v21.9.1-0](https://github.com/theopenconversationkit/tock-react-kit/compare/v21.9.0...v21.9.1-0)
 
