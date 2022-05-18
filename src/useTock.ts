@@ -211,40 +211,42 @@ const useTock: (
       }
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: responses.map(({ text, card, carousel, widget, image }) => {
-          let message: Message;
-          if (widget) {
-            message = {
-              widgetData: widget,
-              type: MessageType.widget,
-            } as Widget;
-          } else if (text) {
-            message = {
-              author: 'bot',
-              message: text,
-              type: MessageType.message,
-              buttons: (lastMessage.buttons || [])
-                .filter((button) => button.type !== 'quick_reply')
-                .map(mapButton),
-            } as TextMessage;
-          } else if (card) {
-            message = mapCard(card);
-          } else if (image) {
-            message = mapImage(image);
-          } else {
-            message = {
-              cards: carousel?.cards?.map(mapCard) ?? [],
-              type: MessageType.carousel,
-            } as Carousel;
-          }
+        messages: responses.map(
+          ({ text, card, carousel, widget, image, buttons }) => {
+            let message: Message;
+            if (widget) {
+              message = {
+                widgetData: widget,
+                type: MessageType.widget,
+              } as Widget;
+            } else if (text) {
+              message = {
+                author: 'bot',
+                message: text,
+                type: MessageType.message,
+                buttons: (buttons || [])
+                  .filter((button) => button.type !== 'quick_reply')
+                  .map(mapButton),
+              } as TextMessage;
+            } else if (card) {
+              message = mapCard(card);
+            } else if (image) {
+              message = mapImage(image);
+            } else {
+              message = {
+                cards: carousel?.cards?.map(mapCard) ?? [],
+                type: MessageType.carousel,
+              } as Carousel;
+            }
 
-          message.metadata = metadata;
+            message.metadata = metadata;
 
-          if (localStorageHistory?.enable ?? false) {
-            recordResponseToLocaleSession(message);
-          }
-          return message;
-        }),
+            if (localStorageHistory?.enable ?? false) {
+              recordResponseToLocaleSession(message);
+            }
+            return message;
+          },
+        ),
       });
     }
   };
