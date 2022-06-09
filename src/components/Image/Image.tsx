@@ -8,12 +8,13 @@ import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
 
 export const CardOuter: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
   unknown,
   TockTheme
-> = styled.div`
+> = styled.li`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
+  list-style: none;
 `;
 
 const CardImage: StyledComponent<
@@ -45,10 +46,11 @@ export const CardContainer: StyledComponent<
 export interface ImageProps {
   title: string;
   url?: string;
+  alternative?: string;
 }
 
-const Image = React.forwardRef<HTMLDivElement, ImageProps>(function imageRender(
-  { title, url }: ImageProps,
+const Image = React.forwardRef<HTMLLIElement, ImageProps>(function imageRender(
+  { title, url, alternative }: ImageProps,
   ref,
 ) {
   return (
@@ -56,7 +58,7 @@ const Image = React.forwardRef<HTMLDivElement, ImageProps>(function imageRender(
       <CardContainer>
         {url && (
           <a target="_blank" href={url} rel="noreferrer">
-            <CardImage src={url} alt={title} />
+            <CardImage src={url} alt={alternative} />
           </a>
         )}
       </CardContainer>

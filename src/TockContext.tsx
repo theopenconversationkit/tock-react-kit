@@ -103,6 +103,7 @@ export interface TextMessage extends Message {
 
 export interface Card extends Message {
   imageUrl?: string;
+  imageAlternative?: string;
   title: string;
   subTitle?: string;
   buttons?: Button[];
@@ -128,6 +129,7 @@ export interface Image extends Message {
   url?: string;
   title: string;
   type: MessageType.image;
+  alternative?: string;
 }
 
 export interface TockState {
