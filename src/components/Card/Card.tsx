@@ -121,13 +121,14 @@ export interface CardProps {
   title: string;
   subTitle?: string;
   imageUrl?: string;
+  imageAlternative?: string;
   buttons?: Button[];
   roleDescription?: string;
   onAction: (button: Button) => void;
 }
 
 const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
-  { title, subTitle, imageUrl, buttons, roleDescription, onAction }: CardProps,
+  { title, subTitle, imageUrl, imageAlternative, buttons, roleDescription, onAction }: CardProps,
   ref,
 ) {
   return (
@@ -143,7 +144,7 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
       }
     >
       <CardContainer>
-        {imageUrl && <CardImage src={imageUrl} alt={title} />}
+        {imageUrl && <CardImage src={imageUrl} alt={imageAlternative} />}
         <CardTitle>{title}</CardTitle>
         {subTitle && (
           <CardSubTitle>

@@ -71,7 +71,8 @@ function mapCard(card: any): Card {
   return {
     title: card.title,
     subTitle: card.subTitle,
-    imageUrl: card.file ? card.file.url : null,
+    imageUrl: card.file?.url,
+    imageAlternative: card?.file.description ?? card.title,
     buttons: card.buttons.map((button: any) => mapButton(button)),
     type: MessageType.card,
   } as Card;
@@ -79,8 +80,9 @@ function mapCard(card: any): Card {
 
 function mapImage(image: any): Image {
   return {
-    title: image.file?.title,
+    title: image.file?.name,
     url: image.file?.url,
+    alternative: image.file?.description ?? image.file?.name,
     type: MessageType.image,
   } as Image;
 }

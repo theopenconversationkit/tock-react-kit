@@ -38,4 +38,23 @@ storiesOf('Card', module)
         },
       ]}
     />
+  ))
+  .add('With alternative description', () => (
+    <Card
+      title="Card title"
+      subTitle="Card subtitle"
+      imageUrl="https://avatars0.githubusercontent.com/u/48585267?s=200&v=4"
+      imageAlternative="Image of the Tock icon"
+      onAction={onButtonClick}
+      buttons={[
+        {
+          label: 'Website',
+          url: 'https://doc.tock.ai',
+        },
+        {
+          label: 'GitHub',
+          url: 'https://github.com/theopenconversationkit',
+        },
+      ]}
+    />
   ));
