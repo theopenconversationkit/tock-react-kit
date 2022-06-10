@@ -19,6 +19,7 @@ export { default as MessageUser } from './components/MessageUser';
 export { default as QuickReply } from './components/QuickReply';
 export { default as QuickReplyList } from './components/QuickReplyList';
 export { renderChat } from './renderChat';
+export { default as TockChat } from './TockChat';
 export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
 export { default as createTheme } from './styles/createTheme';

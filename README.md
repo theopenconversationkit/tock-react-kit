@@ -78,10 +78,35 @@ npm i @emotion/styled@10
 npm i emotion-theming@10
 ```
 
+### Use in a React app
+
+```jsx
+import { TockChat } from 'tock-react-kit';
+
+<div id="chat">
+    <TockChat
+        endPoint="<TOCK_BOT_API_URL>"
+        /* The following parameters are optional */
+        referralParameter="referralParameter"
+        theme={{ /* ... */ }}
+        options={{ /* ... */ }}
+    />
+</div>
+```
+
+### Use in a non-React app
+
 ```js
 import { renderChat } from 'tock-react-kit';
 
-renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>');
+renderChat(
+    document.getElementById('chat'),
+    '<TOCK_BOT_API_URL>',
+    /* The following parameters are optional */
+    'referralParameter',
+    { /* ... */ },
+    { /* ... */ },
+);
 ```
 
 ## Styling your chat
