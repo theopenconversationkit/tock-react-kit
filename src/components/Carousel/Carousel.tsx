@@ -128,7 +128,7 @@ const Carousel: (props: {
   const [ref, previous, next] = useCarousel<HTMLUListElement>(children?.length);
   const [leftVisible, rightVisible] = useArrowVisibility(
     ref.container,
-    ref.items,
+    ref.items.map((item) => item.refObject),
   );
 
   return (
@@ -151,13 +151,15 @@ const Carousel: (props: {
         aria-roledescription={
           accessibility?.carousel?.roleDescription || 'Carousel'
         }
+        tabIndex={-1}
       >
         {children?.map((child, i) =>
           React.cloneElement(
             child,
             {
-              ref: ref.items[i],
+              ref: ref.items[i].refObject,
               roleDescription: accessibility?.carousel?.slideRoleDescription,
+              isHidden: ref.items[i].isHidden,
             },
             undefined,
           ),
