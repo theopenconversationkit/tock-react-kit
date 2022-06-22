@@ -1,11 +1,25 @@
-import { RefObject, useRef, useCallback, useEffect } from 'react';
+import {
+  RefObject,
+  useRef,
+  useCallback,
+  useEffect,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import useRefs from './useRefs';
 import useMeasures, { Measure } from './useMeasures';
+
+type CarouselItem = {
+  refObject: RefObject<HTMLElement>;
+  isHidden: boolean;
+  setIsHidden: Dispatch<SetStateAction<boolean>>;
+};
 
 type CarouselReturn<T> = [
   {
     container: RefObject<T>;
-    items: RefObject<HTMLElement>[];
+    items: CarouselItem[];
   },
   () => void,
   () => void,
@@ -19,26 +33,24 @@ function getMeanX(
   return Math.round((previous.x + previous.width + target.x) / 2);
 }
 
-function setAriaAttributes(
+function setHiddenItems(
   measures: Measure[],
-  itemRefs: RefObject<HTMLElement>[],
+  carouselItems: CarouselItem[],
   targetIndex: number,
   width: number,
 ) {
   if (width !== 0) {
-    itemRefs.forEach((item) => {
-      const offsetLeftItem = item.current?.offsetLeft || 0;
+    carouselItems.forEach((item) => {
+      const offsetLeftItem = item.refObject.current?.offsetLeft || 0;
 
       if (
         offsetLeftItem < measures[targetIndex].x ||
-        offsetLeftItem + (item.current?.offsetWidth || 0) >
+        offsetLeftItem + (item.refObject.current?.offsetWidth || 0) >
           measures[targetIndex].x + width
       ) {
-        item.current?.setAttribute('aria-hidden', 'true');
-        item.current?.setAttribute('tabIndex', '-1');
+        item.setIsHidden(true);
       } else {
-        item.current?.removeAttribute('aria-hidden');
-        item.current?.removeAttribute('tabIndex');
+        item.setIsHidden(false);
       }
     });
   }
@@ -48,7 +60,7 @@ function scrollStep(
   direction: 'NEXT' | 'PREVIOUS',
   container: HTMLElement | null,
   measures: Measure[],
-  itemRefs: RefObject<HTMLElement>[],
+  carouselItems: CarouselItem[],
 ) {
   if (!container) return;
   const x = container.scrollLeft;
@@ -62,7 +74,7 @@ function scrollStep(
       measures[targetIndex],
       measures[targetIndex - 1],
     );
-    setAriaAttributes(measures, itemRefs, targetIndex, width);
+    setHiddenItems(measures, carouselItems, targetIndex, width);
   } else {
     const firstLeftHidden = measures
       .slice()
@@ -78,7 +90,7 @@ function scrollStep(
       measures[targetIndex - 1],
       measures[targetIndex],
     );
-    setAriaAttributes(measures, itemRefs, targetIndex, width);
+    setHiddenItems(measures, carouselItems, targetIndex, width);
   }
 }
 
@@ -86,22 +98,28 @@ export default function useCarousel<T>(itemCount = 0): CarouselReturn<T> {
   const containerRef = useRef(null);
   const itemRefs = useRefs(itemCount);
   const measures = useMeasures(itemRefs);
+  const carouselItems: CarouselItem[] = Array.from(Array(itemCount)).map<
+    CarouselItem
+  >((_, i) => {
+    const [isHidden, setIsHidden] = useState(false);
+    return Object.create({ refObject: itemRefs[i++], isHidden, setIsHidden });
+  });
 
   const previous = useCallback(
-    () => scrollStep('PREVIOUS', containerRef.current, measures, itemRefs),
+    () => scrollStep('PREVIOUS', containerRef.current, measures, carouselItems),
     [containerRef, measures],
   );
 
   const next = useCallback(
-    () => scrollStep('NEXT', containerRef.current, measures, itemRefs),
+    () => scrollStep('NEXT', containerRef.current, measures, carouselItems),
     [containerRef, measures],
   );
 
   useEffect(() => {
     if (measures !== undefined && measures.length !== 0) {
-      setAriaAttributes(
+      setHiddenItems(
         measures,
-        itemRefs,
+        carouselItems,
         0,
         (containerRef.current as HTMLElement | null)?.clientWidth || 0,
       );
@@ -111,7 +129,7 @@ export default function useCarousel<T>(itemCount = 0): CarouselReturn<T> {
   return [
     {
       container: containerRef,
-      items: itemRefs,
+      items: carouselItems,
     },
     previous,
     next,

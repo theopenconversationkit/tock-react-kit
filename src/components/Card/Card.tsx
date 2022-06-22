@@ -124,11 +124,21 @@ export interface CardProps {
   imageAlternative?: string;
   buttons?: Button[];
   roleDescription?: string;
+  isHidden?: boolean;
   onAction: (button: Button) => void;
 }
 
 const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
-  { title, subTitle, imageUrl, imageAlternative, buttons, roleDescription, onAction }: CardProps,
+  {
+    title,
+    subTitle,
+    imageUrl,
+    imageAlternative,
+    buttons,
+    roleDescription,
+    isHidden = false,
+    onAction,
+  }: CardProps,
   ref,
 ) {
   return (
@@ -143,7 +153,7 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
           : 'Slide'
       }
     >
-      <CardContainer>
+      <CardContainer aria-hidden={isHidden}>
         {imageUrl && <CardImage src={imageUrl} alt={imageAlternative} />}
         <CardTitle>{title}</CardTitle>
         {subTitle && (
@@ -158,6 +168,7 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
                 <Button
                   onClick={onAction.bind(null, button)}
                   onKeyPress={onAction.bind(null, button)}
+                  {...(isHidden && { tabIndex: -1 })}
                 >
                   {button.label}
                 </Button>
