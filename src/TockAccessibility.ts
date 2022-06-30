@@ -1,8 +1,22 @@
 export interface TockAccessibility {
-  carouselRoleDescription?: string;
+  input?: InputAccessibility;
+  carousel?: CarouselAccessibility;
+  qrCarousel?: QRCarouselAccessibility;
+}
+
+export interface CarouselAccessibility {
+  roleDescription?: string;
   slideRoleDescription?: string;
-  previousCarouselButtonLabel?: string;
-  nextCarouselButtonLabel?: string;
+  previousButtonLabel?: string;
+  nextButtonLabel?: string;
+}
+
+export interface QRCarouselAccessibility {
+  previousButtonLabel?: string;
+  nextButtonLabel?: string;
+}
+
+export interface InputAccessibility {
   sendButtonLabel?: string;
   clearButtonLabel?: string;
 }

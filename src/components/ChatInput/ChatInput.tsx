@@ -154,7 +154,7 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
         <Send
           size="100%"
           role="img"
-          aria-label={accessibility?.sendButtonLabel || 'Send a message'}
+          aria-label={accessibility?.input?.sendButtonLabel || 'Send a message'}
           focusable="false"
         />
       </SubmitIcon>
@@ -164,7 +164,7 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
           color={'white'}
           onClick={clearMessages}
           role="img"
-          aria-label={accessibility?.clearButtonLabel || 'Clear messages'}
+          aria-label={accessibility?.input?.clearButtonLabel || 'Clear messages'}
           focusable="false"
         />
       </ClearIcon>
