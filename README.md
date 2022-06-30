@@ -257,19 +257,39 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
 | `widgets`                                | `any?`                                | Custom display component                                         |
 | `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
-| `accessibility`                          | `TockAccessibility`                   | Object for overriding role and label accessibility attributes    |
+| `accessibility`                          | `TockAccessibility?`                  | Object for overriding role and label accessibility attributes    |
 | `localStorage`                           | `boolean?`                            | Enable history local storage                                     |
 
 #### `TockAccessibility`
 
-| Property name                     | Type                   | Description                                                                                       |
-|-----------------------------------|------------------------|---------------------------------------------------------------------------------------------------|
-| `carouselRoleDescription`         | `string?`              | Message of the carousel aria-roledescription attribute (overrides 'Carousel')                     |
-| `slideRoleDescription`            | `string?`              | Message of the slide carousel aria-roledescription attribute (overrides 'Slide')                  |
-| `previousCarouselButtonLabel`     | `string?`              | Message of the carousel previous button image aria-label attribute (overrides 'Previous slides')  |
-| `nextCarouselButtonLabel`         | `string?`              | Message of the carousel next button image aria-label attribute (overrides 'Next slides')          |
-| `sendButtonLabel`                 | `string?`              | Message of the send message button image aria-label attribute (overrides 'Send a message')        |
-| `clearButtonLabel`                | `string?`              | Message of the clear messages button image aria-label attribute (overrides 'Clear messages')      |
+| Property name                     | Type                       | Description                                                                                         |
+|-----------------------------------|----------------------------|-----------------------------------------------------------------------------------------------------|
+| `input`                           | `InputAccessibility?`      | Object for adding accessibility labels on input component (see below)                               |
+| `carousel`                        | `CarouselAccessibility?`   | Object for adding accessibility labels on carousel component (see below)                            |
+| `qrCarousel`                      | `QRCarouselAccessibility?` | Object for adding accessibility labels on QR inline carousel component component (see below)        |
+
+#### `InputAccessibility`
+
+| Property name                     | Type                       | Description                                                                                         |
+|-----------------------------------|----------------------------|-----------------------------------------------------------------------------------------------------|
+| `sendButtonLabel`                 | `string?`                  | Message of the send message button image aria-label attribute (overrides 'Send a message')          |
+| `clearButtonLabel`                | `string?`                  | Message of the clear messages button image aria-label attribute (overrides 'Clear messages')        |
+
+#### `CarouselAccessibility`
+
+| Property name             | Type                   | Description                                                                                        |
+|---------------------------|------------------------|----------------------------------------------------------------------------------------------------|
+| `roleDescription`         | `string?`              | Message of the carousel aria-roledescription attribute (overrides 'Carousel')                      |
+| `slideRoleDescription`    | `string?`              | Message of the slide carousel aria-roledescription attribute (overrides 'Slide')                   |
+| `previousButtonLabel`     | `string?`              | Message of the carousel previous button image aria-label attribute (overrides 'Previous slides')   |
+| `nextButtonLabel`         | `string?`              | Message of the carousel next button image aria-label attribute (overrides 'Next slides')           |
+
+#### `QRCarouselAccessibility`
+
+| Property name           | Type                   | Description                                                                                                            |
+|-------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `previousButtonLabel`   | `string?`              | Message of the quick replies carousel previous button image aria-label attribute (overrides 'Previous quick replies')  |
+| `nextButtonLabel`       | `string?`              | Message of the quick replies carousel next button image aria-label attribute (overrides 'Next quick replies')          |
 
 #### Accessibility
 
@@ -284,8 +304,10 @@ renderChat(
     undefined,
     {},
     { accessibility: {
-        carouselRoleDescription: 'Carousel',
-        slideRoleDescription: 'Resultat',
+        carousel: {
+          roleDescription: 'Carousel',
+          slideRoleDescription: 'Result',
+        },
       },
     },
 );

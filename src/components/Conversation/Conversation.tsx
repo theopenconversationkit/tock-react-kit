@@ -178,6 +178,7 @@ const Conversation = ({
             <InlineQuickReplyList
               items={quickReplies}
               onItemClick={onQuickReplyClick}
+              accessibility={accessibility}
             />
           )}
       </ConversationOuterContainer>

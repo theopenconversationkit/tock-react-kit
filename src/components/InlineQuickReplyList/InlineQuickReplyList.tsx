@@ -9,6 +9,7 @@ import { Button } from '../../TockContext';
 import useCarouselQuickReply from './hooks/useCarouselQuickReply';
 import useArrowVisibility from '../Carousel/hooks/useArrowVisibility';
 import QuickReply from '../QuickReply/QuickReply';
+import TockAccessibility from 'TockAccessibility';
 
 const InlineQuickReplyListContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
@@ -112,9 +113,10 @@ const InlineQuickReplyListOuterContainer: StyledComponent<
 type Props = {
   items: Button[];
   onItemClick: (button: Button) => void;
+  accessibility?: TockAccessibility;
 };
 
-const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
+const InlineQuickReplyList = ({ items, onItemClick, accessibility }: Props) => {
   const theme: TockTheme = useTheme<TockTheme>();
   const [ref, previous, next] = useCarouselQuickReply<HTMLUListElement>(
     items?.length,
@@ -129,7 +131,13 @@ const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
     <InlineQuickReplyListOuterContainer>
       {leftVisible && (
         <Previous onClick={previous}>
-          <ArrowLeftCircle size={`${theme.typography.fontSize}`} />
+          <ArrowLeftCircle
+            size={`${theme.typography.fontSize}`}
+            aria-label={
+              accessibility?.qrCarousel?.previousButtonLabel ||
+              'Previous quick replies'
+            }
+          />
         </Previous>
       )}
       <InlineQuickReplyListContainer ref={ref.container}>
@@ -144,7 +152,12 @@ const InlineQuickReplyList = ({ items, onItemClick }: Props) => {
       </InlineQuickReplyListContainer>
       {rightVisible && (
         <Next onClick={next}>
-          <ArrowRightCircle size={`${theme.typography.fontSize}`} />
+          <ArrowRightCircle
+            size={`${theme.typography.fontSize}`}
+            aria-label={
+              accessibility?.qrCarousel?.nextButtonLabel || 'Next quick replies'
+            }
+          />
         </Next>
       )}
     </InlineQuickReplyListOuterContainer>

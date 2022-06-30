@@ -139,7 +139,7 @@ const Carousel: (props: {
             size={`calc(${theme.typography.fontSize} * 2)`}
             role="img"
             aria-label={
-              accessibility?.previousCarouselButtonLabel || 'Previous slides'
+              accessibility?.carousel?.previousButtonLabel || 'Previous slides'
             }
             focusable="false"
           />
@@ -149,7 +149,7 @@ const Carousel: (props: {
         ref={ref.container}
         role="group"
         aria-roledescription={
-          accessibility?.carouselRoleDescription || 'Carousel'
+          accessibility?.carousel?.roleDescription || 'Carousel'
         }
       >
         {children?.map((child, i) =>
@@ -157,7 +157,7 @@ const Carousel: (props: {
             child,
             {
               ref: ref.items[i],
-              roleDescription: accessibility?.slideRoleDescription,
+              roleDescription: accessibility?.carousel?.slideRoleDescription,
             },
             undefined,
           ),
@@ -168,7 +168,7 @@ const Carousel: (props: {
           <ArrowRightCircle
             size={`calc(${theme.typography.fontSize} * 2)`}
             role="img"
-            aria-label={accessibility?.nextCarouselButtonLabel || 'Next slides'}
+            aria-label={accessibility?.carousel?.nextButtonLabel || 'Next slides'}
             focusable="false"
           />
         </Next>
