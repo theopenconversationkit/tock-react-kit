@@ -104,7 +104,8 @@
     "trim": "0.0.3",
     "minimist": "1.2.6",
     "shell-quote": "1.7.3",
-    "got": "11.8.5"
+    "got": "11.8.5",
+    "ejs": "3.1.7"
   },
   "auto-changelog": {
     "includeBranch": [
