@@ -257,8 +257,9 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
 | `widgets`                                | `any?`                                | Custom display component                                         |
 | `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
-| `accessibility`                          | `TockAccessibility?`                  | Object for overriding role and label accessibility attributes    |
-| `localStorage`                           | `boolean?`                            | Enable history local storage                                     |
+| `accessibility`                          | `TockAccessibility`                   | Object for overriding role and label accessibility attributes    |
+| ~~`localStorage`~~                       | ~~`boolean?`~~                        | Enable history local storage (@deprecated)                       |
+| `localStorageHistory`                    | `TockLocalStorage?`                   | Object for history local storage                                 |
 
 #### `TockAccessibility`
 
@@ -274,6 +275,13 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 |-----------------------------------|----------------------------|-----------------------------------------------------------------------------------------------------|
 | `sendButtonLabel`                 | `string?`                  | Message of the send message button image aria-label attribute (overrides 'Send a message')          |
 | `clearButtonLabel`                | `string?`                  | Message of the clear messages button image aria-label attribute (overrides 'Clear messages')        |
+
+#### `TockLocalStorage`
+
+| Property name                     | Type                   | Description                                                                 |
+|-----------------------------------|------------------------|-----------------------------------------------------------------------------|
+| `enable`                          | `boolean?`             | Enable history local storage                                                |
+| `maxNumberMessages`               | `number?`              | Max number of messages in the history local storage (default 10)            |
 
 #### `CarouselAccessibility`
 
@@ -313,12 +321,12 @@ renderChat(
 );
 ```
 
-#### Local storage
+#### Local storage history
 
-The optional `localStorage` makes it possible to provide a history session of messages.
+The optional `localStorageHistory` makes it possible to provide a history session of messages.
 This history loads at the creation of the chat and is stored in the locale storage of the browser.
 
-The `localStorage` parameter is a boolean, by default set to false.
+The `localStorageHistory` parameter is an object, by default not set (enable then to false).
 
 Example:
 
@@ -328,7 +336,11 @@ renderChat(
     '<TOCK_BOT_API_URL>',
     undefined,
     {},
-    { localStorage: true },
+    { localStorageHistory: {
+        enable: true,
+        maxNumberMessages: 15, // by default 10 messages max
+      }
+    },
 );
 ```
 

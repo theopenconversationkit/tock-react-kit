@@ -4,6 +4,7 @@ import ChatInput from '../ChatInput';
 import Container from '../Container';
 import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
+import TockLocalStorage from 'TockLocalStorage';
 
 export interface ChatProps {
   endPoint: string;
@@ -14,7 +15,7 @@ export interface ChatProps {
   extraHeadersProvider?: () => Promise<Record<string, string>>;
   disableSse?: boolean;
   accessibility?: TockAccessibility;
-  localStorage?: boolean;
+  localStorageHistory?: TockLocalStorage;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -26,7 +27,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   extraHeadersProvider = undefined,
   disableSse = false,
   accessibility = {},
-  localStorage = false,
+  localStorageHistory = {},
 }: ChatProps) => {
   const {
     messages,
@@ -45,7 +46,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     endPoint,
     extraHeadersProvider,
     disableSse,
-    localStorage,
+    localStorageHistory,
   );
 
   useEffect(() => {
@@ -54,15 +55,14 @@ const Chat: (props: ChatProps) => JSX.Element = ({
       if (referralParameter) {
         sendReferralParameter(referralParameter);
       }
-      const history = window.localStorage.getItem('tockMessageHistory');
-      if (
-        messages.length === 0 &&
-        openingMessage &&
-        (localStorage === false || !history)
-      ) {
+      const history =
+        localStorageHistory?.enable == true
+          ? window.localStorage.getItem('tockMessageHistory')
+          : undefined;
+      if (messages.length === 0 && openingMessage && !history) {
         sendOpeningMessage(openingMessage);
       }
-      if (localStorage === true && history) {
+      if (history) {
         addHistory(
           JSON.parse(history),
           JSON.parse(

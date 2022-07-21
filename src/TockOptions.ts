@@ -1,4 +1,5 @@
 import TockAccessibility from 'TockAccessibility';
+import TockLocalStorage from 'TockLocalStorage';
 
 export interface TockOptions {
   // An initial message to send to the backend to trigger a welcome sequence
@@ -10,7 +11,11 @@ export interface TockOptions {
   widgets?: any;
   disableSse?: boolean;
   accessibility?: TockAccessibility;
+  /**
+   * @deprecated since version 22.3.1
+   */
   localStorage?: boolean;
+  localStorageHistory?: TockLocalStorage;
 }
 
 export default TockOptions;

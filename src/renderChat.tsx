@@ -34,9 +34,14 @@ export const renderChat: (
           extraHeadersProvider={options.extraHeadersProvider}
           disableSse={options.disableSse}
           accessibility={options.accessibility}
-          localStorage={
-            options.localStorage && storageAvailable('localStorage')
-          }
+          {...(storageAvailable('localStorage') && {
+            localStorageHistory: {
+              enable:
+                options.localStorage ||
+                options.localStorageHistory?.enable === true,
+              maxNumberMessages: options.localStorageHistory?.maxNumberMessages,
+            },
+          })}
         />
       </TockContext>
     </ThemeProvider>,
