@@ -19,6 +19,7 @@ import {
 } from './TockContext';
 import { Sse } from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
+import TockLocalStorage from 'TockLocalStorage';
 
 export interface UseTock {
   messages: Message[];
@@ -91,12 +92,12 @@ const useTock: (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
-  localStorage?: boolean,
+  localStorageHistory?: TockLocalStorage,
 ) => UseTock = (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
-  localStorage?: boolean,
+  localStorageHistory?: TockLocalStorage,
 ) => {
   const {
     messages,
@@ -106,7 +107,9 @@ const useTock: (
     sseInitializing,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
-  const { clearMessages }: UseLocalTools = useLocalTools(localStorage);
+  const { clearMessages }: UseLocalTools = useLocalTools(
+    localStorageHistory?.enable ?? false,
+  );
 
   const startLoading: () => void = () => {
     dispatch({
@@ -126,13 +129,14 @@ const useTock: (
     message: any,
   ) => {
     let history: any = window.localStorage.getItem('tockMessageHistory');
+    const maxNumberMessages = localStorageHistory?.maxNumberMessages ?? 10;
     if (!history) {
       history = [];
     } else {
       history = JSON.parse(history);
     }
-    if (history.length >= 10) {
-      history.shift();
+    if (history.length >= maxNumberMessages) {
+      history.splice(0, history.length - maxNumberMessages + 1);
     }
     history.push(message);
     window.localStorage.setItem('tockMessageHistory', JSON.stringify(history));
@@ -150,7 +154,7 @@ const useTock: (
         type: 'SET_QUICKREPLIES',
         quickReplies: quickReplies,
       });
-      if (localStorage) {
+      if (localStorageHistory?.enable ?? false) {
         window.localStorage.setItem(
           'tockQuickReplyHistory',
           JSON.stringify(quickReplies),
@@ -185,7 +189,7 @@ const useTock: (
                 type: MessageType.carousel,
               } as Carousel;
             }
-            if (localStorage) {
+            if (localStorageHistory?.enable ?? false) {
               recordResponseToLocaleSession(message);
             }
             return message;
@@ -253,7 +257,7 @@ const useTock: (
           message,
           type: MessageType.message,
         } as TextMessage;
-        if (localStorage) {
+        if (localStorageHistory?.enable ?? false) {
           recordResponseToLocaleSession(messageToDispatch);
         }
         dispatch({
@@ -314,7 +318,7 @@ const useTock: (
       return Promise.resolve();
     } else if (button.payload) {
       setQuickReplies([]);
-      if (localStorage) {
+      if (localStorageHistory?.enable ?? false) {
         recordResponseToLocaleSession({
           author: 'user',
           message: button.label,
