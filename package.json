@@ -105,7 +105,8 @@
     "minimist": "1.2.6",
     "shell-quote": "1.7.3",
     "got": "11.8.5",
-    "ejs": "3.1.7"
+    "ejs": "3.1.7",
+    "terser": "5.14.2"
   },
   "auto-changelog": {
     "includeBranch": [
