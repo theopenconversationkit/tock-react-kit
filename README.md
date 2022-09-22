@@ -87,9 +87,11 @@ import { TockChat } from 'tock-react-kit';
     <TockChat
         endPoint="<TOCK_BOT_API_URL>"
         /* The following parameters are optional */
-        referralParameter="referralParameter"
         theme={{ /* ... */ }}
-        options={{ /* ... */ }}
+        referralParameter="referralParameter"
+        // also accepts all properties from TockOptions, like:
+        disableSse
+        openingMessage="Hi"
     />
 </div>
 ```

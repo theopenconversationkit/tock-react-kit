@@ -19,7 +19,7 @@ export const renderChat: (
   endPoint: string,
   referralParameter?: string,
   theme: TockTheme = defaultTheme,
-  options: TockOptions = {},
+  { localStorage, localStorageHistory, ...options }: TockOptions = {},
 ): void => {
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
@@ -27,6 +27,10 @@ export const renderChat: (
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}
+          localStorageHistory={{
+            enable: localStorage || localStorageHistory?.enable === true,
+            maxNumberMessages: localStorageHistory?.maxNumberMessages,
+          }}
           {...options}
         />
       </TockContext>
