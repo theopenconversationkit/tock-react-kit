@@ -48,7 +48,7 @@ const ConversationInnerContainer = styled.ul`
 `;
 
 interface RenderOptions {
-  widgets: { [id: string]: () => JSX.Element };
+  widgets: { [id: string]: (props: unknown) => JSX.Element };
   onAction: (button: Button) => void;
 }
 
@@ -119,7 +119,7 @@ type Props = DetailedHTMLProps<
 > & {
   messages: Message[];
   messageDelay: number;
-  widgets?: { [id: string]: () => JSX.Element };
+  widgets?: { [id: string]: (props: unknown) => JSX.Element };
   loading?: boolean;
   quickReplies: CQuickReply[];
   onAction: (button: Button) => void;

@@ -14,7 +14,7 @@ export interface ChatProps {
   /** An initial message to send to the backend to trigger a welcome sequence */
   openingMessage?: string;
   /** A registry of custom widget factories */
-  widgets?: { [id: string]: () => JSX.Element };
+  widgets?: { [id: string]: (props: unknown) => JSX.Element };
   /** An optional function supplying extra HTTP headers for chat requests.
   Extra headers must be explicitly allowed by the server's CORS settings. */
   extraHeadersProvider?: () => Promise<Record<string, string>>;
