@@ -1,14 +1,13 @@
 import React from 'react';
-import defaultTheme from './styles/defaultTheme';
-import { default as createTheme } from './styles/createTheme';
-import TockTheme from './styles/theme';
+import defaultTheme from '../../styles/defaultTheme';
+import { default as createTheme } from '../../styles/createTheme';
+import TockTheme from '../../styles/theme';
 import { ThemeProvider } from 'emotion-theming';
-import TockContext from './TockContext';
-import Chat from './components/Chat';
-import { ChatProps } from './components/Chat/Chat';
+import TockContext from '../../TockContext';
+import { default as Chat, ChatProps } from '../Chat/Chat';
 
 export interface TockChatProps extends ChatProps {
-  theme: TockTheme;
+  theme?: TockTheme;
 }
 
 const TockChat = ({
