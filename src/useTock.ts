@@ -73,7 +73,7 @@ function mapCard(card: any): Card {
     title: card.title,
     subTitle: card.subTitle,
     imageUrl: card.file?.url,
-    imageAlternative: card?.file.description ?? card.title,
+    imageAlternative: card?.file?.description ?? card.title,
     buttons: card.buttons.map((button: any) => mapButton(button)),
     type: MessageType.card,
   } as Card;
