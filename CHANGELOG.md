@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v22.3.1-1](https://github.com/theopenconversationkit/tock-react-kit/compare/v22.3.1-0...v22.3.1-1)
+
+- fixes #112 Card without file not displayed on pre-release [`#112`](https://github.com/theopenconversationkit/tock-react-kit/issues/112)
+
 #### [v22.3.1-0](https://github.com/theopenconversationkit/tock-react-kit/compare/v22.3.0...v22.3.1-0)
 
-- Bump vulnerable version [`fc3f85c`](https://github.com/theopenconversationkit/tock-react-kit/commit/fc3f85c0c0fd1f5d131a9bcdee6e9a33578fcd28)
+> 29 September 2022
 
 #### [v22.3.0](https://github.com/theopenconversationkit/tock-react-kit/compare/v21.9.1-1...v22.3.0)
 
