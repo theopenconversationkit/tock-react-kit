@@ -166,14 +166,16 @@ const Conversation = ({
           {displayableMessages.map(renderMessage)}
           {loading && <Loader />}
         </ConversationInnerContainer>
-        {displayableMessageCount === messages.length &&
+        {!loading &&
+          displayableMessageCount === messages.length &&
           theme.inlineQuickReplies !== true && (
             <QuickReplyList
               items={quickReplies}
               onItemClick={onQuickReplyClick}
             />
           )}
-        {displayableMessageCount === messages.length &&
+        {!loading &&
+          displayableMessageCount === messages.length &&
           theme.inlineQuickReplies === true && (
             <InlineQuickReplyList
               items={quickReplies}
