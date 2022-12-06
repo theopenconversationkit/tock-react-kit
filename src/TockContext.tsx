@@ -138,6 +138,7 @@ export interface TockState {
   userId: string;
   loading: boolean;
   sseInitializing: boolean;
+  intent?: string;
 }
 
 export interface TockAction {
@@ -146,11 +147,13 @@ export interface TockAction {
     | 'ADD_MESSAGE'
     | 'SET_LOADING'
     | 'SET_SSE_INITIALIZING'
-    | 'CLEAR_MESSAGES';
+    | 'CLEAR_MESSAGES'
+    | 'SET_INTENT';
   quickReplies?: QuickReply[];
   messages?: Messages[];
   loading?: boolean;
   sseInitializing?: boolean;
+  intent?: string;
 }
 
 export const tockReducer: Reducer<TockState, TockAction> = (
@@ -195,6 +198,14 @@ export const tockReducer: Reducer<TockState, TockAction> = (
         return {
           ...state,
           messages: [],
+        };
+      }
+      break;
+    case 'SET_INTENT':
+      if (action.intent != undefined) {
+        return {
+          ...state,
+          intent: action.intent,
         };
       }
       break;

@@ -49,6 +49,7 @@ export interface UseTock {
   addHistory: (history: Array<any>, quickReplyHistory: Array<any>) => void;
   sseInitPromise: Promise<void>;
   sseInitializing: boolean;
+  intent?: string;
 }
 
 function mapButton(button: any): Button {
@@ -105,6 +106,7 @@ const useTock: (
     userId,
     loading,
     sseInitializing,
+    intent,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
   const { clearMessages }: UseLocalTools = useLocalTools(
@@ -144,6 +146,7 @@ const useTock: (
 
   const handleBotResponse: (botResponse: any) => void = ({
     responses,
+    metadata,
   }: any) => {
     if (Array.isArray(responses) && responses.length > 0) {
       const lastMessage: any = responses[responses.length - 1];
@@ -160,6 +163,10 @@ const useTock: (
           JSON.stringify(quickReplies),
         );
       }
+      dispatch({
+        type: 'SET_INTENT',
+        intent: metadata.INTENT,
+      });
       dispatch({
         type: 'ADD_MESSAGE',
         messages: responses.map(
@@ -475,6 +482,7 @@ const useTock: (
     addHistory,
     sseInitPromise,
     sseInitializing,
+    intent,
   };
 };
 

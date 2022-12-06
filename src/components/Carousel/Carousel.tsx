@@ -170,7 +170,9 @@ const Carousel: (props: {
           <ArrowRightCircle
             size={`calc(${theme.typography.fontSize} * 2)`}
             role="img"
-            aria-label={accessibility?.carousel?.nextButtonLabel || 'Next slides'}
+            aria-label={
+              accessibility?.carousel?.nextButtonLabel || 'Next slides'
+            }
             focusable="false"
           />
         </Next>
