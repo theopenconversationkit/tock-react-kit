@@ -33,8 +33,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
-    "@emotion/core": "^10.0.28",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/eslint-plugin": "^11.10.0",
+    "@emotion/react": "11.0.0",
+    "@emotion/styled": "11.0.0",
     "@storybook/addon-actions": "^6.3.8",
     "@storybook/addon-backgrounds": "^6.3.8",
     "@storybook/addon-links": "^6.3.8",
@@ -49,7 +50,6 @@
     "auto-changelog": "^2.2.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.1.0",
-    "emotion-theming": "^10.0.27",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
@@ -67,9 +67,8 @@
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "@emotion/core": ">=10.0.0",
-    "@emotion/styled": ">=10.0.0",
-    "emotion-theming": ">=10.0.0",
+    "@emotion/react": "11.0.0",
+    "@emotion/styled": "11.0.0",
     "react": ">=16.13",
     "react-dom": ">=16.13"
   },

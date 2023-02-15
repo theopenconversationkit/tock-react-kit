@@ -4,18 +4,16 @@ import { prop } from 'styled-tools';
 
 import { Button } from '../../TockContext';
 
-import TockTheme from 'styles/theme';
 import QuickReplyImage from './QuickReplyImage';
 
 const QuickReplyButtonContainer = styled.li`
   list-style: none;
 `;
 
-const QuickReplyButton: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const QuickReplyButton: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   background: none;
   border: 2px solid ${prop<any>('theme.palette.background.bot')};
   border-radius: ${prop<any>('theme.sizing.borderRadius')};

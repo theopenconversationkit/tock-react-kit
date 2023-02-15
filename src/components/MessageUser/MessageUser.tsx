@@ -2,13 +2,7 @@ import styled, { StyledComponent } from '@emotion/styled';
 import React, { ReactNode } from 'react';
 import { prop } from 'styled-tools';
 
-import TockTheme from 'styles/theme';
-
-const MessageContainer: StyledComponent<
-  unknown,
-  unknown,
-  TockTheme
-> = styled.li`
+const MessageContainer: StyledComponent<{}> = styled.li`
   width: 100%;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
@@ -16,7 +10,7 @@ const MessageContainer: StyledComponent<
   list-style: none;
 `;
 
-const Message: StyledComponent<unknown, unknown, TockTheme> = styled.div`
+const Message: StyledComponent<{}> = styled.div`
   display: inline-block;
   background: ${prop<any>('theme.palette.background.user')};
   color: ${prop<any>('theme.palette.text.user')};

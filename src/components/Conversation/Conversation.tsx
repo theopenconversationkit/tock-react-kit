@@ -12,7 +12,8 @@ import QuickReplyList from '../QuickReplyList';
 import InlineQuickReplyList from '../InlineQuickReplyList';
 import useIntervalCounter from './hooks/useIntervalCounter';
 import useScrollBehaviour from './hooks/useScrollBehaviour';
-import { useTheme } from 'emotion-theming';
+import { useTheme } from '@emotion/react';
+import 'styles/theme';
 import TockTheme from 'styles/theme';
 
 import type {
@@ -144,7 +145,7 @@ const Conversation = ({
       messages.length,
       messageDelay,
     );
-    const theme: TockTheme = useTheme<TockTheme>();
+    const theme: TockTheme = useTheme();
     const displayableMessages = messages.slice(0, displayableMessageCount);
     const scrollContainer = useScrollBehaviour([displayableMessages]);
     const renderMessage = makeRenderMessage(

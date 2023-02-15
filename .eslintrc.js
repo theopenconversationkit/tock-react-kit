@@ -20,7 +20,18 @@ module.exports = {
   ],
 
   rules: {
+    '@emotion/pkg-renaming': 'error',
+    '@typescript-eslint/ban-types': [
+      'error',
+      {
+        extendDefaults: true,
+        types: {
+          '{}': false,
+        },
+      },
+    ],
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
+  plugins: ['@emotion'],
 };

@@ -2,8 +2,9 @@ import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import styled, { StyledComponent } from '@emotion/styled';
 import { prop } from 'styled-tools';
-import { useTheme } from 'emotion-theming';
-import TockTheme from '../../styles/theme';
+import { useTheme } from '@emotion/react';
+import 'styles/theme';
+import TockTheme from 'styles/theme';
 import { opacify } from 'polished';
 import { Button } from '../../TockContext';
 import useCarouselQuickReply from './hooks/useCarouselQuickReply';
@@ -11,11 +12,10 @@ import useArrowVisibility from '../Carousel/hooks/useArrowVisibility';
 import QuickReply from '../QuickReply/QuickReply';
 import TockAccessibility from 'TockAccessibility';
 
-const InlineQuickReplyListContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
-  unknown,
-  TockTheme
-> = styled.ul`
+const InlineQuickReplyListContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>> = styled.ul`
   display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -35,11 +35,10 @@ const InlineQuickReplyListContainer: StyledComponent<
   }
 `;
 
-const Previous: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const Previous: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   margin: auto;
   left: 0;
@@ -69,11 +68,10 @@ const Previous: StyledComponent<
   ${prop<any>('theme.overrides.quickReplyArrow', '')};
 `;
 
-const Next: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const Next: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   margin: auto;
   right: 0;
@@ -103,11 +101,10 @@ const Next: StyledComponent<
   ${prop<any>('theme.overrides.quickReplyArrow', '')};
 `;
 
-const InlineQuickReplyListOuterContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  unknown,
-  TockTheme
-> = styled.div`
+const InlineQuickReplyListOuterContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>> = styled.div`
   position: relative;
 `;
 type Props = {
@@ -117,7 +114,7 @@ type Props = {
 };
 
 const InlineQuickReplyList = ({ items, onItemClick, accessibility }: Props) => {
-  const theme: TockTheme = useTheme<TockTheme>();
+  const theme: TockTheme = useTheme();
   const [ref, previous, next] = useCarouselQuickReply<HTMLUListElement>(
     items?.length,
   );

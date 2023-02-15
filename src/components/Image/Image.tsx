@@ -4,35 +4,32 @@ import React, {
   HTMLAttributes,
   ImgHTMLAttributes,
 } from 'react';
-import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
+import 'styles/theme';
 
-export const CardOuter: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
-  unknown,
-  TockTheme
-> = styled.li`
+export const CardOuter: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLLIElement>,
+  HTMLLIElement
+>> = styled.li`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-const CardImage: StyledComponent<
-  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-  unknown,
-  TockTheme
-> = styled.img`
+const CardImage: StyledComponent<DetailedHTMLProps<
+  ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+>> = styled.img`
   max-width: 100%;
   max-height: 100%;
 
   ${prop<any>('theme.overrides.card.cardImage', '')};
 `;
 
-export const CardContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  unknown,
-  TockTheme
-> = styled.div`
+export const CardContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>> = styled.div`
   padding: 0.5em;
   background: ${prop<any>('theme.palette.background.card')};
   color: ${prop<any>('theme.palette.text.card')};
