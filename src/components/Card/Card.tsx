@@ -4,26 +4,24 @@ import React, {
   HTMLAttributes,
   ImgHTMLAttributes,
 } from 'react';
-import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
 
 import { Button } from '../../TockContext';
+import 'styles/theme';
 
-export const CardOuter: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
-  unknown,
-  TockTheme
-> = styled.li`
+export const CardOuter: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLLIElement>,
+  HTMLLIElement
+>> = styled.li`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-export const CardContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  unknown,
-  TockTheme
-> = styled.div`
+export const CardContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>> = styled.div`
   padding: 0.5em;
   background: ${prop<any>('theme.palette.background.card')};
   color: ${prop<any>('theme.palette.text.card')};
@@ -34,11 +32,10 @@ export const CardContainer: StyledComponent<
   ${prop<any>('theme.overrides.card.cardContainer', '')};
 `;
 
-const CardTitle: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>,
-  unknown,
-  TockTheme
-> = styled.span`
+const CardTitle: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLSpanElement>,
+  HTMLSpanElement
+>> = styled.span`
   margin: 0.5em 0;
   font-size: 1.5em;
   font-weight: bold;
@@ -47,11 +44,10 @@ const CardTitle: StyledComponent<
   ${prop<any>('theme.overrides.card.cardTitle', '')};
 `;
 
-const CardSubTitle: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>,
-  unknown,
-  TockTheme
-> = styled.span`
+const CardSubTitle: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLSpanElement>,
+  HTMLSpanElement
+>> = styled.span`
   margin: 0.5em 0;
   font-size: 1em;
   font-weight: bold;
@@ -60,22 +56,20 @@ const CardSubTitle: StyledComponent<
   ${prop<any>('theme.overrides.card.cardSubTitle', '')};
 `;
 
-const CardImage: StyledComponent<
-  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-  unknown,
-  TockTheme
-> = styled.img`
+const CardImage: StyledComponent<DetailedHTMLProps<
+  ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+>> = styled.img`
   max-width: 100%;
   max-height: 100%;
 
   ${prop<any>('theme.overrides.card.cardImage', '')};
 `;
 
-const ButtonList: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
-  unknown,
-  TockTheme
-> = styled.ul`
+const ButtonList: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>> = styled.ul`
   margin: 0.5em 0;
   list-style: none;
   padding: 0.5em 0;
@@ -91,11 +85,10 @@ const ButtonList: StyledComponent<
   }
 `;
 
-const Button: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const Button: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   background: none;
   border-radius: ${prop<any>('theme.sizing.borderRadius')};
   color: ${prop<any>('theme.palette.text.card')};
@@ -139,7 +132,10 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
     isHidden = false,
     onAction,
   }: CardProps,
-  ref,
+  ref:
+    | ((instance: HTMLLIElement | null) => void)
+    | React.MutableRefObject<HTMLLIElement | null>
+    | null,
 ) {
   return (
     <CardOuter

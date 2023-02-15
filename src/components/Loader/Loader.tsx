@@ -1,22 +1,19 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
-import { keyframes } from '@emotion/core';
+import { keyframes } from '@emotion/react';
 import { Keyframes } from '@emotion/serialize';
 import { prop } from 'styled-tools';
 
-import TockTheme from 'styles/theme';
-
-const LoaderContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  unknown,
-  TockTheme
-> = styled.div`
+const LoaderContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>> = styled.div`
   width: 100%;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
 `;
 
-const BulletList: StyledComponent<unknown, unknown, TockTheme> = styled.div`
+const BulletList: StyledComponent<{}> = styled.div`
   display: inline-block;
   color: ${prop<any>('theme.palette.text.bot')};
   padding: 0.5em 1.5em;
@@ -39,7 +36,7 @@ const beat: Keyframes = keyframes`
   }
 `;
 
-const Bullet: StyledComponent<unknown, unknown, TockTheme> = styled.div`
+const Bullet: StyledComponent<{}> = styled.div`
   display: inline-block;
   background-color: ${prop<any>('theme.palette.text.bot')};
   width: ${prop<any>('theme.sizing.loaderSize')};

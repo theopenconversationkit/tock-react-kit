@@ -3,27 +3,24 @@ import React, { DetailedHTMLProps, HTMLAttributes, ReactElement } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import { opacify } from 'polished';
 import { prop } from 'styled-tools';
-import { useTheme } from 'emotion-theming';
+import { useTheme } from '@emotion/react';
 import useCarousel from './hooks/useCarousel';
 import useArrowVisibility from './hooks/useArrowVisibility';
-import TockTheme from 'styles/theme';
 import TockAccessibility from 'TockAccessibility';
 
-const ButtonContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
-  unknown,
-  TockTheme
-> = styled.li`
+const ButtonContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLLIElement>,
+  HTMLLIElement
+>> = styled.li`
   margin: 0.4em 0;
   position: relative;
   list-style: none;
 `;
 
-const ItemContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
-  unknown,
-  TockTheme
-> = styled.ul`
+const ItemContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>> = styled.ul`
   display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -46,11 +43,10 @@ const ItemContainer: StyledComponent<
   }
 `;
 
-const Previous: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const Previous: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   margin: auto;
   left: 0;
@@ -80,11 +76,10 @@ const Previous: StyledComponent<
   ${prop<any>('theme.overrides.carouselArrow', '')};
 `;
 
-const Next: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const Next: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   margin: auto;
   right: 0;
@@ -170,7 +165,9 @@ const Carousel: (props: {
           <ArrowRightCircle
             size={`calc(${theme.typography.fontSize} * 2)`}
             role="img"
-            aria-label={accessibility?.carousel?.nextButtonLabel || 'Next slides'}
+            aria-label={
+              accessibility?.carousel?.nextButtonLabel || 'Next slides'
+            }
             focusable="false"
           />
         </Next>

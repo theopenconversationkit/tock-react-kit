@@ -4,23 +4,19 @@ import React from 'react';
 // @ts-ignore
 import linkifyHtml from 'linkifyjs/html';
 import { prop } from 'styled-tools';
-
-import TockTheme from '../../styles/theme';
-import { TextMessage, Button } from '../../TockContext';
+import { Button, TextMessage } from '../../TockContext';
 import QuickReplyList from '../QuickReplyList';
 
-export const MessageContainer: StyledComponent<
-  unknown,
-  unknown,
-  TockTheme
-> = styled.li`
+import 'styles/theme';
+
+export const MessageContainer: StyledComponent<{}> = styled.li`
   width: 100%;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-export const Message: StyledComponent<unknown, unknown, TockTheme> = styled.div`
+export const Message: StyledComponent<{}> = styled.div`
   display: inline-block;
   background: ${prop<any>('theme.palette.background.bot')};
   color: ${prop<any>('theme.palette.text.bot')};

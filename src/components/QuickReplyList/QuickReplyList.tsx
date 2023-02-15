@@ -4,13 +4,12 @@ import { prop } from 'styled-tools';
 
 import { Button } from '../../TockContext';
 import QuickReply from '../QuickReply/QuickReply';
-import TockTheme from '../../styles/theme';
+import 'styles/theme';
 
-const QuickReplyListContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
-  unknown,
-  TockTheme
-> = styled.ul`
+const QuickReplyListContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>> = styled.ul`
   flex-shrink: 0;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;
@@ -31,11 +30,10 @@ const QuickReplyListContainer: StyledComponent<
   }
 `;
 
-const QuickReplyListOuterContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  unknown,
-  TockTheme
-> = styled.div``;
+const QuickReplyListOuterContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>> = styled.div``;
 
 type Props = {
   items: Button[];

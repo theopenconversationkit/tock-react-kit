@@ -8,15 +8,13 @@ import React, {
   useState,
 } from 'react';
 import { Send, Trash2 } from 'react-feather';
-import TockTheme from 'styles/theme';
 import { prop } from 'styled-tools';
 import TockAccessibility from 'TockAccessibility';
 
-const InputOuterContainer: StyledComponent<
-  DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>,
-  unknown,
-  TockTheme
-> = styled.form`
+const InputOuterContainer: StyledComponent<DetailedHTMLProps<
+  FormHTMLAttributes<HTMLFormElement>,
+  HTMLFormElement
+>> = styled.form`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   width: 100%;
   position: relative;
@@ -26,11 +24,10 @@ const InputOuterContainer: StyledComponent<
   ${prop<any>('theme.overrides.chatInput.container', '')}
 `;
 
-const Input: StyledComponent<
-  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
-  unknown,
-  TockTheme
-> = styled.input`
+const Input: StyledComponent<DetailedHTMLProps<
+  InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>> = styled.input`
   width: 100%;
   height: 2em;
   flex: 1;
@@ -53,11 +50,10 @@ const Input: StyledComponent<
   ${prop<any>('theme.overrides.chatInput.input', '')}
 `;
 
-const SubmitIcon: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const SubmitIcon: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   background: none;
   border: none;
@@ -87,11 +83,10 @@ const SubmitIcon: StyledComponent<
   ${prop<any>('theme.overrides.chatInput.icon', '')}
 `;
 
-const ClearIcon: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const ClearIcon: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   background: none;
   border: none;
@@ -164,7 +159,9 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
           color={'white'}
           onClick={clearMessages}
           role="img"
-          aria-label={accessibility?.input?.clearButtonLabel || 'Clear messages'}
+          aria-label={
+            accessibility?.input?.clearButtonLabel || 'Clear messages'
+          }
           focusable="false"
         />
       </ClearIcon>
