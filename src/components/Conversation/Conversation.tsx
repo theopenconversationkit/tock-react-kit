@@ -10,7 +10,7 @@ import Loader from '../Loader';
 import Image from '../Image';
 import QuickReplyList from '../QuickReplyList';
 import InlineQuickReplyList from '../InlineQuickReplyList';
-import useIntervalCounter from './hooks/useIntervalCounter';
+import useMessageCounter from './hooks/useMessageCounter';
 import useScrollBehaviour from './hooks/useScrollBehaviour';
 import { useTheme } from '@emotion/react';
 import '../../styles/theme';
@@ -139,12 +139,7 @@ const Conversation = ({
   ...rest
 }: Props) => {
   if (messages && messages.length !== 0) {
-    const displayableMessageCount = useIntervalCounter(
-      messages.filter((message) => message.isStoredInLocalStorage === true)
-        .length,
-      messages.length,
-      messageDelay,
-    );
+    const displayableMessageCount = useMessageCounter(messages, messageDelay);
     const theme: TockTheme = useTheme();
     const displayableMessages = messages.slice(0, displayableMessageCount);
     const scrollContainer = useScrollBehaviour([displayableMessages]);

@@ -91,7 +91,7 @@ export enum MessageType {
 
 export interface Message {
   type: MessageType;
-  isStoredInLocalStorage?: boolean;
+  alreadyDisplayed?: boolean;
 }
 
 export interface TextMessage extends Message {

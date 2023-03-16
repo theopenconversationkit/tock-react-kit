@@ -446,7 +446,7 @@ const useTock: (
       dispatch({
         type: 'ADD_MESSAGE',
         messages: history.map((message: Message) => {
-          message.isStoredInLocalStorage = true;
+          message.alreadyDisplayed = true;
           return message;
         }),
       });
