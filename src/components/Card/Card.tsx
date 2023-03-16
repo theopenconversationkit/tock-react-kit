@@ -7,7 +7,7 @@ import React, {
 import { prop } from 'styled-tools';
 
 import { Button } from '../../TockContext';
-import 'styles/theme';
+import '../../styles/theme';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLLIElement>,

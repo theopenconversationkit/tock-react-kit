@@ -13,8 +13,8 @@ import InlineQuickReplyList from '../InlineQuickReplyList';
 import useIntervalCounter from './hooks/useIntervalCounter';
 import useScrollBehaviour from './hooks/useScrollBehaviour';
 import { useTheme } from '@emotion/react';
-import 'styles/theme';
-import TockTheme from 'styles/theme';
+import '../../styles/theme';
+import TockTheme from '../../styles/theme';
 
 import type {
   Button,

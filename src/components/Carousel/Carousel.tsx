@@ -1,12 +1,12 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React, { DetailedHTMLProps, HTMLAttributes, ReactElement } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
-import { opacify } from 'polished';
 import { prop } from 'styled-tools';
 import { useTheme } from '@emotion/react';
 import useCarousel from './hooks/useCarousel';
 import useArrowVisibility from './hooks/useArrowVisibility';
 import TockAccessibility from 'TockAccessibility';
+import TockTheme from '../../styles/theme';
 
 const ButtonContainer: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLLIElement>,
@@ -33,13 +33,13 @@ const ItemContainer: StyledComponent<DetailedHTMLProps<
     display: none;
   }
   scrollbar-width: none;
-  ${prop<any>('theme.overrides.carouselContainer', '')}
+  ${prop('theme.overrides.carouselContainer', '')}
 
   & > li, & > * {
     margin-left: 1em;
     margin-right: 1em;
 
-    ${prop<any>('theme.overrides.carouselItem', '')}
+    ${prop('theme.overrides.carouselItem', '')}
   }
 `;
 
@@ -53,7 +53,7 @@ const Previous: StyledComponent<DetailedHTMLProps<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: opacify(-0.8, ${prop('props.theme.palette.background.bot')});
   border: none;
   width: 4em;
   height: 4em;
@@ -63,17 +63,17 @@ const Previous: StyledComponent<DetailedHTMLProps<
   z-index: 5;
 
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
+    stroke: ${prop('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${prop<any>('theme.palette.text.bot')};
+      stroke: ${prop('theme.palette.text.bot')};
     }
   }
 
-  ${prop<any>('theme.overrides.carouselArrow', '')};
+  ${prop('theme.overrides.carouselArrow', '')};
 `;
 
 const Next: StyledComponent<DetailedHTMLProps<
@@ -86,7 +86,7 @@ const Next: StyledComponent<DetailedHTMLProps<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: opacify(-0.8, ${prop('props.theme.palette.background.bot')});
   border: none;
   width: 4em;
   height: 4em;
@@ -96,17 +96,17 @@ const Next: StyledComponent<DetailedHTMLProps<
   z-index: 5;
 
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
+    stroke: ${prop('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${prop<any>('theme.palette.text.bot')};
+      stroke: ${prop('theme.palette.text.bot')};
     }
   }
 
-  ${prop<any>('theme.overrides.carouselArrow', '')};
+  ${prop('theme.overrides.carouselArrow', '')};
 `;
 
 const Carousel: (props: {
@@ -119,7 +119,8 @@ const Carousel: (props: {
   children?: ReactElement[];
   accessibility?: TockAccessibility;
 }) => {
-  const theme: TockTheme = useTheme<TockTheme>();
+  const theme: TockTheme = useTheme();
+
   const [ref, previous, next] = useCarousel<HTMLUListElement>(children?.length);
   const [leftVisible, rightVisible] = useArrowVisibility(
     ref.container,

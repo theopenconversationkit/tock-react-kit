@@ -4,7 +4,7 @@ import { prop } from 'styled-tools';
 
 import { Button } from '../../TockContext';
 import QuickReply from '../QuickReply/QuickReply';
-import 'styles/theme';
+import '../../styles/theme';
 
 const QuickReplyListContainer: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLUListElement>,

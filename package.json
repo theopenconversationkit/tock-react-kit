@@ -12,7 +12,7 @@
     "build-storybook": "build-storybook",
     "build": "rollup -c --environment BUILD:production",
     "watch-build": "rollup -w -c --environment BUILD:production",
-    "lint": "eslint 'src/**/*.{js,ts,tsx}' --fix --quiet",
+    "lint": "eslint src/**/*.{js,ts,tsx} --fix --quiet",
     "prepare": "rollup -c --environment BUILD:production",
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "test": "echo 'Tests coming soon ...'",
