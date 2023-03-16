@@ -3,9 +3,8 @@ import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import styled, { StyledComponent } from '@emotion/styled';
 import { prop } from 'styled-tools';
 import { useTheme } from '@emotion/react';
-import 'styles/theme';
-import TockTheme from 'styles/theme';
-import { opacify } from 'polished';
+import '../../styles/theme';
+import TockTheme from '../../styles/theme';
 import { Button } from '../../TockContext';
 import useCarouselQuickReply from './hooks/useCarouselQuickReply';
 import useArrowVisibility from '../Carousel/hooks/useArrowVisibility';
@@ -45,7 +44,7 @@ const Previous: StyledComponent<DetailedHTMLProps<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: opacify(-0.8, ${prop('props.theme.palette.background.bot')});
   border: none;
   width: 3em;
   height: 3em;
@@ -55,17 +54,17 @@ const Previous: StyledComponent<DetailedHTMLProps<
   z-index: 5;
 
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
+    stroke: ${prop('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${prop<any>('theme.palette.text.bot')};
+      stroke: ${prop('theme.palette.text.bot')};
     }
   }
 
-  ${prop<any>('theme.overrides.quickReplyArrow', '')};
+  ${prop('theme.overrides.quickReplyArrow', '')};
 `;
 
 const Next: StyledComponent<DetailedHTMLProps<
@@ -78,7 +77,7 @@ const Next: StyledComponent<DetailedHTMLProps<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: opacify(-0.8, ${prop('props.theme.palette.background.bot')});
   border: none;
   width: 3em;
   height: 3em;
@@ -88,17 +87,17 @@ const Next: StyledComponent<DetailedHTMLProps<
   z-index: 5;
 
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
+    stroke: ${prop('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${prop<any>('theme.palette.text.bot')};
+      stroke: ${prop('theme.palette.text.bot')};
     }
   }
 
-  ${prop<any>('theme.overrides.quickReplyArrow', '')};
+  ${prop('theme.overrides.quickReplyArrow', '')};
 `;
 
 const InlineQuickReplyListOuterContainer: StyledComponent<DetailedHTMLProps<

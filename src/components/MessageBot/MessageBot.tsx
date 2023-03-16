@@ -7,7 +7,7 @@ import { prop } from 'styled-tools';
 import { Button, TextMessage } from '../../TockContext';
 import QuickReplyList from '../QuickReplyList';
 
-import 'styles/theme';
+import '../../styles/theme';
 
 export const MessageContainer: StyledComponent<{}> = styled.li`
   width: 100%;

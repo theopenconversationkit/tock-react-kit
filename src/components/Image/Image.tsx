@@ -5,7 +5,7 @@ import React, {
   ImgHTMLAttributes,
 } from 'react';
 import { prop } from 'styled-tools';
-import 'styles/theme';
+import '../../styles/theme';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLLIElement>,

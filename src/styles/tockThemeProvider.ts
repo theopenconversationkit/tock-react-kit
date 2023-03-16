@@ -5,7 +5,7 @@ import TockTheme from './theme';
 import { default as createTheme } from './createTheme';
 
 export default function TockThemeProvider<Theme>(
-  props: ThemeProviderProps<Theme>,
+  props: ThemeProviderProps,
 ): React.ReactElement {
   const theme = props.theme as TockTheme;
   if (!theme.overrides) {
@@ -13,7 +13,7 @@ export default function TockThemeProvider<Theme>(
       '[Theme deprecated] You seem providing a deprecated theme.\n Since version 20.3.4 you must provide a theme build by using "createTheme" function and the new TockTheme interface.',
     );
     return ThemeProvider(
-      deepmerge<ThemeProviderProps<Theme>>(
+      deepmerge<ThemeProviderProps>(
         { theme: createTheme({}) as Partial<Theme> },
         { ...props },
       ),
