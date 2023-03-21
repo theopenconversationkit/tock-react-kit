@@ -146,13 +146,17 @@ Renders an entire chat in a target element.
 | `theme`                        | `TockTheme`                                                           | Optional theme object                          |
 | `options`                      | `TockOptions`                                                         | Optional options object                        |
 
-### `useTock(tockBotApiUrl)`
+### `useTock(tockBotApiUrl, extraHeadersProvider, disableSse, localStorageHistory, locale)`
 
 Hook that provides chat history and methods to communicate with the Tock Bot. It must be used alongside with `TockContext`. Returns a useTock interface.
 
-| Argument name   | Type     | Description                  |
-| --------------- | -------- | ---------------------------- |
-| `tockBotApiUrl` | `string` | URL to the Tock Bot REST API |
+| Argument name          | Type                                    | Description                                                   |
+| ---------------------- | --------------------------------------- | ------------------------------------------------------------- |
+| `tockBotApiUrl`        | `string`                                | URL to the Tock Bot REST API                                  |
+| `extraHeadersProvider` | `() => Promise<Record<string, string>>` | Optional Provider of extra HTTP headers for outgoing requests |
+| `disableSse`           | `boolean`                               | Optional Disabling Server Side Events                         |
+| `localStorageHistory`  | `TockLocalStorage`                      | Optional LocalStorage history                                 |
+| `locale`               | `string`                                | Optional Locale                                               |
 
 ### `TockTheme`
 
