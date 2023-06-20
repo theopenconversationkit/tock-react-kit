@@ -73,28 +73,34 @@ You can also use it as a module (i.e [Create React App](https://github.com/faceb
 
 ```
 npm i tock-react-kit
-npm i @emotion/core@10
-npm i @emotion/styled@10
-npm i emotion-theming@10
+npm i @emotion/react@11
+npm i @emotion/styled@11
 ```
 
 ### Use in a React app
 
 ```jsx
-import { TockChat } from 'tock-react-kit';
+import { ThemeProvider } from "@emotion/react";
+import { TockContext, Chat, createTheme } from 'tock-react-kit';
 
-<div id="chat">
-    <TockChat
-        endPoint="<TOCK_BOT_API_URL>"
-        /* The following parameters are optional */
-        theme={{ /* ... */ }}
-        referralParameter="referralParameter"
-        // also accepts all properties from TockOptions, like:
-        disableSse
-        openingMessage="Hi"
-    />
-</div>
+<TockContext>
+    <ThemeProvider theme={createTheme({ /* ... */})}>
+        <Chat
+            endPoint="<TOCK_BOT_API_URL>"
+            /* The following parameters are optional */
+            referralParameter="referralParameter"
+            // also accepts all properties from TockOptions, like:
+            disableSse
+            openingMessage="Hi"
+        />
+    </ThemeProvider>
+</TockContext>
 ```
+
+Note that unmounting `TockContext` at any point may cause bugs in the chat due to live data being lost.
+Therefore, in apps where the `Chat` component is susceptible to being unmounted and remounted (e.g. Single Page Applications),
+`TockContext` should go at the root of the page (hoisting out of render).
+`ThemeProvider` should also be hoisted out of render for performance reasons, as noted in the [Emotion docs](https://emotion.sh/docs/theming#themeprovider-reactcomponenttype).
 
 ### Use in a non-React app
 
