@@ -282,6 +282,7 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 |-----------------------------------|------------------------|-----------------------------------------------------------------------------|
 | `enable`                          | `boolean?`             | Enable history local storage                                                |
 | `maxNumberMessages`               | `number?`              | Max number of messages in the history local storage (default 10)            |
+| `storagePrefix`                   | `string?`              | Prefix for local storage keys allowing communication with different bots from the same domain with history            |
 
 #### `CarouselAccessibility`
 

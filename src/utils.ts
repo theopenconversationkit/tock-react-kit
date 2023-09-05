@@ -1,12 +1,21 @@
+import TockLocalStorage from './TockLocalStorage';
+
 /**
  * Retrieves persisted user id.
  */
-export const retrieveUserId: () => string = () =>
-  fromLocalStorage('userId', () => {
+export const retrieveUserId: (
+  localStorageHistory?: TockLocalStorage,
+) => string = (localStorageHistory: TockLocalStorage) => {
+  const userIdLSKeyName = retrievePrefixedLocalStorageKeyName(
+    localStorageHistory,
+    'userId',
+  );
+  return fromLocalStorage(userIdLSKeyName, () => {
     const date = Date.now().toString(36);
     const randomNumber = Math.random().toString(36).substr(2, 5);
     return (date + randomNumber).toUpperCase();
   });
+};
 
 /**
  * Retrieves and returns an object from the local storage if found.
@@ -62,4 +71,29 @@ export const storageAvailable: (type: string) => boolean = (type: string) => {
       storage.length !== 0
     );
   }
+};
+
+/**
+ * Retrieves a localstorage variable name, prefixed if a storagePrefix is defined.
+ * @param localStorageHistory - TockLocalStorage object if defined
+ * @param key - key in local storage
+ * @returns string - the local storage key name, possibly prefixed
+ */
+export const retrievePrefixedLocalStorageKeyName: (
+  localStorageHistory: TockLocalStorage | undefined,
+  varName: string,
+) => string = (
+  localStorageHistory: TockLocalStorage | undefined,
+  varName: string,
+) => {
+  const arr = [varName];
+
+  if (
+    localStorageHistory?.enable &&
+    localStorageHistory?.storagePrefix?.trim().length
+  ) {
+    arr.unshift(localStorageHistory.storagePrefix.trim());
+  }
+
+  return arr.join('_');
 };

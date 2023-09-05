@@ -5,6 +5,7 @@ import Container from '../Container';
 import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
 import TockLocalStorage from 'TockLocalStorage';
+import { retrievePrefixedLocalStorageKeyName } from '../../utils';
 
 export interface ChatProps {
   endPoint: string;
@@ -55,18 +56,30 @@ const Chat: (props: ChatProps) => JSX.Element = ({
       if (referralParameter) {
         sendReferralParameter(referralParameter);
       }
+
+      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+        localStorageHistory,
+        'tockMessageHistory',
+      );
+      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+        localStorageHistory,
+        'tockQuickReplyHistory',
+      );
+
       const history =
         localStorageHistory?.enable == true
-          ? window.localStorage.getItem('tockMessageHistory')
+          ? window.localStorage.getItem(messageHistoryLSKeyName)
           : undefined;
+
       if (messages.length === 0 && openingMessage && !history) {
         sendOpeningMessage(openingMessage);
       }
+
       if (history) {
         addHistory(
           JSON.parse(history),
           JSON.parse(
-            window.localStorage.getItem('tockQuickReplyHistory') || '[]',
+            window.localStorage.getItem(quickReplyHistoryLSKeyName) || '[]',
           ),
         );
       }

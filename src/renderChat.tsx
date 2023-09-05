@@ -24,7 +24,17 @@ export const renderChat: (
 ): void => {
   ReactDOM.render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext>
+      <TockContext
+        {...(storageAvailable('localStorage') && {
+          localStorageHistory: {
+            enable:
+              options.localStorage ||
+              options.localStorageHistory?.enable === true,
+            maxNumberMessages: options.localStorageHistory?.maxNumberMessages,
+            storagePrefix: options.localStorageHistory?.storagePrefix,
+          },
+        })}
+      >
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}
@@ -40,6 +50,7 @@ export const renderChat: (
                 options.localStorage ||
                 options.localStorageHistory?.enable === true,
               maxNumberMessages: options.localStorageHistory?.maxNumberMessages,
+              storagePrefix: options.localStorageHistory?.storagePrefix,
             },
           })}
         />
