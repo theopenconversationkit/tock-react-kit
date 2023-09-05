@@ -1,18 +1,28 @@
 import { Dispatch, useCallback } from 'react';
 import { TockAction, useTockDispatch } from './TockContext';
+import TockLocalStorage from './TockLocalStorage';
+import { retrievePrefixedLocalStorageKeyName } from './utils';
 
 export interface UseLocalTools {
   clearMessages: () => void;
 }
 
-const useLocalTools: (localStorage?: boolean) => UseLocalTools = (
-  localStorage,
-) => {
+const useLocalTools: (
+  localStorageHistory?: TockLocalStorage,
+) => UseLocalTools = (localStorageHistory) => {
   const dispatch: Dispatch<TockAction> = useTockDispatch();
   const clearMessages: () => void = useCallback(() => {
-    if (localStorage === true) {
-      window.localStorage.removeItem('tockMessageHistory');
-      window.localStorage.removeItem('tockQuickReplyHistory');
+    if (localStorageHistory?.enable) {
+      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+        localStorageHistory,
+        'tockMessageHistory',
+      );
+      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+        localStorageHistory,
+        'tockQuickReplyHistory',
+      );
+      window.localStorage.removeItem(messageHistoryLSKeyName);
+      window.localStorage.removeItem(quickReplyHistoryLSKeyName);
     }
     dispatch({
       type: 'CLEAR_MESSAGES',

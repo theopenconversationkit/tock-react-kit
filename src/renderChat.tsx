@@ -23,13 +23,24 @@ export const renderChat: (
 ): void => {
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext>
+      <TockContext
+        {...(storageAvailable('localStorage') && {
+          localStorageHistory: {
+            enable:
+              options.localStorage ||
+              options.localStorageHistory?.enable === true,
+            maxNumberMessages: options.localStorageHistory?.maxNumberMessages,
+            storagePrefix: options.localStorageHistory?.storagePrefix,
+          },
+        })}
+      >
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}
           localStorageHistory={{
             enable: localStorage || localStorageHistory?.enable === true,
             maxNumberMessages: localStorageHistory?.maxNumberMessages,
+            storagePrefix: localStorageHistory?.storagePrefix,
           }}
           {...options}
         />

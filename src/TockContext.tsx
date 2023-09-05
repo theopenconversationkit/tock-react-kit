@@ -8,6 +8,7 @@ import React, {
   useContext,
 } from 'react';
 import { retrieveUserId } from './utils';
+import TockLocalStorage from './TockLocalStorage';
 
 export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
@@ -204,17 +205,22 @@ export const tockReducer: Reducer<TockState, TockAction> = (
   return state;
 };
 
-const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
+const TockContext: (props: {
+  children?: ReactNode;
+  localStorageHistory?: TockLocalStorage;
+}) => JSX.Element = ({
   children,
+  localStorageHistory,
 }: {
   children?: ReactNode;
+  localStorageHistory?: TockLocalStorage;
 }) => {
   const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(
     tockReducer,
     {
       quickReplies: [],
       messages: [],
-      userId: retrieveUserId(),
+      userId: retrieveUserId(localStorageHistory),
       loading: false,
       sseInitializing: false,
     },

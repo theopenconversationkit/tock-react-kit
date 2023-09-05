@@ -20,6 +20,7 @@ import {
 import { Sse } from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
 import TockLocalStorage from 'TockLocalStorage';
+import { retrievePrefixedLocalStorageKeyName } from './utils';
 
 export interface UseTock {
   messages: Message[];
@@ -107,9 +108,7 @@ const useTock: (
     sseInitializing,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
-  const { clearMessages }: UseLocalTools = useLocalTools(
-    localStorageHistory?.enable ?? false,
-  );
+  const { clearMessages }: UseLocalTools = useLocalTools(localStorageHistory);
 
   const startLoading: () => void = () => {
     dispatch({
@@ -128,7 +127,12 @@ const useTock: (
   const recordResponseToLocaleSession: (message: any) => void = (
     message: any,
   ) => {
-    let history: any = window.localStorage.getItem('tockMessageHistory');
+    const messageHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+      localStorageHistory,
+      'tockMessageHistory',
+    );
+
+    let history: any = window.localStorage.getItem(messageHistoryLSKeyName);
     const maxNumberMessages = localStorageHistory?.maxNumberMessages ?? 10;
     if (!history) {
       history = [];
@@ -139,7 +143,10 @@ const useTock: (
       history.splice(0, history.length - maxNumberMessages + 1);
     }
     history.push(message);
-    window.localStorage.setItem('tockMessageHistory', JSON.stringify(history));
+    window.localStorage.setItem(
+      messageHistoryLSKeyName,
+      JSON.stringify(history),
+    );
   };
 
   const handleBotResponse: (botResponse: any) => void = ({
@@ -155,8 +162,12 @@ const useTock: (
         quickReplies: quickReplies,
       });
       if (localStorageHistory?.enable ?? false) {
-        window.localStorage.setItem(
+        const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+          localStorageHistory,
           'tockQuickReplyHistory',
+        );
+        window.localStorage.setItem(
+          quickReplyHistoryLSKeyName,
           JSON.stringify(quickReplies),
         );
       }
