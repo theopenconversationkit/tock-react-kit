@@ -86,14 +86,12 @@ export const retrievePrefixedLocalStorageKey: (
   localStorageHistory: TockLocalStorage | undefined,
   varName: string,
 ) => {
-  const arr = [varName];
-
+  let key = varName;
   if (
     localStorageHistory?.enable &&
     localStorageHistory?.storagePrefix?.trim().length
   ) {
-    arr.unshift(localStorageHistory.storagePrefix.trim());
+    key = `${localStorageHistory.storagePrefix.trim()}_${key}`;
   }
-
-  return arr.join('_');
+  return key;
 };
