@@ -62,11 +62,11 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         sendReferralParameter(referralParameter);
       }
 
-      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
         localStorageHistory,
         'tockMessageHistory',
       );
-      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
         localStorageHistory,
         'tockQuickReplyHistory',
       );
