@@ -164,7 +164,9 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
           color={'white'}
           onClick={clearMessages}
           role="img"
-          aria-label={accessibility?.input?.clearButtonLabel || 'Clear messages'}
+          aria-label={
+            accessibility?.input?.clearButtonLabel || 'Clear messages'
+          }
           focusable="false"
         />
       </ClearIcon>
