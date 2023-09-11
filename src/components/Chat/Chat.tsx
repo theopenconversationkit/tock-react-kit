@@ -5,7 +5,7 @@ import Container from '../Container';
 import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
 import TockLocalStorage from 'TockLocalStorage';
-import { retrievePrefixedLocalStorageKeyName } from '../../utils';
+import { retrievePrefixedLocalStorageKey } from '../../utils';
 
 export interface ChatProps {
   endPoint: string;
@@ -57,11 +57,11 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         sendReferralParameter(referralParameter);
       }
 
-      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
         localStorageHistory,
         'tockMessageHistory',
       );
-      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
         localStorageHistory,
         'tockQuickReplyHistory',
       );

@@ -6,7 +6,7 @@ import TockLocalStorage from './TockLocalStorage';
 export const retrieveUserId: (
   localStorageHistory?: TockLocalStorage,
 ) => string = (localStorageHistory: TockLocalStorage) => {
-  const userIdLSKeyName = retrievePrefixedLocalStorageKeyName(
+  const userIdLSKeyName = retrievePrefixedLocalStorageKey(
     localStorageHistory,
     'userId',
   );
@@ -79,7 +79,7 @@ export const storageAvailable: (type: string) => boolean = (type: string) => {
  * @param key - key in local storage
  * @returns string - the local storage key name, possibly prefixed
  */
-export const retrievePrefixedLocalStorageKeyName: (
+export const retrievePrefixedLocalStorageKey: (
   localStorageHistory: TockLocalStorage | undefined,
   varName: string,
 ) => string = (

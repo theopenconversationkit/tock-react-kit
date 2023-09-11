@@ -20,7 +20,7 @@ import {
 import { Sse } from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
 import TockLocalStorage from 'TockLocalStorage';
-import { retrievePrefixedLocalStorageKeyName } from './utils';
+import { retrievePrefixedLocalStorageKey } from './utils';
 
 export interface UseTock {
   messages: Message[];
@@ -127,7 +127,7 @@ const useTock: (
   const recordResponseToLocaleSession: (message: any) => void = (
     message: any,
   ) => {
-    const messageHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+    const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
       localStorageHistory,
       'tockMessageHistory',
     );
@@ -162,7 +162,7 @@ const useTock: (
         quickReplies: quickReplies,
       });
       if (localStorageHistory?.enable ?? false) {
-        const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+        const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
           localStorageHistory,
           'tockQuickReplyHistory',
         );

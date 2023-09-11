@@ -1,7 +1,7 @@
 import { Dispatch, useCallback } from 'react';
 import { TockAction, useTockDispatch } from './TockContext';
 import TockLocalStorage from './TockLocalStorage';
-import { retrievePrefixedLocalStorageKeyName } from './utils';
+import { retrievePrefixedLocalStorageKey } from './utils';
 
 export interface UseLocalTools {
   clearMessages: () => void;
@@ -13,11 +13,11 @@ const useLocalTools: (
   const dispatch: Dispatch<TockAction> = useTockDispatch();
   const clearMessages: () => void = useCallback(() => {
     if (localStorageHistory?.enable) {
-      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
         localStorageHistory,
         'tockMessageHistory',
       );
-      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKeyName(
+      const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
         localStorageHistory,
         'tockQuickReplyHistory',
       );
