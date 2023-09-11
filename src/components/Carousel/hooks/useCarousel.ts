@@ -98,9 +98,9 @@ export default function useCarousel<T>(itemCount = 0): CarouselReturn<T> {
   const containerRef = useRef(null);
   const itemRefs = useRefs(itemCount);
   const measures = useMeasures(itemRefs);
-  const carouselItems: CarouselItem[] = Array.from(Array(itemCount)).map<
-    CarouselItem
-  >((_, i) => {
+  const carouselItems: CarouselItem[] = Array.from(
+    Array(itemCount),
+  ).map<CarouselItem>((_, i) => {
     const [isHidden, setIsHidden] = useState(false);
     return Object.create({ refObject: itemRefs[i++], isHidden, setIsHidden });
   });
