@@ -6,7 +6,7 @@ import { prop } from 'styled-tools';
 import { opacify } from 'polished';
 import '../../styles/theme';
 import TockTheme from '../../styles/theme';
-import { Button } from '../../TockContext';
+import { Button } from '../../model/buttons';
 import useCarouselQuickReply from './hooks/useCarouselQuickReply';
 import useArrowVisibility from '../Carousel/hooks/useArrowVisibility';
 import QuickReply from '../QuickReply/QuickReply';

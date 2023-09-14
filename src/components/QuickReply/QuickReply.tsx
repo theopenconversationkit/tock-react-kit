@@ -2,7 +2,7 @@ import styled, { StyledComponent } from '@emotion/styled';
 import React, { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
 import { prop } from 'styled-tools';
 
-import { Button } from '../../TockContext';
+import { QuickReply as QuickReplyData } from '../../model/buttons';
 
 import QuickReplyImage from './QuickReplyImage';
 
@@ -40,7 +40,7 @@ type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 > &
-  Button;
+  QuickReplyData;
 
 const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
   ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => (

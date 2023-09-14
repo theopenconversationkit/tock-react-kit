@@ -1,5 +1,6 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
 import styled from '@emotion/styled';
+import { useTheme } from '@emotion/react';
 
 import DefaultWidget from '../widgets/DefaultWidget';
 import MessageBot from '../MessageBot';
@@ -12,22 +13,19 @@ import QuickReplyList from '../QuickReplyList';
 import InlineQuickReplyList from '../InlineQuickReplyList';
 import useMessageCounter from './hooks/useMessageCounter';
 import useScrollBehaviour from './hooks/useScrollBehaviour';
-import { useTheme } from '@emotion/react';
-import '../../styles/theme';
 import TockTheme from '../../styles/theme';
 
+import TockAccessibility from '../../TockAccessibility';
+import { Button, QuickReply } from '../../model/buttons';
 import type {
-  Button,
   Card as ICard,
   Carousel as ICarousel,
-  Message,
   Image as IImage,
+  Message,
   MessageType,
   TextMessage,
   Widget,
-  QuickReply as CQuickReply,
-} from 'TockContext';
-import TockAccessibility from 'TockAccessibility';
+} from '../../model/messages';
 
 const ConversationOuterContainer = styled.div`
   display: flex;
@@ -52,9 +50,10 @@ interface RenderOptions {
   onAction: (button: Button) => void;
 }
 
-const renderWidget = (message: Widget, options: RenderOptions) => {
-  const Widget = options?.widgets[message.widgetData.type] ?? DefaultWidget;
-  return <Widget {...message.widgetData.data} />;
+const renderWidget = (widget: Widget, options: RenderOptions) => {
+  const WidgetRenderer =
+    options.widgets?.[widget.widgetData.type] ?? DefaultWidget;
+  return <WidgetRenderer {...widget.widgetData.data} />;
 };
 
 const renderMessage = (message: TextMessage, options: RenderOptions) => {
@@ -105,7 +104,7 @@ const MESSAGE_RENDERER: {
 const makeRenderMessage = (
   options: RenderOptions,
   accessibility?: TockAccessibility,
-) => (message: Message | ICard | ICarousel | Widget, index: number) => {
+) => (message: Message, index: number) => {
   const render: Renderer = MESSAGE_RENDERER[message.type];
   if (!render) return null;
   return React.cloneElement(render(message, options, accessibility), {
@@ -121,7 +120,7 @@ type Props = DetailedHTMLProps<
   messageDelay: number;
   widgets?: { [id: string]: (props: unknown) => JSX.Element };
   loading?: boolean;
-  quickReplies: CQuickReply[];
+  quickReplies: QuickReply[];
   onAction: (button: Button) => void;
   onQuickReplyClick: (button: Button) => void;
   accessibility?: TockAccessibility;
@@ -164,21 +163,18 @@ const Conversation = ({
         </ConversationInnerContainer>
         {!loading &&
           displayableMessageCount === messages.length &&
-          theme.inlineQuickReplies !== true && (
-            <QuickReplyList
-              items={quickReplies}
-              onItemClick={onQuickReplyClick}
-            />
-          )}
-        {!loading &&
-          displayableMessageCount === messages.length &&
-          theme.inlineQuickReplies === true && (
+          (theme.inlineQuickReplies ? (
             <InlineQuickReplyList
               items={quickReplies}
               onItemClick={onQuickReplyClick}
               accessibility={accessibility}
             />
-          )}
+          ) : (
+            <QuickReplyList
+              items={quickReplies}
+              onItemClick={onQuickReplyClick}
+            />
+          ))}
       </ConversationOuterContainer>
     );
   } else {

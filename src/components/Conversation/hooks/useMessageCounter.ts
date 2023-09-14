@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Message } from '../../../TockContext';
+import { Message } from '../../../model/messages';
 
 export default function useMessageCounter(
   messages: Message[],

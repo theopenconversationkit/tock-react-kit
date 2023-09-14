@@ -2,7 +2,7 @@ import React, { DetailedHTMLProps, HTMLAttributes, useCallback } from 'react';
 import styled, { StyledComponent } from '@emotion/styled';
 import { prop } from 'styled-tools';
 
-import { Button } from '../../TockContext';
+import { Button } from '../../model/buttons';
 import QuickReply from '../QuickReply/QuickReply';
 import '../../styles/theme';
 

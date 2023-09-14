@@ -22,5 +22,14 @@ export { renderChat } from './renderChat';
 export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
 export { default as createTheme } from './styles/createTheme';
+export type {
+  Card as CardData,
+  Carousel as CarouselData,
+  Image as ImageData,
+  Message as MessageData,
+  TextMessage as TextMessageData,
+  Widget as WidgetData,
+  WidgetPayload,
+} from './model/messages';
 export type TockTheme = _TockTheme;
 export type TockOptions = _TockOptions;

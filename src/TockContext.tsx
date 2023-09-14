@@ -1,18 +1,20 @@
 import React, {
+  Context,
+  createContext,
   Dispatch,
   ReactNode,
   Reducer,
-  useReducer,
-  createContext,
-  Context,
   useContext,
+  useReducer,
 } from 'react';
 import { retrieveUserId } from './utils';
+import { QuickReply } from './model/buttons';
+import { Message } from './model/messages';
 
-export const TockStateContext: Context<TockState | undefined> = createContext<
+const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
 >(undefined);
-export const TockStateDispatch: Context<
+const TockStateDispatch: Context<
   Dispatch<TockAction> | undefined
 > = createContext<Dispatch<TockAction> | undefined>(undefined);
 
@@ -34,107 +36,9 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
   return dispatch;
 };
 
-export class QuickReply {
-  label: string;
-  payload?: string;
-  nlpText?: string;
-  imageUrl?: string;
-
-  constructor(
-    label: string,
-    payload: string,
-    nlpText?: string,
-    imageUrl?: string,
-  ) {
-    this.label = label;
-    this.payload = payload;
-    this.nlpText = nlpText;
-    this.imageUrl = imageUrl;
-  }
-}
-
-export class PostBackButton {
-  label: string;
-  payload?: string;
-  imageUrl?: string;
-
-  constructor(label: string, payload: string, imageUrl?: string) {
-    this.label = label;
-    this.payload = payload;
-    this.imageUrl = imageUrl;
-  }
-}
-
-export class UrlButton {
-  label: string;
-  url: string;
-  imageUrl?: string;
-
-  constructor(label: string, url: string, imageUrl?: string) {
-    this.label = label;
-    this.url = url;
-    this.imageUrl = imageUrl;
-  }
-}
-
-export type Button = QuickReply | PostBackButton | UrlButton;
-
-export type Messages = Message | Card | Carousel | Widget | Image;
-
-export enum MessageType {
-  message = 'message',
-  card = 'card',
-  carousel = 'carousel',
-  widget = 'widget',
-  image = 'image',
-}
-
-export interface Message {
-  type: MessageType;
-  alreadyDisplayed?: boolean;
-}
-
-export interface TextMessage extends Message {
-  author: 'bot' | 'user';
-  message: string;
-  type: MessageType.message;
-  buttons?: Button[];
-}
-
-export interface Card extends Message {
-  imageUrl?: string;
-  imageAlternative?: string;
-  title: string;
-  subTitle?: string;
-  buttons?: Button[];
-  type: MessageType.card;
-}
-
-export interface Carousel extends Message {
-  cards: Card[];
-  type: MessageType.carousel;
-}
-
-export interface Widget extends Message {
-  widgetData: WidgetData;
-  type: MessageType.widget;
-}
-
-export interface WidgetData {
-  data: any;
-  type: string;
-}
-
-export interface Image extends Message {
-  url?: string;
-  title: string;
-  type: MessageType.image;
-  alternative?: string;
-}
-
 export interface TockState {
   quickReplies: QuickReply[];
-  messages: Messages[];
+  messages: Message[];
   userId: string;
   loading: boolean;
   sseInitializing: boolean;
@@ -148,12 +52,12 @@ export interface TockAction {
     | 'SET_SSE_INITIALIZING'
     | 'CLEAR_MESSAGES';
   quickReplies?: QuickReply[];
-  messages?: Messages[];
+  messages?: Message[];
   loading?: boolean;
   sseInitializing?: boolean;
 }
 
-export const tockReducer: Reducer<TockState, TockAction> = (
+const tockReducer: Reducer<TockState, TockAction> = (
   state: TockState,
   action: TockAction,
 ): TockState => {

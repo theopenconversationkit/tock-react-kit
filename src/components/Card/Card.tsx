@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { prop } from 'styled-tools';
 
-import { Button as ButtonData } from '../../TockContext';
+import { Button as ButtonData } from '../../model/buttons';
 import '../../styles/theme';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<
