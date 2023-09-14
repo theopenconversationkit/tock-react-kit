@@ -1,25 +1,30 @@
 import { Dispatch, useCallback } from 'react';
 import {
-  Button,
-  Card,
-  Carousel,
-  Message,
-  MessageType,
-  PostBackButton,
-  QuickReply,
-  TextMessage,
   TockAction,
   TockState,
-  UrlButton,
   useTockDispatch,
   useTockState,
-  WidgetData,
-  Widget,
-  Image,
 } from './TockContext';
-import { Sse } from './Sse';
+import * as Sse from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
 import TockLocalStorage from 'TockLocalStorage';
+import { Button, PostBackButton, QuickReply, UrlButton } from './model/buttons';
+import {
+  Card,
+  Carousel,
+  Image,
+  Message,
+  MessageType,
+  TextMessage,
+  Widget,
+  WidgetPayload,
+} from './model/messages';
+import {
+  BotConnectorResponse,
+  BotConnectorButton,
+  BotConnectorCard,
+  BotConnectorImage,
+} from './model/responses';
 
 export interface UseTock {
   messages: Message[];
@@ -40,18 +45,21 @@ export interface UseTock {
   ) => void;
   addImage: (title: string, url?: string) => void;
   addCarousel: (cards: Card[]) => void;
-  addWidget: (widgetData: WidgetData) => void;
+  addWidget: (widgetData: WidgetPayload) => void;
   setQuickReplies: (quickReplies: QuickReply[]) => void;
   sendQuickReply: (button: Button) => Promise<void>;
   sendAction: (button: Button) => Promise<void>;
   sendReferralParameter: (referralParameter: string) => void;
   sendOpeningMessage: (msg: string) => Promise<void>;
-  addHistory: (history: Array<any>, quickReplyHistory: Array<any>) => void;
+  addHistory: (
+    history: Array<Message>,
+    quickReplyHistory: Array<QuickReply>,
+  ) => void;
   sseInitPromise: Promise<void>;
   sseInitializing: boolean;
 }
 
-function mapButton(button: any): Button {
+function mapButton(button: BotConnectorButton): Button {
   if (button.type === 'web_url') {
     return new UrlButton(button.title, button.url, button.imageUrl);
   } else if (button.type === 'postback') {
@@ -68,18 +76,18 @@ function mapButton(button: any): Button {
   }
 }
 
-function mapCard(card: any): Card {
+function mapCard(card: BotConnectorCard): Card {
   return {
     title: card.title,
     subTitle: card.subTitle,
     imageUrl: card.file?.url,
     imageAlternative: card?.file?.description ?? card.title,
-    buttons: card.buttons.map((button: any) => mapButton(button)),
+    buttons: card.buttons.map(mapButton),
     type: MessageType.card,
   } as Card;
 }
 
-function mapImage(image: any): Image {
+function mapImage(image: BotConnectorImage): Image {
   return {
     title: image.file?.name,
     url: image.file?.url,
@@ -125,15 +133,16 @@ const useTock: (
     });
   };
 
-  const recordResponseToLocaleSession: (message: any) => void = (
-    message: any,
+  const recordResponseToLocaleSession: (message: Message) => void = (
+    message: Message,
   ) => {
-    let history: any = window.localStorage.getItem('tockMessageHistory');
+    const savedHistory = window.localStorage.getItem('tockMessageHistory');
     const maxNumberMessages = localStorageHistory?.maxNumberMessages ?? 10;
-    if (!history) {
+    let history: Message[];
+    if (!savedHistory) {
       history = [];
     } else {
-      history = JSON.parse(history);
+      history = JSON.parse(savedHistory);
     }
     if (history.length >= maxNumberMessages) {
       history.splice(0, history.length - maxNumberMessages + 1);
@@ -142,17 +151,17 @@ const useTock: (
     window.localStorage.setItem('tockMessageHistory', JSON.stringify(history));
   };
 
-  const handleBotResponse: (botResponse: any) => void = ({
+  const handleBotResponse: (botResponse: BotConnectorResponse) => void = ({
     responses,
-  }: any) => {
+  }) => {
     if (Array.isArray(responses) && responses.length > 0) {
-      const lastMessage: any = responses[responses.length - 1];
+      const lastMessage = responses[responses.length - 1];
       const quickReplies = (lastMessage.buttons || [])
-        .filter((button: any) => button.type === 'quick_reply')
+        .filter((button) => button.type === 'quick_reply')
         .map(mapButton);
       dispatch({
         type: 'SET_QUICKREPLIES',
-        quickReplies: quickReplies,
+        quickReplies,
       });
       if (localStorageHistory?.enable ?? false) {
         window.localStorage.setItem(
@@ -162,46 +171,45 @@ const useTock: (
       }
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: responses.map(
-          ({ text, card, carousel, widget, image }: any) => {
-            let message: Message;
-            if (widget) {
-              message = {
-                widgetData: widget,
-                type: MessageType.widget,
-              } as Widget;
-            } else if (text) {
-              message = {
-                author: 'bot',
-                message: text,
-                type: MessageType.message,
-                buttons: (lastMessage.buttons || [])
-                  .filter((button: any) => button.type !== 'quick_reply')
-                  .map(mapButton),
-              } as Message;
-            } else if (card) {
-              message = mapCard(card);
-            } else if (image) {
-              message = mapImage(image);
-            } else {
-              message = {
-                cards: carousel.cards.map((card: any) => mapCard(card)),
-                type: MessageType.carousel,
-              } as Carousel;
-            }
-            if (localStorageHistory?.enable ?? false) {
-              recordResponseToLocaleSession(message);
-            }
-            return message;
-          },
-        ),
+        messages: responses.map(({ text, card, carousel, widget, image }) => {
+          let message: Message;
+          if (widget) {
+            message = {
+              widgetData: widget,
+              type: MessageType.widget,
+            } as Widget;
+          } else if (text) {
+            message = {
+              author: 'bot',
+              message: text,
+              type: MessageType.message,
+              buttons: (lastMessage.buttons || [])
+                .filter((button) => button.type !== 'quick_reply')
+                .map(mapButton),
+            } as TextMessage;
+          } else if (card) {
+            message = mapCard(card);
+          } else if (image) {
+            message = mapImage(image);
+          } else {
+            message = {
+              cards: carousel?.cards?.map(mapCard) ?? [],
+              type: MessageType.carousel,
+            } as Carousel;
+          }
+
+          if (localStorageHistory?.enable ?? false) {
+            recordResponseToLocaleSession(message);
+          }
+          return message;
+        }),
       });
     }
   };
 
-  const handleBotResponseIfSseDisabled: (botResponse: any) => void = (
-    botResponse: any,
-  ) => {
+  const handleBotResponseIfSseDisabled: (
+    botResponse: BotConnectorResponse,
+  ) => void = (botResponse) => {
     if (!Sse.isEnable()) {
       handleBotResponse(botResponse);
     }
@@ -401,14 +409,14 @@ const useTock: (
     [],
   );
 
-  const addWidget: (widgetData: WidgetData) => void = useCallback(
-    (widgetData: WidgetData) =>
+  const addWidget: (widgetData: WidgetPayload) => void = useCallback(
+    (widgetData: WidgetPayload) =>
       dispatch({
         type: 'ADD_MESSAGE',
         messages: [
           {
             type: MessageType.widget,
-            widgetData: widgetData,
+            widgetData,
           },
         ],
       }),

@@ -14,10 +14,10 @@ export const retrieveUserId: () => string = () =>
  * @param key - key in local storage
  * @param computeInitialValue - function to create an initial value if the object is not found
  */
-export const fromLocalStorage: (
+export const fromLocalStorage = <T>(
   key: string,
-  computeInitialValue: () => any,
-) => any = (key: string, computeInitialValue: () => any) => {
+  computeInitialValue: () => T,
+): T => {
   try {
     const item = window.localStorage.getItem(key);
     if (item) {
@@ -38,7 +38,7 @@ export const fromLocalStorage: (
  * @param type - Storage type
  * @returns true - if locale storage is available on the user's browser
  */
-export const storageAvailable: (type: string) => boolean = (type: string) => {
+export const storageAvailable: (type: string) => boolean = (type) => {
   let storage = undefined;
   try {
     storage = window[type];
@@ -59,7 +59,7 @@ export const storageAvailable: (type: string) => boolean = (type: string) => {
         // Firefox
         e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
       // acknowledge QuotaExceededError only if there's something already stored
-      storage.length !== 0
+      storage?.length !== 0
     );
   }
 };

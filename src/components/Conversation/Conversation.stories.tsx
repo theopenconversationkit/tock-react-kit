@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import React from 'react';
 
 import useTock, { UseTock } from '../../useTock';
-import { MessageType, PostBackButton, UrlButton } from '../../TockContext';
+import { PostBackButton, UrlButton } from '../../model/buttons';
+import { MessageType } from '../../model/messages';
 import Product from '../widgets/ProductWidget/Product';
 import Conversation from './Conversation';
 

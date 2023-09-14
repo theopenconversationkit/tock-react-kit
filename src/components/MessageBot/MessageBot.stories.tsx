@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { MessageType } from '../../TockContext';
+import { MessageType } from '../../model/messages';
 import MessageBot from './MessageBot';
 
 const message = 'A bot message';

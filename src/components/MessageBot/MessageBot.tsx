@@ -4,7 +4,8 @@ import React from 'react';
 // @ts-ignore
 import linkifyHtml from 'linkifyjs/html';
 import { prop } from 'styled-tools';
-import { Button, TextMessage } from '../../TockContext';
+import { Button } from '../../model/buttons';
+import { TextMessage } from '../../model/messages';
 import QuickReplyList from '../QuickReplyList';
 
 import '../../styles/theme';
