@@ -154,7 +154,7 @@ Hook that provides chat history and methods to communicate with the Tock Bot. It
 | ---------------------- | --------------------------------------- | ------------------------------------------------------------- |
 | `tockBotApiUrl`        | `string`                                | URL to the Tock Bot REST API                                  |
 | `extraHeadersProvider` | `() => Promise<Record<string, string>>` | Optional Provider of extra HTTP headers for outgoing requests |
-| `disableSse`           | `boolean`                               | Optional Disabling Server Side Events                         |
+| `disableSse`           | `boolean`                               | Optional Force-disabling of SSE mode                      |
 | `localStorageHistory`  | `TockLocalStorage`                      | Optional LocalStorage history                                 |
 | `locale`               | `string`                                | Optional Locale                                               |
 
