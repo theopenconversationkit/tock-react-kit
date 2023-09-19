@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@emotion/react';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Chat from './components/Chat';
 import TockContext from './TockContext';
 import TockTheme from './styles/theme';
@@ -22,7 +22,7 @@ export const renderChat: (
   theme: TockTheme = defaultTheme,
   options: TockOptions = {},
 ): void => {
-  ReactDOM.render(
+  createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
       <TockContext>
         <Chat
@@ -45,6 +45,5 @@ export const renderChat: (
         />
       </TockContext>
     </ThemeProvider>,
-    container,
   );
 };
