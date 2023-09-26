@@ -1,5 +1,6 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { UrlButton } from '../../TockContext';
 import Carousel from './Carousel';
@@ -26,18 +27,32 @@ const cardsWithButtons: CardProps[] = Array.from(Array(CARD_COUNT)).map(
   }),
 );
 
-storiesOf('Carousel', module)
-  .add('Default', () => (
-    <Carousel>
-      {cards.map((props: CardProps) => (
-        <Card key={props.title} {...props} />
-      ))}
-    </Carousel>
-  ))
-  .add('With buttons', () => (
-    <Carousel>
-      {cardsWithButtons.map((props: CardProps) => (
-        <Card key={props.title} {...props} />
-      ))}
-    </Carousel>
-  ));
+const meta: Meta<typeof Carousel> = {
+  component: Carousel,
+  argTypes: {
+    children: {
+      control: false,
+    },
+  },
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof Carousel>;
+
+export const Default: Story = {
+  args: {
+    children: cards.map((props: CardProps) => (
+      <Card key={props.title} {...props} />
+    )),
+  },
+};
+
+export const WithButtons: Story = {
+  name: 'With buttons',
+  args: {
+    children: cardsWithButtons.map((props: CardProps) => (
+      <Card key={props.title} {...props} />
+    )),
+  },
+};

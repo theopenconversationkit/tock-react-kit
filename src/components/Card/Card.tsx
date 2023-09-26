@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { prop } from 'styled-tools';
 
-import { Button } from '../../TockContext';
+import { Button as ButtonData } from '../../TockContext';
 import '../../styles/theme';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<
@@ -115,10 +115,10 @@ export interface CardProps {
   subTitle?: string;
   imageUrl?: string;
   imageAlternative?: string;
-  buttons?: Button[];
+  buttons?: ButtonData[];
   roleDescription?: string;
   isHidden?: boolean;
-  onAction: (button: Button) => void;
+  onAction: (button: ButtonData) => void;
 }
 
 const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
