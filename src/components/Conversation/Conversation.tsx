@@ -48,7 +48,7 @@ const ConversationInnerContainer = styled.ul`
 `;
 
 interface RenderOptions {
-  widgets?: any;
+  widgets: { [id: string]: (props: unknown) => JSX.Element };
   onAction: (button: Button) => void;
 }
 
@@ -119,7 +119,7 @@ type Props = DetailedHTMLProps<
 > & {
   messages: Message[];
   messageDelay: number;
-  widgets?: any;
+  widgets?: { [id: string]: (props: unknown) => JSX.Element };
   loading?: boolean;
   quickReplies: CQuickReply[];
   onAction: (button: Button) => void;
@@ -132,12 +132,12 @@ const Conversation = ({
   messageDelay,
   loading = false,
   onAction,
-  widgets,
+  widgets = {},
   onQuickReplyClick,
   quickReplies,
   accessibility,
   ...rest
-}: Props) => {
+}: Props): JSX.Element => {
   if (messages && messages.length !== 0) {
     const displayableMessageCount = useMessageCounter(messages, messageDelay);
     const theme: TockTheme = useTheme();
@@ -188,7 +188,7 @@ const Conversation = ({
         aria-atomic="false"
         aria-relevant="additions"
         {...rest}
-      ></ConversationOuterContainer>
+      />
     );
   }
 };

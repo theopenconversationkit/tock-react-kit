@@ -5,13 +5,18 @@ import Container from '../Container';
 import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
 import TockLocalStorage from 'TockLocalStorage';
+import { storageAvailable } from '../../utils';
 
 export interface ChatProps {
   endPoint: string;
   referralParameter?: string;
   timeoutBetweenMessage?: number;
+  /** An initial message to send to the backend to trigger a welcome sequence */
   openingMessage?: string;
-  widgets?: any;
+  /** A registry of custom widget factories */
+  widgets?: { [id: string]: (props: unknown) => JSX.Element };
+  /** An optional function supplying extra HTTP headers for chat requests.
+  Extra headers must be explicitly allowed by the server's CORS settings. */
   extraHeadersProvider?: () => Promise<Record<string, string>>;
   disableSse?: boolean;
   accessibility?: TockAccessibility;
@@ -56,7 +61,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         sendReferralParameter(referralParameter);
       }
       const history =
-        localStorageHistory?.enable == true
+        storageAvailable('localStorage') && localStorageHistory?.enable === true
           ? window.localStorage.getItem('tockMessageHistory')
           : undefined;
       if (messages.length === 0 && openingMessage && !history) {

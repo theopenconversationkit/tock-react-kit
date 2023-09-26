@@ -7,7 +7,6 @@ import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
 import { default as createTheme } from './styles/createTheme';
-import { storageAvailable } from './utils';
 
 export const renderChat: (
   container: HTMLElement,
@@ -20,7 +19,7 @@ export const renderChat: (
   endPoint: string,
   referralParameter?: string,
   theme: TockTheme = defaultTheme,
-  options: TockOptions = {},
+  { localStorage, localStorageHistory, ...options }: TockOptions = {},
 ): void => {
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
@@ -28,20 +27,11 @@ export const renderChat: (
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}
-          timeoutBetweenMessage={options.timeoutBetweenMessage}
-          openingMessage={options.openingMessage}
-          widgets={options.widgets}
-          extraHeadersProvider={options.extraHeadersProvider}
-          disableSse={options.disableSse}
-          accessibility={options.accessibility}
-          {...(storageAvailable('localStorage') && {
-            localStorageHistory: {
-              enable:
-                options.localStorage ||
-                options.localStorageHistory?.enable === true,
-              maxNumberMessages: options.localStorageHistory?.maxNumberMessages,
-            },
-          })}
+          localStorageHistory={{
+            enable: localStorage || localStorageHistory?.enable === true,
+            maxNumberMessages: localStorageHistory?.maxNumberMessages,
+          }}
+          {...options}
         />
       </TockContext>
     </ThemeProvider>,

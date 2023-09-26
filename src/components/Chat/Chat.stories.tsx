@@ -5,6 +5,8 @@ import styled from '@emotion/styled';
 import ProductWidget from '../widgets/ProductWidget';
 import Chat from './Chat';
 import { useExampleMessages } from '../Conversation/Conversation.stories';
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '../../index';
 
 const Wrapper = ({ children }: { children: ReactNode }) => {
   useExampleMessages();
@@ -53,4 +55,23 @@ storiesOf('Chat app', module)
         <Chat endPoint="" referralParameter="" />
       </ModalContainer>
     </Wrapper>
+  ))
+  .add('Styled full screen', () => (
+    <FullscreenContainer>
+      <ThemeProvider
+        theme={createTheme({
+          typography: {
+            fontFamily: 'cursive',
+            fontSize: '1em',
+          },
+        })}
+      >
+        <Chat
+          endPoint=""
+          widgets={{
+            ProductWidget,
+          }}
+        />
+      </ThemeProvider>
+    </FullscreenContainer>
   ));
