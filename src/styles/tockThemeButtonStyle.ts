@@ -1,8 +1,10 @@
+import { Interpolation } from '@emotion/react';
+
 interface TockThemeButtonStyle {
-  buttonContainer?: string;
-  buttonList?: string;
-  postbackButton?: string;
-  urlButton?: string;
+  buttonContainer: Interpolation<unknown>;
+  buttonList: Interpolation<unknown>;
+  postbackButton: Interpolation<unknown>;
+  urlButton: Interpolation<unknown>;
 }
 
 export default TockThemeButtonStyle;
