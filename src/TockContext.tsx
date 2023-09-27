@@ -42,12 +42,14 @@ export interface TockState {
   userId: string;
   loading: boolean;
   sseInitializing: boolean;
+  metadata: Record<string, string>;
 }
 
 export interface TockAction {
   type:
     | 'SET_QUICKREPLIES'
     | 'ADD_MESSAGE'
+    | 'SET_METADATA'
     | 'SET_LOADING'
     | 'SET_SSE_INITIALIZING'
     | 'CLEAR_MESSAGES';
@@ -55,6 +57,7 @@ export interface TockAction {
   messages?: Message[];
   loading?: boolean;
   sseInitializing?: boolean;
+  metadata?: Record<string, string>;
 }
 
 const tockReducer: Reducer<TockState, TockAction> = (
@@ -102,6 +105,14 @@ const tockReducer: Reducer<TockState, TockAction> = (
         };
       }
       break;
+    case 'SET_METADATA':
+      if (action.metadata != undefined) {
+        return {
+          ...state,
+          metadata: action.metadata,
+        };
+      }
+      break;
     default:
       break;
   }
@@ -121,6 +132,7 @@ const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
       userId: retrieveUserId(),
       loading: false,
       sseInitializing: false,
+      metadata: {},
     },
   );
   return (

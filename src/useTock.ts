@@ -153,7 +153,13 @@ const useTock: (
 
   const handleBotResponse: (botResponse: BotConnectorResponse) => void = ({
     responses,
+    metadata,
   }) => {
+    dispatch({
+      type: 'SET_METADATA',
+      metadata: metadata || {},
+    });
+
     if (Array.isArray(responses) && responses.length > 0) {
       const lastMessage = responses[responses.length - 1];
       const quickReplies = (lastMessage.buttons || [])
@@ -197,6 +203,8 @@ const useTock: (
               type: MessageType.carousel,
             } as Carousel;
           }
+
+          message.metadata = metadata;
 
           if (localStorageHistory?.enable ?? false) {
             recordResponseToLocaleSession(message);

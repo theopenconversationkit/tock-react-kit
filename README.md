@@ -165,6 +165,24 @@ renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParam
 
 If the chat does not suit your needs you can also use the components separately.
 
+## Message Metadata
+
+*TOCK*'s backend supports sending metadata alongside messages. This metadata takes the form of key-value pairs of arbitrary strings.
+The `tock-react-kit` supports customization of the interface based on said metadata at two levels:
+
+### Chat metadata
+
+The metadata from the last processed response is made available globally in `TockContext`.
+This can be used to implement global effects on the chat interface, like showing status messages.
+This metadata is not persistent; it is therefore the responsibility of either the backend or a customized frontend to
+ensure data stays available if required.
+
+### Message metadata
+
+The metadata from each response is also attached to the corresponding messages.
+This metadata is persisted with the messages, including through page reloads if [local storage history](#local-storage-history) is enabled.
+At the current time, it is only available to custom React-based frontends that handle message rendering themselves.
+
 ## API Reference
 
 ### `renderChat(element, tockBotApiUrl, referralParameter, theme, options)`
@@ -248,18 +266,19 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `Overrides`
 
-| Property name       | Type                   | Description                                                                      |
-|---------------------|------------------------|----------------------------------------------------------------------------------|
-| `card`              | `TockThemeCardStyle`   | Object for adding CSS styles on card component (see below)                       |
-| `chatInput`         | `TockThemeInputStyle?` | Object for adding CSS styles on chat input component (see below)                 |
-| `carouselContainer` | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
-| `carouselItem`      | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
-| `carouselArrow`     | `string?`              | Additional CSS styles for carousel scrolling arrows (overrides base styles)      |
-| `messageBot`        | `string?`              | Additional CSS styles for the bot's speech balloons (overrides base styles)      |
-| `messageUser`       | `string?`              | Additional CSS styles for the user's speech balloons (overrides base styles)     |
-| `quickReply`        | `string?`              | Additional CSS styles for the quick reply buttons (overrides base styles)        |
-| `chat`              | `string?`              | Additional CSS styles for the chat container (overrides base styles)             |
-| `quickReplyArrow`   | `string?`              | Additional CSS styles for quick replies scrolling arrows (overrides base styles) |
+| Property name       | Type                   | Description                                                                                                   |
+|---------------------|------------------------|---------------------------------------------------------------------------------------------------------------|
+| `card`              | `TockThemeCardStyle`   | Object for adding CSS styles on card component (see below)                                                    |
+| `chatInput`         | `TockThemeInputStyle?` | Object for adding CSS styles on chat input component (see below)                                              |
+| `carouselContainer` | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)                                    |
+| `carouselItem`      | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)                                    |
+| `carouselArrow`     | `string?`              | Additional CSS styles for carousel scrolling arrows (overrides base styles)                                   |
+| `messageGroup`      | `string?`              | Additional CSS styles for groups of speech balloons with the same author and metadata (overrides base styles) |
+| `messageBot`        | `string?`              | Additional CSS styles for the bot's speech balloons (overrides base styles)                                   |
+| `messageUser`       | `string?`              | Additional CSS styles for the user's speech balloons (overrides base styles)                                  |
+| `quickReply`        | `string?`              | Additional CSS styles for the quick reply buttons (overrides base styles)                                     |
+| `chat`              | `string?`              | Additional CSS styles for the chat container (overrides base styles)                                          |
+| `quickReplyArrow`   | `string?`              | Additional CSS styles for quick replies scrolling arrows (overrides base styles)                              |
 
 #### `TockThemeCardStyle`
 
@@ -283,16 +302,16 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockOptions`
 
-| Property name                            | Type                                  | Description                                                      |
-|------------------------------------------|---------------------------------------|------------------------------------------------------------------|
-| `openingMessage`                         | `string?`                             | Initial message to send to the bot to trigger a welcome sequence |
-| `extraHeadersProvider`                   | `() => Promise<Record<string, string>`| Provider of extra HTTP headers for outgoing requests             |
-| `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
-| `widgets`                                | `any?`                                | Custom display component                                         |
-| `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
-| `accessibility`                          | `TockAccessibility`                   | Object for overriding role and label accessibility attributes    |
-| ~~`localStorage`~~                       | ~~`boolean?`~~                        | Enable history local storage (@deprecated)                       |
-| `localStorageHistory`                    | `TockLocalStorage?`                   | Object for history local storage                                 |
+| Property name           | Type                                   | Description                                                      |
+|-------------------------|----------------------------------------|------------------------------------------------------------------|
+| `openingMessage`        | `string?`                              | Initial message to send to the bot to trigger a welcome sequence |
+| `extraHeadersProvider`  | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests             |
+| `timeoutBetweenMessage` | `number?`                              | Timeout between message                                          |
+| `widgets`               | `any?`                                 | Custom display component                                         |
+| `disableSse`            | `boolean?`                             | Disable SSE (not even trying)                                    |
+| `accessibility`         | `TockAccessibility`                    | Object for overriding role and label accessibility attributes    |
+| ~~`localStorage`~~      | ~~`boolean?`~~                         | Enable history local storage (@deprecated)                       |
+| `localStorageHistory`   | `TockLocalStorage?`                    | Object for history local storage                                 |
 
 #### `TockAccessibility`
 
@@ -475,7 +494,7 @@ renderChat(
 #### SSE
 
 By default, the `tock-react-kit` tries to connect to the Bot through [Server-sent events](https://en.wikipedia.org/wiki/Server-sent_events).
-If an error occurs, it probably means the Bot does not accept SSE, and the `tock-react-kit` switches to classic requests.
+If an error occurs, it probably means the Bot's backend does not accept SSE, so the `tock-react-kit` switches to classic requests.
 
 The optional `disableSse`parameter makes it possible to disable SSE before even trying, possibly preventing a `404` error 
 from console (when the Bot does not accept SSE).
