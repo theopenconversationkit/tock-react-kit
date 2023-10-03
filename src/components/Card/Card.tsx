@@ -4,16 +4,19 @@ import React, {
   HTMLAttributes,
   ImgHTMLAttributes,
 } from 'react';
-import { prop } from 'styled-tools';
+import { theme } from 'styled-tools';
 
 import { Button as ButtonData } from '../../model/buttons';
 import '../../styles/theme';
+import UrlButton from '../buttons/UrlButton';
+import PostBackButton from '../buttons/PostBackButton';
+import { css, Theme } from '@emotion/react';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLLIElement>,
   HTMLLIElement
 >> = styled.li`
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+  max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
@@ -23,13 +26,13 @@ export const CardContainer: StyledComponent<DetailedHTMLProps<
   HTMLDivElement
 >> = styled.div`
   padding: 0.5em;
-  background: ${prop<any>('theme.palette.background.card')};
-  color: ${prop<any>('theme.palette.text.card')};
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
-  border: 2px solid ${prop<any>('theme.palette.text.card')};
+  background: ${theme('palette.background.card')};
+  color: ${theme('palette.text.card')};
+  border-radius: ${theme('sizing.borderRadius')};
+  border: 2px solid ${theme('palette.text.card')};
   width: 20em;
 
-  ${prop<any>('theme.overrides.card.cardContainer', '')};
+  ${theme('overrides.card.cardContainer')};
 `;
 
 const CardTitle: StyledComponent<DetailedHTMLProps<
@@ -41,7 +44,7 @@ const CardTitle: StyledComponent<DetailedHTMLProps<
   font-weight: bold;
   display: block;
 
-  ${prop<any>('theme.overrides.card.cardTitle', '')};
+  ${theme('overrides.card.cardTitle')};
 `;
 
 const CardSubTitle: StyledComponent<DetailedHTMLProps<
@@ -53,7 +56,7 @@ const CardSubTitle: StyledComponent<DetailedHTMLProps<
   font-weight: bold;
   display: block;
 
-  ${prop<any>('theme.overrides.card.cardSubTitle', '')};
+  ${theme('overrides.card.cardSubTitle')};
 `;
 
 const CardImage: StyledComponent<DetailedHTMLProps<
@@ -63,7 +66,7 @@ const CardImage: StyledComponent<DetailedHTMLProps<
   max-width: 100%;
   max-height: 100%;
 
-  ${prop<any>('theme.overrides.card.cardImage', '')};
+  ${theme('overrides.card.cardImage')};
 `;
 
 const ButtonList: StyledComponent<DetailedHTMLProps<
@@ -74,40 +77,33 @@ const ButtonList: StyledComponent<DetailedHTMLProps<
   list-style: none;
   padding: 0.5em 0;
 
-  ${prop<any>('theme.overrides.card.buttonList', '')};
+  ${theme('overrides.buttons.buttonList')};
+  ${theme('overrides.card.buttonList')};
 
   & > li {
     padding: 0;
     margin: 0 0.5em;
     display: inline-block;
 
-    ${prop<any>('theme.overrides.card.buttonContainer', '')};
+    ${theme('overrides.buttons.buttonContainer')};
+    ${theme('overrides.card.buttonContainer')};
   }
 `;
 
-const Button: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
-  background: none;
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
-  color: ${prop<any>('theme.palette.text.card')};
-  border: 2px solid ${prop<any>('theme.palette.text.card')};
-  padding: 0.5em 1em;
-  cursor: pointer;
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  font-family: inherit;
-  font-size: inherit;
+const cardButtonBaseStyle = ({ theme }: { theme: Theme }) => css`
+  border: 2px solid ${theme.palette.text.card};
+  border-radius: ${theme.sizing.borderRadius};
+
+  color: ${theme.palette.text.card};
 
   &:hover,
   &:focus,
   &:active {
-    color: ${prop<any>('theme.palette.background.card')};
-    background: ${prop<any>('theme.palette.text.card')};
+    color: ${theme.palette.background.card};
+    background: ${theme.palette.text.card};
   }
 
-  ${prop<any>('theme.overrides.card.cardButton', '')};
+  margin: 0.25em 0;
 `;
 
 export interface CardProps {
@@ -137,6 +133,33 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
     | React.MutableRefObject<HTMLLIElement | null>
     | null,
 ) {
+  const renderButton = (button: ButtonData, index: number) => (
+    // having the default index-based key is fine since we do not reorder buttons
+    <li key={index}>
+      {'url' in button ? (
+        <UrlButton
+          customStyle={[
+            cardButtonBaseStyle,
+            theme('overrides.buttons.urlButton'),
+            theme('overrides.card.cardButton'),
+          ]}
+          {...button}
+        />
+      ) : (
+        <PostBackButton
+          customStyle={[
+            cardButtonBaseStyle,
+            theme('overrides.buttons.postbackButton'),
+            theme('overrides.card.cardButton'),
+          ]}
+          onClick={onAction.bind(null, button)}
+          onKeyPress={onAction.bind(null, button)}
+          {...button}
+          {...(isHidden && { tabIndex: -1 })}
+        />
+      )}
+    </li>
+  );
   return (
     <CardOuter
       ref={ref}
@@ -158,19 +181,7 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
           </CardSubTitle>
         )}
         {Array.isArray(buttons) && buttons.length > 0 && (
-          <ButtonList>
-            {buttons.map((button, index) => (
-              <li key={index}>
-                <Button
-                  onClick={onAction.bind(null, button)}
-                  onKeyPress={onAction.bind(null, button)}
-                  {...(isHidden && { tabIndex: -1 })}
-                >
-                  {button.label}
-                </Button>
-              </li>
-            ))}
-          </ButtonList>
+          <ButtonList role="group">{buttons.map(renderButton)}</ButtonList>
         )}
       </CardContainer>
     </CardOuter>

@@ -1,32 +1,29 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import React, { ReactNode } from 'react';
-import { prop } from 'styled-tools';
+import { theme } from 'styled-tools';
+import { MessageContainer as BotMessageContainer } from '../MessageBot';
 
-const MessageContainer: StyledComponent<{}> = styled.li`
-  width: 100%;
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
-  margin: 0.5em auto;
+const MessageContainer: StyledComponent<{}> = styled(BotMessageContainer)`
   text-align: right;
-  list-style: none;
 `;
 
 const Message: StyledComponent<{}> = styled.div`
   display: inline-block;
-  background: ${prop<any>('theme.palette.background.user')};
-  color: ${prop<any>('theme.palette.text.user')};
+  background: ${theme('palette.background.user')};
+  color: ${theme('palette.text.user')};
   padding: 0.5em 1.5em;
   margin-right: 1em;
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
+  border-radius: ${theme('sizing.borderRadius')};
   border-bottom-right-radius: 0;
 
-  ${prop<any>('theme.overrides.messageUser', '')}
+  ${theme('overrides.messageUser')}
 `;
 
 type Props = {
   children: ReactNode;
 };
 
-const MessageUser = ({ children }: Props) => (
+const MessageUser: (props: Props) => JSX.Element = ({ children }: Props) => (
   <MessageContainer>
     <Message>{children}</Message>
   </MessageContainer>

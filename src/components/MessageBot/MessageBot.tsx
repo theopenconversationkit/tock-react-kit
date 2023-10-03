@@ -3,31 +3,31 @@ import React from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import linkifyHtml from 'linkifyjs/html';
-import { prop } from 'styled-tools';
+import { theme } from 'styled-tools';
 import { Button } from '../../model/buttons';
 import { TextMessage } from '../../model/messages';
-import QuickReplyList from '../QuickReplyList';
+import ButtonList from '../buttons/ButtonList';
 
 import '../../styles/theme';
 
 export const MessageContainer: StyledComponent<{}> = styled.li`
   width: 100%;
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+  max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
 export const Message: StyledComponent<{}> = styled.div`
   display: inline-block;
-  background: ${prop<any>('theme.palette.background.bot')};
-  color: ${prop<any>('theme.palette.text.bot')};
+  background: ${theme('palette.background.bot')};
+  color: ${theme('palette.text.bot')};
   padding: 0.5em 1.5em;
   margin-left: 1em;
   white-space: pre-line;
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
+  border-radius: ${theme('sizing.borderRadius')};
   border-bottom-left-radius: 0;
 
-  ${prop<any>('theme.overrides.messageBot', '')}
+  ${theme('overrides.messageBot')}
 `;
 
 export interface MessageProps {
@@ -50,7 +50,7 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
         <div dangerouslySetInnerHTML={{ __html: getHtmlContent() }} />
       </Message>
       {Array.isArray(message.buttons) && message.buttons.length > 0 && (
-        <QuickReplyList items={message.buttons} onItemClick={onAction} />
+        <ButtonList items={message.buttons} onItemClick={onAction} />
       )}
     </MessageContainer>
   );

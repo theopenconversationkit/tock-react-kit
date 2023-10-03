@@ -330,6 +330,10 @@ const useTock: (
     button: Button,
   ) => {
     if (button instanceof UrlButton) {
+      console.warn(
+        'Using sendQuickReply for links is deprecated; please use the dedicated UrlButton component',
+        button,
+      );
       window.open(button.url, '_blank');
       return Promise.resolve();
     } else if (button.payload) {
@@ -370,6 +374,10 @@ const useTock: (
 
   const sendAction: (button: Button) => Promise<void> = (button: Button) => {
     if (button instanceof UrlButton) {
+      console.warn(
+        'Using sendAction for links is deprecated; please use the dedicated UrlButton component',
+        button,
+      );
       window.open(button.url, '_blank');
     } else {
       return sendMessage(button.label, button.payload);

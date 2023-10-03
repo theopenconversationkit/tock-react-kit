@@ -1,7 +1,9 @@
-import TockThemeInputStyle from './tockThemeInputStyle';
+import TockThemeButtonStyle from './tockThemeButtonStyle';
 import TockThemeCardStyle from './tockThemeCardStyle';
+import TockThemeInputStyle from './tockThemeInputStyle';
 
 export interface Overrides {
+  buttons?: Partial<TockThemeButtonStyle>;
   card?: Partial<TockThemeCardStyle>;
   chatInput?: Partial<TockThemeInputStyle>;
   carouselContainer?: string;
