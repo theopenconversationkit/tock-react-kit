@@ -266,31 +266,40 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `Overrides`
 
-| Property name       | Type                   | Description                                                                                                   |
-|---------------------|------------------------|---------------------------------------------------------------------------------------------------------------|
-| `card`              | `TockThemeCardStyle`   | Object for adding CSS styles on card component (see below)                                                    |
-| `chatInput`         | `TockThemeInputStyle?` | Object for adding CSS styles on chat input component (see below)                                              |
-| `carouselContainer` | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)                                    |
-| `carouselItem`      | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)                                    |
-| `carouselArrow`     | `string?`              | Additional CSS styles for carousel scrolling arrows (overrides base styles)                                   |
-| `messageGroup`      | `string?`              | Additional CSS styles for groups of speech balloons with the same author and metadata (overrides base styles) |
-| `messageBot`        | `string?`              | Additional CSS styles for the bot's speech balloons (overrides base styles)                                   |
-| `messageUser`       | `string?`              | Additional CSS styles for the user's speech balloons (overrides base styles)                                  |
-| `quickReply`        | `string?`              | Additional CSS styles for the quick reply buttons (overrides base styles)                                     |
-| `chat`              | `string?`              | Additional CSS styles for the chat container (overrides base styles)                                          |
-| `quickReplyArrow`   | `string?`              | Additional CSS styles for quick replies scrolling arrows (overrides base styles)                              |
+| Property name       | Type                   | Description                                                                      |
+|---------------------|------------------------|----------------------------------------------------------------------------------|
+| `buttons`           | `TockThemeButtonStyle` | Object for adding CSS styles on button components (see below)                    |
+| `card`              | `TockThemeCardStyle`   | Object for adding CSS styles on card component (see below)                       |
+| `chatInput`         | `TockThemeInputStyle?` | Object for adding CSS styles on chat input component (see below)                 |
+| `carouselContainer` | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
+| `carouselItem`      | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
+| `carouselArrow`     | `string?`              | Additional CSS styles for carousel scrolling arrows (overrides base styles)      |
+| `messageBot`        | `string?`              | Additional CSS styles for the bot's speech balloons (overrides base styles)      |
+| `messageUser`       | `string?`              | Additional CSS styles for the user's speech balloons (overrides base styles)     |
+| `quickReply`        | `string?`              | Additional CSS styles for the quick reply buttons (overrides base styles)        |
+| `chat`              | `string?`              | Additional CSS styles for the chat container (overrides base styles)             |
+| `quickReplyArrow`   | `string?`              | Additional CSS styles for quick replies scrolling arrows (overrides base styles) |
+
+#### `TockThemeButtonStyle`
+
+| Property name     | Type                   | Description                                                             |
+|-------------------|------------------------|-------------------------------------------------------------------------|
+| `urlButton`       | `string?`              | Additional CSS styles for URL buttons (overrides base styles)           |
+| `postbackButton`  | `string?`              | Additional CSS styles for postback buttons (overrides base styles)      |
+| `buttonList`      | `string?`              | Additional CSS styles for button lists (overrides base styles)          |
+| `buttonContainer` | `string?`              | Additional CSS styles for button list container (overrides base styles) |
 
 #### `TockThemeCardStyle`
 
-| Property name       | Type                   | Description                                                                      |
-|---------------------|------------------------|----------------------------------------------------------------------------------|
-| `cardContainer`     | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
-| `cardTitle`         | `string?`              | Additional CSS styles for carousel cards title (overrides base styles)           |
-| `cardSubTitle`      | `string?`              | Additional CSS styles for carousel cards subtitle (overrides base styles)        |
-| `cardImage`         | `string?`              | Additional CSS styles for carousel cards image (overrides base styles)           |
-| `cardButton`        | `string?`              | Additional CSS styles for carousel cards button (overrides base styles)          |
-| `buttonList`        | `string?`              | Additional CSS styles for carousel cards button list (overrides base styles)     |
-| `buttonContainer`   | `string?`              | Additional CSS styles for carousel button list container (overrides base styles) |
+| Property name     | Type      | Description                                                                                                                    |
+|-------------------|-----------|--------------------------------------------------------------------------------------------------------------------------------|
+| `cardContainer`   | `string?` | Additional CSS styles for carousel cards container (overrides base styles)                                                     |
+| `cardTitle`       | `string?` | Additional CSS styles for carousel cards title (overrides base styles)                                                         |
+| `cardSubTitle`    | `string?` | Additional CSS styles for carousel cards subtitle (overrides base styles)                                                      |
+| `cardImage`       | `string?` | Additional CSS styles for carousel cards image (overrides base styles)                                                         |
+| `cardButton`      | `string?` | Additional CSS styles for carousel cards button (overrides base styles and [button overrides](#tockthemebuttonstyle))          |
+| `buttonList`      | `string?` | Additional CSS styles for carousel cards button list (overrides base styles and [button overrides](#tockthemebuttonstyle))     |
+| `buttonContainer` | `string?` | Additional CSS styles for carousel button list container (overrides base styles and [button overrides](#tockthemebuttonstyle)) |
 
 #### `TockThemeInputStyle`
 

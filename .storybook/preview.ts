@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import ThemeDecorator, {palettes, sizings, typographies} from './decorators/ThemeDecorator'
+import ThemeDecorator, { overrides, palettes, sizings, typographies } from './decorators/ThemeDecorator';
 import TockContextDecorator from "./decorators/TockContextDecorator";
 
 const preview: Preview = {
@@ -41,6 +41,14 @@ const preview: Preview = {
         items: [...Object.keys(typographies)]
       }
     },
+    overrides: {
+      description: 'Global overrides for components',
+      defaultValue: 'default',
+      toolbar: {
+        title: 'Overrides',
+        items: [...Object.keys(overrides)]
+      }
+    }
   }
 };
 

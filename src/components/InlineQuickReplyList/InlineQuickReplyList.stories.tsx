@@ -10,14 +10,6 @@ const meta: Meta<typeof InlineQuickReplyList> = {
 export default meta;
 type Story = StoryObj<typeof InlineQuickReplyList>;
 
-export const SingleQr: Story = {
-  name: 'Single QR',
-  args: {
-    onItemClick: Function.bind(null),
-    items: [{ label: 'Inline Quick Reply' }],
-  },
-};
-
 export const MultipleQRs: Story = {
   name: 'Multiple QRs',
   args: {
@@ -26,7 +18,10 @@ export const MultipleQRs: Story = {
       { label: 'Inline Quick Reply 1' },
       { label: 'Inline Quick Reply 2' },
       { label: 'Inline Quick Reply 3' },
-      { label: 'Inline Quick Reply 4' },
+      {
+        label: 'Inline QR With Image',
+        imageUrl: 'https://doc.tock.ai/tock/assets/images/logo.svg',
+      },
       { label: 'Inline Quick Reply 5' },
       { label: 'Inline Quick Reply 6' },
       { label: 'Inline Quick Reply 7' },
@@ -37,5 +32,13 @@ export const MultipleQRs: Story = {
       { label: 'Inline Quick Reply 12' },
       { label: 'Inline Quick Reply 13' },
     ],
+  },
+};
+
+export const SingleQr: Story = {
+  name: 'Single QR',
+  args: {
+    onItemClick: Function.bind(null),
+    items: [{ label: 'Inline Quick Reply' }],
   },
 };

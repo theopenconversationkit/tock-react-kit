@@ -1,19 +1,16 @@
 import React, { DetailedHTMLProps, HTMLAttributes, useCallback } from 'react';
+import { css, SerializedStyles, Theme } from '@emotion/react';
 import styled, { StyledComponent } from '@emotion/styled';
-import { prop } from 'styled-tools';
 
 import { Button } from '../../model/buttons';
 import QuickReply from '../QuickReply/QuickReply';
 import '../../styles/theme';
 
-const QuickReplyListContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLUListElement>,
-  HTMLUListElement
->> = styled.ul`
-  flex-shrink: 0;
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+export const baseButtonListStyle: (props: {
+  theme: Theme;
+}) => SerializedStyles = ({ theme }) => css`
+  max-width: ${theme.sizing.conversation.width};
   margin: 0.5em auto;
-  overflow-x: unset;
   text-align: left;
 
   overflow: auto;
@@ -24,8 +21,15 @@ const QuickReplyListContainer: StyledComponent<DetailedHTMLProps<
     display: none;
   }
   padding: 0 1em;
+`;
 
-  & > * {
+const QuickReplyListContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>> = styled.ul`
+  ${baseButtonListStyle};
+
+  & > li {
     display: inline-block;
   }
 `;
@@ -40,7 +44,10 @@ type Props = {
   onItemClick: (button: Button) => void;
 };
 
-const QuickReplyList = ({ items, onItemClick }: Props) => {
+const QuickReplyList: (props: Props) => JSX.Element = ({
+  items,
+  onItemClick,
+}: Props) => {
   const renderItem = useCallback(
     (item: Button, index: number) => (
       <QuickReply

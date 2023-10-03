@@ -1,4 +1,1 @@
-import QuickReply from './QuickReply';
-
-export { default as QuickReplyImage } from './QuickReplyImage';
-export default QuickReply;
+export { default, baseButtonStyle } from './QuickReply';
