@@ -8,6 +8,8 @@ import {
 import * as Sse from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
 import TockLocalStorage from 'TockLocalStorage';
+import { storageAvailable } from './utils';
+import { TockHistoryData } from './PostInitContext';
 import { Button, PostBackButton, QuickReply, UrlButton } from './model/buttons';
 import {
   Card,
@@ -49,8 +51,13 @@ export interface UseTock {
   setQuickReplies: (quickReplies: QuickReply[]) => void;
   sendQuickReply: (button: Button) => Promise<void>;
   sendAction: (button: Button) => Promise<void>;
-  sendReferralParameter: (referralParameter: string) => void;
+  sendReferralParameter: (referralParameter: string) => Promise<void>;
   sendOpeningMessage: (msg: string) => Promise<void>;
+  sendPayload: (payload: string) => Promise<void>;
+  loadHistory: () => TockHistoryData | null;
+  /**
+   * @deprecated use {@link loadHistory} instead of reimplementing history parsing
+   */
   addHistory: (
     history: Array<Message>,
     quickReplyHistory: Array<QuickReply>,
@@ -309,9 +316,9 @@ const useTock: (
 
   const sendReferralParameter: (
     referralParameter: string,
-  ) => void = useCallback((referralParameter: string) => {
+  ) => Promise<void> = useCallback((referralParameter: string) => {
     startLoading();
-    fetch(tockEndPoint, {
+    return fetch(tockEndPoint, {
       body: JSON.stringify({
         ref: referralParameter,
         userId: userId,
@@ -480,6 +487,32 @@ const useTock: (
     [],
   );
 
+  const loadHistory: () => TockHistoryData | null = () => {
+    // If not first time, return existing messages
+    if (messages.length) {
+      return {
+        messages,
+        quickReplies,
+      };
+    }
+
+    const serializedHistory =
+      storageAvailable('localStorage') && localStorageHistory?.enable === true
+        ? window.localStorage.getItem('tockMessageHistory')
+        : undefined;
+
+    if (serializedHistory) {
+      const messages = JSON.parse(serializedHistory);
+      const quickReplies = JSON.parse(
+        window.localStorage.getItem('tockQuickReplyHistory') || '[]',
+      );
+      addHistory(messages, quickReplies);
+      return { messages, quickReplies };
+    }
+
+    return null;
+  };
+
   return {
     messages,
     quickReplies,
@@ -496,7 +529,9 @@ const useTock: (
     sendAction,
     sendReferralParameter,
     sendOpeningMessage,
+    sendPayload,
     addHistory,
+    loadHistory,
     sseInitPromise,
     sseInitializing,
   };
