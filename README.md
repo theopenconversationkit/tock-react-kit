@@ -311,16 +311,17 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockOptions`
 
-| Property name           | Type                                   | Description                                                      |
-|-------------------------|----------------------------------------|------------------------------------------------------------------|
-| `openingMessage`        | `string?`                              | Initial message to send to the bot to trigger a welcome sequence |
-| `extraHeadersProvider`  | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests             |
-| `timeoutBetweenMessage` | `number?`                              | Timeout between message                                          |
-| `widgets`               | `any?`                                 | Custom display component                                         |
-| `disableSse`            | `boolean?`                             | Disable SSE (not even trying)                                    |
-| `accessibility`         | `TockAccessibility`                    | Object for overriding role and label accessibility attributes    |
-| ~~`localStorage`~~      | ~~`boolean?`~~                         | Enable history local storage (@deprecated)                       |
-| `localStorageHistory`   | `TockLocalStorage?`                    | Object for history local storage                                 |
+| Property name           | Type                                    | Description                                                              |
+|-------------------------|-----------------------------------------|--------------------------------------------------------------------------|
+| `afterInit`             | `(PostInitContext) => Promise<void>?`   | Callback that will be executed after chat init and before openingMessage |
+| `openingMessage`        | `string?`                               | Initial message to send to the bot to trigger a welcome sequence         |
+| `extraHeadersProvider`  | `() => Promise<Record<string, string>?` | Provider of extra HTTP headers for outgoing requests                     |
+| `timeoutBetweenMessage` | `number?`                               | Timeout between message                                                  |
+| `widgets`               | `any?`                                  | Custom display component                                                 |
+| `disableSse`            | `boolean?`                              | Disable SSE (not even trying)                                            |
+| `accessibility`         | `TockAccessibility?`                    | Object for overriding role and label accessibility attributes            |
+| ~~`localStorage`~~      | ~~`boolean?`~~                          | Enable history local storage (@deprecated)                               |
+| `localStorageHistory`   | `TockLocalStorage?`                     | Object for history local storage                                         |
 
 #### `TockAccessibility`
 
@@ -409,14 +410,47 @@ renderChat(
 >
 > If browser disable or cannot handle locale storage, the chat will not store messages.
 
-#### Opening message
+#### Post-initialization behaviours
+
+##### After Init callback
+
+The optional `afterInit` is a callback function, called once the chat is ready to send payloads to the server.
+It takes a [`PostInitContext`](./src/PostInitContext.ts) parameter, which allows the callback to interact with the chat
+(sending messages, clearing the chat, etc.). If it returns a promise, the chat will wait for the promise to resolve
+before performing other post-init tasks.
+
+Example:
+
+```js
+renderChat(
+    document.getElementById('chat'), 
+    '<TOCK_BOT_API_URL>', 
+    undefined,
+    {},
+    {
+      localStorageHistory: { enable: true },
+      afterInit: async (context) => {
+        if (context.history) await context.sendMessage('I am back');
+        else await context.sendPayload('greetings')
+      }
+    },
+);
+```
+
+In this example, whenever the page is loaded:
+- If the user previously interacted with the bot, they will send the "I am back" message to the bot endpoint,
+triggering the corresponding story. Said message will be displayed as a user message.
+- Otherwise, a payload will be sent, which will trigger the intent with the ID `greetings`.
+
+##### Opening message
 
 The optional `openingMessage` is a sentence, automatically sent to the bot when the conversation starts.
-This is typically used to provide a welcoming or onboarding message to the user:
-- configured in _Tock Studio_ or managed like any other Tock story,
-- not requiring the user to make a sentence first.
+If an `afterInit` callback is also specified, it runs before the opening message gets sent.
+This is typically used to trigger a welcoming or onboarding story for the user,
+without requiring them to type a sentence first.
+Said story is configured in _Tock Studio_, or managed like any other Tock story,
 
-The `openingMessage` parameter is a sentence from the user to the bot, actually not displayed in conversation.
+The `openingMessage` parameter is a sentence from the user to the bot, albeit not actually displayed in conversation.
 It is not the configured answer from the bot.
 
 Example:
@@ -431,9 +465,8 @@ renderChat(
 );
 ```
 
-In this example, when the user opens/loads the page embedding the `tock-react-kit`, a message from the bot is 
-automatically retrieved and displayed, starting the conversation: actually, the bot message configured for 
-any user sending the sentence _"hello my bot"_.
+In this example, when the user opens/loads the page embedding the `tock-react-kit` for the first time,
+the story corresponding to _"hello my bot"_ (e.g. `hello`) will be triggered, starting the conversation.
 
 #### Extra headers
 

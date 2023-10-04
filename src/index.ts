@@ -31,5 +31,6 @@ export type {
   Widget as WidgetData,
   WidgetPayload,
 } from './model/messages';
+export type { PostInitContext, TockHistoryData } from './PostInitContext';
 export type TockTheme = _TockTheme;
 export type TockOptions = _TockOptions;
