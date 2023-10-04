@@ -1,7 +1,9 @@
-import TockAccessibility from 'TockAccessibility';
-import TockLocalStorage from 'TockLocalStorage';
+import { PartialDeep } from 'type-fest';
+import TockAccessibility from './TockAccessibility';
+import TockLocalStorage from './TockLocalStorage';
+import { TockConfig } from './TockContext';
 
-export interface TockOptions {
+export interface TockOptions extends PartialDeep<TockConfig> {
   // An initial message to send to the backend to trigger a welcome sequence
   openingMessage?: string;
   // An optional function supplying extra HTTP headers for chat requests.
@@ -11,10 +13,6 @@ export interface TockOptions {
   widgets?: any;
   disableSse?: boolean;
   accessibility?: TockAccessibility;
-  /**
-   * @deprecated since version 22.3.1
-   */
-  localStorage?: boolean;
   localStorageHistory?: TockLocalStorage;
 }
 

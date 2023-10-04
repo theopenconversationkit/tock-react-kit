@@ -6,7 +6,8 @@ import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
 import TockLocalStorage from 'TockLocalStorage';
 import { storageAvailable } from '../../utils';
-import { retrievePrefixedLocalStorageKeyName } from '../../utils';
+import { retrievePrefixedLocalStorageKey } from '../../utils';
+import { useTockConfig } from '../../TockContext';
 
 export interface ChatProps {
   endPoint: string;
@@ -36,6 +37,9 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   localStorageHistory = {},
 }: ChatProps) => {
   const {
+    localStorage: { prefix: localStoragePrefix },
+  } = useTockConfig();
+  const {
     messages,
     quickReplies,
     loading,
@@ -63,16 +67,16 @@ const Chat: (props: ChatProps) => JSX.Element = ({
       }
 
       const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
-        localStorageHistory,
+        localStoragePrefix,
         'tockMessageHistory',
       );
       const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
-        localStorageHistory,
+        localStoragePrefix,
         'tockQuickReplyHistory',
       );
 
       const history =
-          storageAvailable('localStorage') && localStorageHistory?.enable === true
+        storageAvailable('localStorage') && localStorageHistory?.enable === true
           ? window.localStorage.getItem(messageHistoryLSKeyName)
           : undefined;
 

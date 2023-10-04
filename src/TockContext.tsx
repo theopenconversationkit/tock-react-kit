@@ -7,8 +7,13 @@ import React, {
   Context,
   useContext,
 } from 'react';
+import deepmerge from 'deepmerge';
+import { PartialDeep } from 'type-fest';
 import { retrieveUserId } from './utils';
-import TockLocalStorage from './TockLocalStorage';
+
+export const TockConfigContext: Context<TockConfig | undefined> = createContext<
+  TockConfig | undefined
+>(undefined);
 
 export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
@@ -16,6 +21,14 @@ export const TockStateContext: Context<TockState | undefined> = createContext<
 export const TockStateDispatch: Context<
   Dispatch<TockAction> | undefined
 > = createContext<Dispatch<TockAction> | undefined>(undefined);
+
+export const useTockConfig: () => TockConfig = () => {
+  const config = useContext(TockConfigContext);
+  if (!config) {
+    throw new Error('useTockConfig must be used in a TockContext');
+  }
+  return config;
+};
 
 export const useTockState: () => TockState = () => {
   const state: TockState | undefined = useContext(TockStateContext);
@@ -34,6 +47,14 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
   }
   return dispatch;
 };
+
+export interface LocalStorageConfig {
+  prefix?: string;
+}
+
+export interface TockConfig {
+  localStorage: LocalStorageConfig;
+}
 
 export class QuickReply {
   label: string;
@@ -205,32 +226,39 @@ export const tockReducer: Reducer<TockState, TockAction> = (
   return state;
 };
 
+const defaultConfig: TockConfig = {
+  localStorage: {},
+};
+
 const TockContext: (props: {
   children?: ReactNode;
-  localStorageHistory?: TockLocalStorage;
+  config?: PartialDeep<TockConfig>;
 }) => JSX.Element = ({
   children,
-  localStorageHistory,
+  config = {},
 }: {
   children?: ReactNode;
-  localStorageHistory?: TockLocalStorage;
+  config: PartialDeep<TockConfig>;
 }) => {
+  const mergedConfig = deepmerge(defaultConfig, config);
   const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(
     tockReducer,
     {
       quickReplies: [],
       messages: [],
-      userId: retrieveUserId(localStorageHistory),
+      userId: retrieveUserId(mergedConfig.localStorage.prefix),
       loading: false,
       sseInitializing: false,
     },
   );
   return (
-    <TockStateContext.Provider value={state}>
-      <TockStateDispatch.Provider value={dispatch}>
-        {children}
-      </TockStateDispatch.Provider>
-    </TockStateContext.Provider>
+    <TockConfigContext.Provider value={mergedConfig}>
+      <TockStateContext.Provider value={state}>
+        <TockStateDispatch.Provider value={dispatch}>
+          {children}
+        </TockStateDispatch.Provider>
+      </TockStateContext.Provider>
+    </TockConfigContext.Provider>
   );
 };
 

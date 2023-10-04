@@ -83,7 +83,7 @@ npm i @emotion/styled@11
 import { ThemeProvider } from "@emotion/react";
 import { TockContext, Chat, createTheme } from 'tock-react-kit';
 
-<TockContext>
+<TockContext config={ /* ... */ }>
     <ThemeProvider theme={createTheme({ /* ... */})}>
         <Chat
             endPoint="<TOCK_BOT_API_URL>"
@@ -281,18 +281,31 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `input`             | `string?`              | Additional CSS styles for input (overrides base styles)                          |
 | `icon`              | `string?`              | Additional CSS styles for input icon (overrides base styles)                     |
 
+### `TockConfig`
+
+| Property name  | Type                  | Description                                          |
+|----------------|-----------------------|------------------------------------------------------|
+| `localStorage` | `LocalStorageConfig?` | Configuration for use of localStorage by the library |
+
+#### `LocalStorageConfig`
+
+| Property name   | Type      | Description                                                                                   |
+|-----------------|-----------|-----------------------------------------------------------------------------------------------|
+| `storagePrefix` | `string?` | Prefix for local storage keys allowing communication with different bots from the same domain |
+
 ### `TockOptions`
 
-| Property name                            | Type                                  | Description                                                      |
-|------------------------------------------|---------------------------------------|------------------------------------------------------------------|
-| `openingMessage`                         | `string?`                             | Initial message to send to the bot to trigger a welcome sequence |
-| `extraHeadersProvider`                   | `() => Promise<Record<string, string>`| Provider of extra HTTP headers for outgoing requests             |
-| `timeoutBetweenMessage`                  | `number?`                             | Timeout between message                                          |
-| `widgets`                                | `any?`                                | Custom display component                                         |
-| `disableSse`                             | `boolean?`                            | Disable SSE (not even trying)                                    |
-| `accessibility`                          | `TockAccessibility`                   | Object for overriding role and label accessibility attributes    |
-| ~~`localStorage`~~                       | ~~`boolean?`~~                        | Enable history local storage (@deprecated)                       |
-| `localStorageHistory`                    | `TockLocalStorage?`                   | Object for history local storage                                 |
+Contains all the properties from [`TockConfig`](#tockconfig) as well as the following:
+
+| Property name                        | Type                                   | Description                                                      |
+|--------------------------------------|----------------------------------------|------------------------------------------------------------------|
+| `openingMessage`                     | `string?`                              | Initial message to send to the bot to trigger a welcome sequence |
+| `extraHeadersProvider`               | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests             |
+| `timeoutBetweenMessage`              | `number?`                              | Timeout between message                                          |
+| `widgets`                            | `any?`                                 | Custom display component                                         |
+| `disableSse`                         | `boolean?`                             | Disable SSE (not even trying)                                    |
+| `accessibility`                      | `TockAccessibility`                    | Object for overriding role and label accessibility attributes    |
+| `localStorageHistory`                | `TockLocalStorage?`                    | Object for history local storage                                 |
 
 #### `TockAccessibility`
 
@@ -315,7 +328,6 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 |-----------------------------------|------------------------|-----------------------------------------------------------------------------|
 | `enable`                          | `boolean?`             | Enable history local storage                                                |
 | `maxNumberMessages`               | `number?`              | Max number of messages in the history local storage (default 10)            |
-| `storagePrefix`                   | `string?`              | Prefix for local storage keys allowing communication with different bots from the same domain with history            |
 
 #### `CarouselAccessibility`
 

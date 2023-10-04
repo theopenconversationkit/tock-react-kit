@@ -1,13 +1,11 @@
-import TockLocalStorage from './TockLocalStorage';
-
 /**
  * Retrieves persisted user id.
  */
-export const retrieveUserId: (
-  localStorageHistory?: TockLocalStorage,
-) => string = (localStorageHistory: TockLocalStorage) => {
+export const retrieveUserId: (localStoragePrefix?: string) => string = (
+  localStoragePrefix?: string,
+) => {
   const userIdLSKeyName = retrievePrefixedLocalStorageKey(
-    localStorageHistory,
+    localStoragePrefix,
     'userId',
   );
   return fromLocalStorage(userIdLSKeyName, () => {
@@ -23,10 +21,10 @@ export const retrieveUserId: (
  * @param key - key in local storage
  * @param computeInitialValue - function to create an initial value if the object is not found
  */
-export const fromLocalStorage: (
+export const fromLocalStorage: <T>(
   key: string,
-  computeInitialValue: () => any,
-) => any = (key: string, computeInitialValue: () => any) => {
+  computeInitialValue: () => T,
+) => T = <T>(key: string, computeInitialValue: () => T) => {
   try {
     const item = window.localStorage.getItem(key);
     if (item) {
@@ -75,23 +73,16 @@ export const storageAvailable: (type: string) => boolean = (type: string) => {
 
 /**
  * Retrieves a localstorage variable name, prefixed if a storagePrefix is defined.
- * @param localStorageHistory - TockLocalStorage object if defined
+ * @param localStoragePrefix - storage key prefix if defined
  * @param key - key in local storage
  * @returns string - the local storage key name, possibly prefixed
  */
 export const retrievePrefixedLocalStorageKey: (
-  localStorageHistory: TockLocalStorage | undefined,
-  varName: string,
-) => string = (
-  localStorageHistory: TockLocalStorage | undefined,
-  varName: string,
-) => {
-  let key = varName;
-  if (
-    localStorageHistory?.enable &&
-    localStorageHistory?.storagePrefix?.trim().length
-  ) {
-    key = `${localStorageHistory.storagePrefix.trim()}_${key}`;
+  localStoragePrefix: string | undefined,
+  key: string,
+) => string = (localStoragePrefix: string | undefined, key: string) => {
+  if (localStoragePrefix?.trim().length) {
+    return `${localStoragePrefix.trim()}_${key}`;
   }
   return key;
 };

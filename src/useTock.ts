@@ -16,6 +16,7 @@ import {
   WidgetData,
   Widget,
   Image,
+  useTockConfig,
 } from './TockContext';
 import { Sse } from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
@@ -101,6 +102,9 @@ const useTock: (
   localStorageHistory?: TockLocalStorage,
 ) => {
   const {
+    localStorage: { prefix: localStoragePrefix },
+  } = useTockConfig();
+  const {
     messages,
     quickReplies,
     userId,
@@ -108,7 +112,9 @@ const useTock: (
     sseInitializing,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
-  const { clearMessages }: UseLocalTools = useLocalTools(localStorageHistory);
+  const { clearMessages }: UseLocalTools = useLocalTools(
+    localStorageHistory?.enable ?? false,
+  );
 
   const startLoading: () => void = () => {
     dispatch({
@@ -128,7 +134,7 @@ const useTock: (
     message: any,
   ) => {
     const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
-      localStorageHistory,
+      localStoragePrefix,
       'tockMessageHistory',
     );
 
@@ -163,7 +169,7 @@ const useTock: (
       });
       if (localStorageHistory?.enable ?? false) {
         const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
-          localStorageHistory,
+          localStoragePrefix,
           'tockQuickReplyHistory',
         );
         window.localStorage.setItem(

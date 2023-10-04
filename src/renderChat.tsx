@@ -19,29 +19,19 @@ export const renderChat: (
   endPoint: string,
   referralParameter?: string,
   theme: TockTheme = defaultTheme,
-  { localStorage, localStorageHistory, ...options }: TockOptions = {},
+  { localStorage, ...options }: TockOptions = {},
 ): void => {
+  if (typeof localStorage === 'boolean') {
+    throw new Error(
+      'Enabling local storage history through the localStorage option is now unsupported, use localStorageHistory.enable instead',
+    );
+  }
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext
-        {...(storageAvailable('localStorage') && {
-          localStorageHistory: {
-            enable:
-              options.localStorage ||
-              options.localStorageHistory?.enable === true,
-            maxNumberMessages: options.localStorageHistory?.maxNumberMessages,
-            storagePrefix: options.localStorageHistory?.storagePrefix,
-          },
-        })}
-      >
+      <TockContext config={{ localStorage }}>
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}
-          localStorageHistory={{
-            enable: localStorage || localStorageHistory?.enable === true,
-            maxNumberMessages: localStorageHistory?.maxNumberMessages,
-            storagePrefix: localStorageHistory?.storagePrefix,
-          }}
           {...options}
         />
       </TockContext>
