@@ -25,6 +25,7 @@ type Props = {
   customStyle?: Interpolation<unknown>;
   imageUrl?: string;
   label: string;
+  target?: string;
   url: string;
 };
 
@@ -32,9 +33,10 @@ export const UrlButton: (props: Props) => JSX.Element = ({
   url,
   imageUrl,
   label,
+  target = '_blank',
   ...rest
 }: Props) => (
-  <UrlButtonAnchor href={url} target="_blank" {...rest}>
+  <UrlButtonAnchor href={url} target={target} {...rest}>
     {imageUrl && <QuickReplyImage src={imageUrl} />}
     {label}
   </UrlButtonAnchor>
