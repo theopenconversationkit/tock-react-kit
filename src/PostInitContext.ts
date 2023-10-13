@@ -1,8 +1,9 @@
 import { UseLocalTools } from './useLocalTools';
-import { Messages, QuickReply } from './TockContext';
+import { Message } from './model/messages';
+import { QuickReply } from './model/buttons';
 
 export interface TockHistoryData {
-  readonly messages: Messages[];
+  readonly messages: Message[];
   readonly quickReplies: QuickReply[];
 }
 
