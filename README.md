@@ -83,7 +83,7 @@ npm i @emotion/styled@11
 import { ThemeProvider } from "@emotion/react";
 import { TockContext, Chat, createTheme } from 'tock-react-kit';
 
-<TockContext>
+<TockContext settings={ /* ... */ }>
     <ThemeProvider theme={createTheme({ /* ... */})}>
         <Chat
             endPoint="<TOCK_BOT_API_URL>"
@@ -309,19 +309,32 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `input`             | `string?`              | Additional CSS styles for input (overrides base styles)                          |
 | `icon`              | `string?`              | Additional CSS styles for input icon (overrides base styles)                     |
 
+### `TockSettings`
+
+| Property name  | Type                    | Description                                          |
+|----------------|-------------------------|------------------------------------------------------|
+| `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
+
+#### `LocalStorageSettings`
+
+| Property name   | Type      | Description                                                                                   |
+|-----------------|-----------|-----------------------------------------------------------------------------------------------|
+| `storagePrefix` | `string?` | Prefix for local storage keys allowing communication with different bots from the same domain |
+
 ### `TockOptions`
 
-| Property name           | Type                                    | Description                                                              |
-|-------------------------|-----------------------------------------|--------------------------------------------------------------------------|
-| `afterInit`             | `(PostInitContext) => Promise<void>?`   | Callback that will be executed after chat init and before openingMessage |
-| `openingMessage`        | `string?`                               | Initial message to send to the bot to trigger a welcome sequence         |
-| `extraHeadersProvider`  | `() => Promise<Record<string, string>?` | Provider of extra HTTP headers for outgoing requests                     |
-| `timeoutBetweenMessage` | `number?`                               | Timeout between message                                                  |
-| `widgets`               | `any?`                                  | Custom display component                                                 |
-| `disableSse`            | `boolean?`                              | Disable SSE (not even trying)                                            |
-| `accessibility`         | `TockAccessibility?`                    | Object for overriding role and label accessibility attributes            |
-| ~~`localStorage`~~      | ~~`boolean?`~~                          | Enable history local storage (@deprecated)                               |
-| `localStorageHistory`   | `TockLocalStorage?`                     | Object for history local storage                                         |
+Contains all the properties from [`TockSettings`](#tocksettings) as well as the following:
+
+| Property name           | Type                                   | Description                                                              |
+|-------------------------|----------------------------------------|--------------------------------------------------------------------------|
+| `afterInit`             | `(PostInitContext) => Promise<void>?`  | Callback that will be executed after chat init and before openingMessage |
+| `openingMessage`        | `string?`                              | Initial message to send to the bot to trigger a welcome sequence         |
+| `extraHeadersProvider`  | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests                     |
+| `timeoutBetweenMessage` | `number?`                              | Timeout between message                                                  |
+| `widgets`               | `any?`                                 | Custom display component                                                 |
+| `disableSse`            | `boolean?`                             | Disable SSE (not even trying)                                            |
+| `accessibility`         | `TockAccessibility`                    | Object for overriding role and label accessibility attributes            |
+| `localStorageHistory`   | `TockLocalStorage?`                    | Object for history local storage                                         |
 
 #### `TockAccessibility`
 

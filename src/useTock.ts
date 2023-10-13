@@ -4,6 +4,7 @@ import {
   TockState,
   useTockDispatch,
   useTockState,
+  useTockSettings,
 } from './TockContext';
 import * as Sse from './Sse';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
@@ -27,6 +28,7 @@ import {
   BotConnectorCard,
   BotConnectorImage,
 } from './model/responses';
+import { retrievePrefixedLocalStorageKey } from './utils';
 
 export interface UseTock {
   messages: Message[];
@@ -115,6 +117,9 @@ const useTock: (
   localStorageHistory?: TockLocalStorage,
 ) => {
   const {
+    localStorage: { prefix: localStoragePrefix },
+  } = useTockSettings();
+  const {
     messages,
     quickReplies,
     userId,
@@ -143,7 +148,12 @@ const useTock: (
   const recordResponseToLocaleSession: (message: Message) => void = (
     message: Message,
   ) => {
-    const savedHistory = window.localStorage.getItem('tockMessageHistory');
+    const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
+      localStoragePrefix,
+      'tockMessageHistory',
+    );
+
+    const savedHistory = window.localStorage.getItem(messageHistoryLSKeyName);
     const maxNumberMessages = localStorageHistory?.maxNumberMessages ?? 10;
     let history: Message[];
     if (!savedHistory) {
@@ -155,7 +165,10 @@ const useTock: (
       history.splice(0, history.length - maxNumberMessages + 1);
     }
     history.push(message);
-    window.localStorage.setItem('tockMessageHistory', JSON.stringify(history));
+    window.localStorage.setItem(
+      messageHistoryLSKeyName,
+      JSON.stringify(history),
+    );
   };
 
   const handleBotResponse: (botResponse: BotConnectorResponse) => void = ({
@@ -177,8 +190,12 @@ const useTock: (
         quickReplies,
       });
       if (localStorageHistory?.enable ?? false) {
-        window.localStorage.setItem(
+        const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
+          localStoragePrefix,
           'tockQuickReplyHistory',
+        );
+        window.localStorage.setItem(
+          quickReplyHistoryLSKeyName,
           JSON.stringify(quickReplies),
         );
       }
@@ -496,15 +513,24 @@ const useTock: (
       };
     }
 
+    const messageHistoryLSKey = retrievePrefixedLocalStorageKey(
+      localStoragePrefix,
+      'tockMessageHistory',
+    );
+    const quickReplyHistoryLSKey = retrievePrefixedLocalStorageKey(
+      localStoragePrefix,
+      'tockQuickReplyHistory',
+    );
+
     const serializedHistory =
       storageAvailable('localStorage') && localStorageHistory?.enable === true
-        ? window.localStorage.getItem('tockMessageHistory')
+        ? window.localStorage.getItem(messageHistoryLSKey)
         : undefined;
 
     if (serializedHistory) {
       const messages = JSON.parse(serializedHistory);
       const quickReplies = JSON.parse(
-        window.localStorage.getItem('tockQuickReplyHistory') || '[]',
+        window.localStorage.getItem(quickReplyHistoryLSKey) || '[]',
       );
       addHistory(messages, quickReplies);
       return { messages, quickReplies };

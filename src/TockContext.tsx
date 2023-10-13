@@ -7,16 +7,30 @@ import React, {
   useContext,
   useReducer,
 } from 'react';
+import deepmerge from 'deepmerge';
+import { PartialDeep } from 'type-fest';
 import { retrieveUserId } from './utils';
 import { QuickReply } from './model/buttons';
 import { Message } from './model/messages';
 
-const TockStateContext: Context<TockState | undefined> = createContext<
+export const TockSettingsContext: Context<
+  TockSettings | undefined
+> = createContext<TockSettings | undefined>(undefined);
+
+export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
 >(undefined);
-const TockStateDispatch: Context<
+export const TockStateDispatch: Context<
   Dispatch<TockAction> | undefined
 > = createContext<Dispatch<TockAction> | undefined>(undefined);
+
+export const useTockSettings: () => TockSettings = () => {
+  const settings = useContext(TockSettingsContext);
+  if (!settings) {
+    throw new Error('useTockSettings must be used in a TockContext');
+  }
+  return settings;
+};
 
 export const useTockState: () => TockState = () => {
   const state: TockState | undefined = useContext(TockStateContext);
@@ -35,6 +49,14 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
   }
   return dispatch;
 };
+
+export interface LocalStorageSettings {
+  prefix?: string;
+}
+
+export interface TockSettings {
+  localStorage: LocalStorageSettings;
+}
 
 export interface TockState {
   quickReplies: QuickReply[];
@@ -119,28 +141,40 @@ const tockReducer: Reducer<TockState, TockAction> = (
   return state;
 };
 
-const TockContext: (props: { children?: ReactNode }) => JSX.Element = ({
+const defaultSettings: TockSettings = {
+  localStorage: {},
+};
+
+const TockContext: (props: {
+  children?: ReactNode;
+  settings?: PartialDeep<TockSettings>;
+}) => JSX.Element = ({
   children,
+  settings = {},
 }: {
   children?: ReactNode;
+  settings: PartialDeep<TockSettings>;
 }) => {
+  const mergedSettings = deepmerge(defaultSettings, settings);
   const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(
     tockReducer,
     {
       quickReplies: [],
       messages: [],
-      userId: retrieveUserId(),
+      userId: retrieveUserId(mergedSettings.localStorage.prefix),
       loading: false,
       sseInitializing: false,
       metadata: {},
     },
   );
   return (
-    <TockStateContext.Provider value={state}>
-      <TockStateDispatch.Provider value={dispatch}>
-        {children}
-      </TockStateDispatch.Provider>
-    </TockStateContext.Provider>
+    <TockSettingsContext.Provider value={mergedSettings}>
+      <TockStateContext.Provider value={state}>
+        <TockStateDispatch.Provider value={dispatch}>
+          {children}
+        </TockStateDispatch.Provider>
+      </TockStateContext.Provider>
+    </TockSettingsContext.Provider>
   );
 };
 

@@ -1,12 +1,19 @@
 /**
  * Retrieves persisted user id.
  */
-export const retrieveUserId: () => string = () =>
-  fromLocalStorage('userId', () => {
+export const retrieveUserId: (localStoragePrefix?: string) => string = (
+  localStoragePrefix?: string,
+) => {
+  const userIdLSKeyName = retrievePrefixedLocalStorageKey(
+    localStoragePrefix,
+    'userId',
+  );
+  return fromLocalStorage(userIdLSKeyName, () => {
     const date = Date.now().toString(36);
     const randomNumber = Math.random().toString(36).substr(2, 5);
     return (date + randomNumber).toUpperCase();
   });
+};
 
 /**
  * Retrieves and returns an object from the local storage if found.
@@ -14,10 +21,10 @@ export const retrieveUserId: () => string = () =>
  * @param key - key in local storage
  * @param computeInitialValue - function to create an initial value if the object is not found
  */
-export const fromLocalStorage = <T>(
+export const fromLocalStorage: <T>(
   key: string,
   computeInitialValue: () => T,
-): T => {
+) => T = <T>(key: string, computeInitialValue: () => T) => {
   try {
     const item = window.localStorage.getItem(key);
     if (item) {
@@ -62,4 +69,20 @@ export const storageAvailable: (type: string) => boolean = (type) => {
       storage?.length !== 0
     );
   }
+};
+
+/**
+ * Retrieves a localstorage variable name, prefixed if a storagePrefix is defined.
+ * @param localStoragePrefix - storage key prefix if defined
+ * @param key - key in local storage
+ * @returns string - the local storage key name, possibly prefixed
+ */
+export const retrievePrefixedLocalStorageKey: (
+  localStoragePrefix: string | undefined,
+  key: string,
+) => string = (localStoragePrefix: string | undefined, key: string) => {
+  if (localStoragePrefix?.trim().length) {
+    return `${localStoragePrefix.trim()}_${key}`;
+  }
+  return key;
 };
