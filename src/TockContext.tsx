@@ -25,11 +25,11 @@ export const TockStateDispatch: Context<
 > = createContext<Dispatch<TockAction> | undefined>(undefined);
 
 export const useTockSettings: () => TockSettings = () => {
-  const config = useContext(TockSettingsContext);
-  if (!config) {
+  const settings = useContext(TockSettingsContext);
+  if (!settings) {
     throw new Error('useTockSettings must be used in a TockContext');
   }
-  return config;
+  return settings;
 };
 
 export const useTockState: () => TockState = () => {

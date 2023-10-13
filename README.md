@@ -83,7 +83,7 @@ npm i @emotion/styled@11
 import { ThemeProvider } from "@emotion/react";
 import { TockContext, Chat, createTheme } from 'tock-react-kit';
 
-<TockContext config={ /* ... */ }>
+<TockContext settings={ /* ... */ }>
     <ThemeProvider theme={createTheme({ /* ... */})}>
         <Chat
             endPoint="<TOCK_BOT_API_URL>"
