@@ -45,7 +45,7 @@ export const fromLocalStorage: <T>(
  * @param type - Storage type
  * @returns true - if locale storage is available on the user's browser
  */
-export const storageAvailable: (type: string) => boolean = (type: string) => {
+export const storageAvailable: (type: string) => boolean = (type) => {
   let storage = undefined;
   try {
     storage = window[type];
@@ -66,7 +66,7 @@ export const storageAvailable: (type: string) => boolean = (type: string) => {
         // Firefox
         e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
       // acknowledge QuotaExceededError only if there's something already stored
-      storage.length !== 0
+      storage?.length !== 0
     );
   }
 };

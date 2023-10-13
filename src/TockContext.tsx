@@ -1,19 +1,21 @@
 import React, {
+  Context,
+  createContext,
   Dispatch,
   ReactNode,
   Reducer,
-  useReducer,
-  createContext,
-  Context,
   useContext,
+  useReducer,
 } from 'react';
 import deepmerge from 'deepmerge';
 import { PartialDeep } from 'type-fest';
 import { retrieveUserId } from './utils';
+import { QuickReply } from './model/buttons';
+import { Message } from './model/messages';
 
-export const TockConfigContext: Context<TockConfig | undefined> = createContext<
-  TockConfig | undefined
->(undefined);
+export const TockSettingsContext: Context<
+  TockSettings | undefined
+> = createContext<TockSettings | undefined>(undefined);
 
 export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
@@ -22,10 +24,10 @@ export const TockStateDispatch: Context<
   Dispatch<TockAction> | undefined
 > = createContext<Dispatch<TockAction> | undefined>(undefined);
 
-export const useTockConfig: () => TockConfig = () => {
-  const config = useContext(TockConfigContext);
+export const useTockSettings: () => TockSettings = () => {
+  const config = useContext(TockSettingsContext);
   if (!config) {
-    throw new Error('useTockConfig must be used in a TockContext');
+    throw new Error('useTockSettings must be used in a TockContext');
   }
   return config;
 };
@@ -48,134 +50,39 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
   return dispatch;
 };
 
-export interface LocalStorageConfig {
+export interface LocalStorageSettings {
   prefix?: string;
 }
 
-export interface TockConfig {
-  localStorage: LocalStorageConfig;
-}
-
-export class QuickReply {
-  label: string;
-  payload?: string;
-  nlpText?: string;
-  imageUrl?: string;
-
-  constructor(
-    label: string,
-    payload: string,
-    nlpText?: string,
-    imageUrl?: string,
-  ) {
-    this.label = label;
-    this.payload = payload;
-    this.nlpText = nlpText;
-    this.imageUrl = imageUrl;
-  }
-}
-
-export class PostBackButton {
-  label: string;
-  payload?: string;
-  imageUrl?: string;
-
-  constructor(label: string, payload: string, imageUrl?: string) {
-    this.label = label;
-    this.payload = payload;
-    this.imageUrl = imageUrl;
-  }
-}
-
-export class UrlButton {
-  label: string;
-  url: string;
-  imageUrl?: string;
-
-  constructor(label: string, url: string, imageUrl?: string) {
-    this.label = label;
-    this.url = url;
-    this.imageUrl = imageUrl;
-  }
-}
-
-export type Button = QuickReply | PostBackButton | UrlButton;
-
-export type Messages = Message | Card | Carousel | Widget | Image;
-
-export enum MessageType {
-  message = 'message',
-  card = 'card',
-  carousel = 'carousel',
-  widget = 'widget',
-  image = 'image',
-}
-
-export interface Message {
-  type: MessageType;
-  alreadyDisplayed?: boolean;
-}
-
-export interface TextMessage extends Message {
-  author: 'bot' | 'user';
-  message: string;
-  type: MessageType.message;
-  buttons?: Button[];
-}
-
-export interface Card extends Message {
-  imageUrl?: string;
-  imageAlternative?: string;
-  title: string;
-  subTitle?: string;
-  buttons?: Button[];
-  type: MessageType.card;
-}
-
-export interface Carousel extends Message {
-  cards: Card[];
-  type: MessageType.carousel;
-}
-
-export interface Widget extends Message {
-  widgetData: WidgetData;
-  type: MessageType.widget;
-}
-
-export interface WidgetData {
-  data: any;
-  type: string;
-}
-
-export interface Image extends Message {
-  url?: string;
-  title: string;
-  type: MessageType.image;
-  alternative?: string;
+export interface TockSettings {
+  localStorage: LocalStorageSettings;
 }
 
 export interface TockState {
   quickReplies: QuickReply[];
-  messages: Messages[];
+  messages: Message[];
   userId: string;
   loading: boolean;
   sseInitializing: boolean;
+  metadata: Record<string, string>;
 }
 
 export interface TockAction {
   type:
     | 'SET_QUICKREPLIES'
     | 'ADD_MESSAGE'
+    | 'SET_METADATA'
     | 'SET_LOADING'
     | 'SET_SSE_INITIALIZING'
     | 'CLEAR_MESSAGES';
   quickReplies?: QuickReply[];
-  messages?: Messages[];
+  messages?: Message[];
   loading?: boolean;
   sseInitializing?: boolean;
+  metadata?: Record<string, string>;
 }
 
-export const tockReducer: Reducer<TockState, TockAction> = (
+const tockReducer: Reducer<TockState, TockAction> = (
   state: TockState,
   action: TockAction,
 ): TockState => {
@@ -220,45 +127,54 @@ export const tockReducer: Reducer<TockState, TockAction> = (
         };
       }
       break;
+    case 'SET_METADATA':
+      if (action.metadata != undefined) {
+        return {
+          ...state,
+          metadata: action.metadata,
+        };
+      }
+      break;
     default:
       break;
   }
   return state;
 };
 
-const defaultConfig: TockConfig = {
+const defaultSettings: TockSettings = {
   localStorage: {},
 };
 
 const TockContext: (props: {
   children?: ReactNode;
-  config?: PartialDeep<TockConfig>;
+  settings?: PartialDeep<TockSettings>;
 }) => JSX.Element = ({
   children,
-  config = {},
+  settings = {},
 }: {
   children?: ReactNode;
-  config: PartialDeep<TockConfig>;
+  settings: PartialDeep<TockSettings>;
 }) => {
-  const mergedConfig = deepmerge(defaultConfig, config);
+  const mergedSettings = deepmerge(defaultSettings, settings);
   const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(
     tockReducer,
     {
       quickReplies: [],
       messages: [],
-      userId: retrieveUserId(mergedConfig.localStorage.prefix),
+      userId: retrieveUserId(mergedSettings.localStorage.prefix),
       loading: false,
       sseInitializing: false,
+      metadata: {},
     },
   );
   return (
-    <TockConfigContext.Provider value={mergedConfig}>
+    <TockSettingsContext.Provider value={mergedSettings}>
       <TockStateContext.Provider value={state}>
         <TockStateDispatch.Provider value={dispatch}>
           {children}
         </TockStateDispatch.Provider>
       </TockStateContext.Provider>
-    </TockConfigContext.Provider>
+    </TockSettingsContext.Provider>
   );
 };
 

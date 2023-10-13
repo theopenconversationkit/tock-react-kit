@@ -1,5 +1,5 @@
 import { Dispatch, useCallback } from 'react';
-import { TockAction, useTockConfig, useTockDispatch } from './TockContext';
+import { TockAction, useTockSettings, useTockDispatch } from './TockContext';
 import { retrievePrefixedLocalStorageKey } from './utils';
 
 export interface UseLocalTools {
@@ -12,7 +12,7 @@ const useLocalTools: (localStorage?: boolean) => UseLocalTools = (
   const dispatch: Dispatch<TockAction> = useTockDispatch();
   const {
     localStorage: { prefix: localStoragePrefix },
-  } = useTockConfig();
+  } = useTockSettings();
 
   const clearMessages: () => void = useCallback(() => {
     if (localStorage === true) {

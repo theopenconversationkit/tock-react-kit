@@ -165,6 +165,24 @@ renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParam
 
 If the chat does not suit your needs you can also use the components separately.
 
+## Message Metadata
+
+*TOCK*'s backend supports sending metadata alongside messages. This metadata takes the form of key-value pairs of arbitrary strings.
+The `tock-react-kit` supports customization of the interface based on said metadata at two levels:
+
+### Chat metadata
+
+The metadata from the last processed response is made available globally in `TockContext`.
+This can be used to implement global effects on the chat interface, like showing status messages.
+This metadata is not persistent; it is therefore the responsibility of either the backend or a customized frontend to
+ensure data stays available if required.
+
+### Message metadata
+
+The metadata from each response is also attached to the corresponding messages.
+This metadata is persisted with the messages, including through page reloads if [local storage history](#local-storage-history) is enabled.
+At the current time, it is only available to custom React-based frontends that handle message rendering themselves.
+
 ## API Reference
 
 ### `renderChat(element, tockBotApiUrl, referralParameter, theme, options)`
@@ -250,6 +268,7 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 | Property name       | Type                   | Description                                                                      |
 |---------------------|------------------------|----------------------------------------------------------------------------------|
+| `buttons`           | `TockThemeButtonStyle` | Object for adding CSS styles on button components (see below)                    |
 | `card`              | `TockThemeCardStyle`   | Object for adding CSS styles on card component (see below)                       |
 | `chatInput`         | `TockThemeInputStyle?` | Object for adding CSS styles on chat input component (see below)                 |
 | `carouselContainer` | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
@@ -261,17 +280,26 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `chat`              | `string?`              | Additional CSS styles for the chat container (overrides base styles)             |
 | `quickReplyArrow`   | `string?`              | Additional CSS styles for quick replies scrolling arrows (overrides base styles) |
 
+#### `TockThemeButtonStyle`
+
+| Property name     | Type                   | Description                                                             |
+|-------------------|------------------------|-------------------------------------------------------------------------|
+| `urlButton`       | `string?`              | Additional CSS styles for URL buttons (overrides base styles)           |
+| `postbackButton`  | `string?`              | Additional CSS styles for postback buttons (overrides base styles)      |
+| `buttonList`      | `string?`              | Additional CSS styles for button lists (overrides base styles)          |
+| `buttonContainer` | `string?`              | Additional CSS styles for button list container (overrides base styles) |
+
 #### `TockThemeCardStyle`
 
-| Property name       | Type                   | Description                                                                      |
-|---------------------|------------------------|----------------------------------------------------------------------------------|
-| `cardContainer`     | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
-| `cardTitle`         | `string?`              | Additional CSS styles for carousel cards title (overrides base styles)           |
-| `cardSubTitle`      | `string?`              | Additional CSS styles for carousel cards subtitle (overrides base styles)        |
-| `cardImage`         | `string?`              | Additional CSS styles for carousel cards image (overrides base styles)           |
-| `cardButton`        | `string?`              | Additional CSS styles for carousel cards button (overrides base styles)          |
-| `buttonList`        | `string?`              | Additional CSS styles for carousel cards button list (overrides base styles)     |
-| `buttonContainer`   | `string?`              | Additional CSS styles for carousel button list container (overrides base styles) |
+| Property name     | Type      | Description                                                                                                                    |
+|-------------------|-----------|--------------------------------------------------------------------------------------------------------------------------------|
+| `cardContainer`   | `string?` | Additional CSS styles for carousel cards container (overrides base styles)                                                     |
+| `cardTitle`       | `string?` | Additional CSS styles for carousel cards title (overrides base styles)                                                         |
+| `cardSubTitle`    | `string?` | Additional CSS styles for carousel cards subtitle (overrides base styles)                                                      |
+| `cardImage`       | `string?` | Additional CSS styles for carousel cards image (overrides base styles)                                                         |
+| `cardButton`      | `string?` | Additional CSS styles for carousel cards button (overrides base styles and [button overrides](#tockthemebuttonstyle))          |
+| `buttonList`      | `string?` | Additional CSS styles for carousel cards button list (overrides base styles and [button overrides](#tockthemebuttonstyle))     |
+| `buttonContainer` | `string?` | Additional CSS styles for carousel button list container (overrides base styles and [button overrides](#tockthemebuttonstyle)) |
 
 #### `TockThemeInputStyle`
 
@@ -281,13 +309,13 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `input`             | `string?`              | Additional CSS styles for input (overrides base styles)                          |
 | `icon`              | `string?`              | Additional CSS styles for input icon (overrides base styles)                     |
 
-### `TockConfig`
+### `TockSettings`
 
-| Property name  | Type                  | Description                                          |
-|----------------|-----------------------|------------------------------------------------------|
-| `localStorage` | `LocalStorageConfig?` | Configuration for use of localStorage by the library |
+| Property name  | Type                    | Description                                          |
+|----------------|-------------------------|------------------------------------------------------|
+| `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
 
-#### `LocalStorageConfig`
+#### `LocalStorageSettings`
 
 | Property name   | Type      | Description                                                                                   |
 |-----------------|-----------|-----------------------------------------------------------------------------------------------|
@@ -295,17 +323,18 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockOptions`
 
-Contains all the properties from [`TockConfig`](#tockconfig) as well as the following:
+Contains all the properties from [`TockSettings`](#tocksettings) as well as the following:
 
-| Property name                        | Type                                   | Description                                                      |
-|--------------------------------------|----------------------------------------|------------------------------------------------------------------|
-| `openingMessage`                     | `string?`                              | Initial message to send to the bot to trigger a welcome sequence |
-| `extraHeadersProvider`               | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests             |
-| `timeoutBetweenMessage`              | `number?`                              | Timeout between message                                          |
-| `widgets`                            | `any?`                                 | Custom display component                                         |
-| `disableSse`                         | `boolean?`                             | Disable SSE (not even trying)                                    |
-| `accessibility`                      | `TockAccessibility`                    | Object for overriding role and label accessibility attributes    |
-| `localStorageHistory`                | `TockLocalStorage?`                    | Object for history local storage                                 |
+| Property name           | Type                                   | Description                                                              |
+|-------------------------|----------------------------------------|--------------------------------------------------------------------------|
+| `afterInit`             | `(PostInitContext) => Promise<void>?`  | Callback that will be executed after chat init and before openingMessage |
+| `openingMessage`        | `string?`                              | Initial message to send to the bot to trigger a welcome sequence         |
+| `extraHeadersProvider`  | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests                     |
+| `timeoutBetweenMessage` | `number?`                              | Timeout between message                                                  |
+| `widgets`               | `any?`                                 | Custom display component                                                 |
+| `disableSse`            | `boolean?`                             | Disable SSE (not even trying)                                            |
+| `accessibility`         | `TockAccessibility`                    | Object for overriding role and label accessibility attributes            |
+| `localStorageHistory`   | `TockLocalStorage?`                    | Object for history local storage                                         |
 
 #### `TockAccessibility`
 
@@ -394,14 +423,47 @@ renderChat(
 >
 > If browser disable or cannot handle locale storage, the chat will not store messages.
 
-#### Opening message
+#### Post-initialization behaviours
+
+##### After Init callback
+
+The optional `afterInit` is a callback function, called once the chat is ready to send payloads to the server.
+It takes a [`PostInitContext`](./src/PostInitContext.ts) parameter, which allows the callback to interact with the chat
+(sending messages, clearing the chat, etc.). If it returns a promise, the chat will wait for the promise to resolve
+before performing other post-init tasks.
+
+Example:
+
+```js
+renderChat(
+    document.getElementById('chat'), 
+    '<TOCK_BOT_API_URL>', 
+    undefined,
+    {},
+    {
+      localStorageHistory: { enable: true },
+      afterInit: async (context) => {
+        if (context.history) await context.sendMessage('I am back');
+        else await context.sendPayload('greetings')
+      }
+    },
+);
+```
+
+In this example, whenever the page is loaded:
+- If the user previously interacted with the bot, they will send the "I am back" message to the bot endpoint,
+triggering the corresponding story. Said message will be displayed as a user message.
+- Otherwise, a payload will be sent, which will trigger the intent with the ID `greetings`.
+
+##### Opening message
 
 The optional `openingMessage` is a sentence, automatically sent to the bot when the conversation starts.
-This is typically used to provide a welcoming or onboarding message to the user:
-- configured in _Tock Studio_ or managed like any other Tock story,
-- not requiring the user to make a sentence first.
+If an `afterInit` callback is also specified, it runs before the opening message gets sent.
+This is typically used to trigger a welcoming or onboarding story for the user,
+without requiring them to type a sentence first.
+Said story is configured in _Tock Studio_, or managed like any other Tock story,
 
-The `openingMessage` parameter is a sentence from the user to the bot, actually not displayed in conversation.
+The `openingMessage` parameter is a sentence from the user to the bot, albeit not actually displayed in conversation.
 It is not the configured answer from the bot.
 
 Example:
@@ -416,9 +478,8 @@ renderChat(
 );
 ```
 
-In this example, when the user opens/loads the page embedding the `tock-react-kit`, a message from the bot is 
-automatically retrieved and displayed, starting the conversation: actually, the bot message configured for 
-any user sending the sentence _"hello my bot"_.
+In this example, when the user opens/loads the page embedding the `tock-react-kit` for the first time,
+the story corresponding to _"hello my bot"_ (e.g. `hello`) will be triggered, starting the conversation.
 
 #### Extra headers
 
@@ -488,7 +549,7 @@ renderChat(
 #### SSE
 
 By default, the `tock-react-kit` tries to connect to the Bot through [Server-sent events](https://en.wikipedia.org/wiki/Server-sent_events).
-If an error occurs, it probably means the Bot does not accept SSE, and the `tock-react-kit` switches to classic requests.
+If an error occurs, it probably means the Bot's backend does not accept SSE, so the `tock-react-kit` switches to classic requests.
 
 The optional `disableSse`parameter makes it possible to disable SSE before even trying, possibly preventing a `404` error 
 from console (when the Bot does not accept SSE).

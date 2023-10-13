@@ -1,6 +1,6 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
-import { prop } from 'styled-tools';
+import { theme } from 'styled-tools';
 
 const QuickReplyImage: StyledComponent<DetailedHTMLProps<
   ImgHTMLAttributes<HTMLImageElement>,
@@ -11,7 +11,7 @@ const QuickReplyImage: StyledComponent<DetailedHTMLProps<
   max-height: 15px;
   vertical-align: middle;
 
-  ${prop<any>('theme.overrides.quickReplyImage', '')};
+  ${theme('overrides.quickReplyImage')};
 `;
 
 export default QuickReplyImage;

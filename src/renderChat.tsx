@@ -28,7 +28,7 @@ export const renderChat: (
   }
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext config={{ localStorage }}>
+      <TockContext settings={{ localStorage }}>
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}
