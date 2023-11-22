@@ -25,3 +25,12 @@ export const WithImage: Story = {
     imageUrl: 'https://doc.tock.ai/tock/assets/images/logo.svg',
   },
 };
+
+export const WithTarget: Story = {
+  name: 'URL Button with _self target',
+  args: {
+    label: 'TOCK',
+    url: 'https://doc.tock.ai',
+    target: '_self',
+  },
+};

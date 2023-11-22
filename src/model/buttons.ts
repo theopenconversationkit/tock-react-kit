@@ -33,11 +33,13 @@ export class UrlButton {
   label: string;
   url: string;
   imageUrl?: string;
+  target?: string;
 
-  constructor(label: string, url: string, imageUrl?: string) {
+  constructor(label: string, url: string, imageUrl?: string, target?: string) {
     this.label = label;
     this.url = url;
     this.imageUrl = imageUrl;
+    this.target = target;
   }
 }
 
