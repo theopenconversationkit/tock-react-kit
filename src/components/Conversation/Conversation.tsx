@@ -138,7 +138,11 @@ const Conversation = ({
   ...rest
 }: Props): JSX.Element => {
   if (messages && messages.length !== 0) {
-    const displayableMessageCount = useMessageCounter(messages, messageDelay);
+    const displayableMessageCount = useMessageCounter(
+      messages,
+      messageDelay,
+      (message) => 'author' in message && message.author === 'user',
+    );
     const theme: TockTheme = useTheme();
     const displayableMessages = messages.slice(0, displayableMessageCount);
     const scrollContainer = useScrollBehaviour([displayableMessages]);
