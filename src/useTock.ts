@@ -1,4 +1,4 @@
-import { Dispatch, useCallback } from 'react';
+import { Dispatch, useCallback, useRef } from 'react';
 import {
   TockAction,
   TockState,
@@ -29,6 +29,11 @@ import {
   BotConnectorImage,
 } from './model/responses';
 import { retrievePrefixedLocalStorageKey } from './utils';
+
+enum MessageHandling {
+  POST,
+  SSE,
+}
 
 export interface UseTock {
   messages: Message[];
@@ -140,6 +145,7 @@ const useTock: (
   const { clearMessages }: UseLocalTools = useLocalTools(
     localStorageHistory?.enable ?? false,
   );
+  const handledResponses = useRef<Record<string, MessageHandling>>({});
 
   const startLoading: () => void = () => {
     dispatch({
@@ -249,10 +255,36 @@ const useTock: (
     }
   };
 
-  const handleBotResponseIfSseDisabled: (
+  const shouldHandleResponse = (
     botResponse: BotConnectorResponse,
-  ) => void = (botResponse) => {
-    if (!Sse.isEnable()) {
+    handling: MessageHandling,
+  ) => {
+    const responseId = botResponse.metadata?.['RESPONSE_ID'];
+    if (!responseId) return null;
+    const existing = handledResponses.current[responseId];
+    if (existing === undefined) {
+      handledResponses.current[responseId] = handling;
+      return true;
+    } else {
+      return existing === handling;
+    }
+  };
+
+  const handlePostBotResponse: (botResponse: BotConnectorResponse) => void = (
+    botResponse,
+  ) => {
+    if (
+      shouldHandleResponse(botResponse, MessageHandling.POST) ??
+      !Sse.isEnable() // no identifier and SSE enabled -> always discard POST response, handle with SSE
+    ) {
+      handleBotResponse(botResponse);
+    }
+  };
+
+  const handleSseBotResponse: (botResponse: BotConnectorResponse) => void = (
+    botResponse,
+  ) => {
+    if (shouldHandleResponse(botResponse, MessageHandling.SSE) ?? true) {
       handleBotResponse(botResponse);
     }
   };
@@ -335,7 +367,7 @@ const useTock: (
         },
       })
         .then((res) => res.json())
-        .then(handleBotResponseIfSseDisabled)
+        .then(handlePostBotResponse)
         .finally(stopLoading);
     },
     [],
@@ -356,7 +388,7 @@ const useTock: (
       },
     })
       .then((res) => res.json())
-      .then(handleBotResponseIfSseDisabled)
+      .then(handlePostBotResponse)
       .finally(stopLoading);
   }, []);
 
@@ -402,7 +434,7 @@ const useTock: (
       },
     })
       .then((res) => res.json())
-      .then(handleBotResponseIfSseDisabled)
+      .then(handlePostBotResponse)
       .finally(stopLoading);
   }
 
@@ -494,7 +526,7 @@ const useTock: (
   const sseInitPromise =
     disableSse == true
       ? Sse.disable()
-      : Sse.init(tockEndPoint, userId, handleBotResponse, onSseStateChange);
+      : Sse.init(tockEndPoint, userId, handleSseBotResponse, onSseStateChange);
 
   const addHistory: (
     messageHistory: Array<Message>,
