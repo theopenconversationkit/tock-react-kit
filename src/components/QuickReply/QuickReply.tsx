@@ -1,48 +1,63 @@
 import styled, { StyledComponent } from '@emotion/styled';
+import { css, SerializedStyles, Theme } from '@emotion/react';
 import React, { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
-import { prop } from 'styled-tools';
+import { theme } from 'styled-tools';
 
-import { Button } from '../../TockContext';
+import { QuickReply as QuickReplyData } from '../../model/buttons';
 
-import TockTheme from 'styles/theme';
 import QuickReplyImage from './QuickReplyImage';
 
 const QuickReplyButtonContainer = styled.li`
   list-style: none;
 `;
 
-const QuickReplyButton: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+export const baseButtonStyle = css`
   background: none;
-  border: 2px solid ${prop<any>('theme.palette.background.bot')};
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
   padding: 0.5em 1em;
-  margin: 0 0.5em;
   display: inline-block;
 
-  outline: none;
-  color: ${prop<any>('theme.palette.background.bot')};
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
-
-  &:hover {
-    border-color: ${prop<any>('theme.palette.text.bot')};
-    color: ${prop<any>('theme.palette.text.bot')};
-    background: ${prop<any>('theme.palette.background.bot')};
-  }
-
-  ${prop<any>('theme.overrides.quickReply', '')};
 `;
+
+export const quickReplyStyle: ({
+  theme,
+}: {
+  theme: Theme;
+}) => SerializedStyles = ({ theme }) => css`
+  margin: 0 0.5em;
+  border: 2px solid ${theme.palette.background.bot};
+  border-radius: ${theme.sizing.borderRadius};
+
+  outline: none;
+  color: ${theme.palette.background.bot};
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: ${theme.palette.text.bot};
+    color: ${theme.palette.text.bot};
+    background: ${theme.palette.background.bot};
+  }
+`;
+
+const QuickReplyButton: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
+  ${baseButtonStyle};
+  ${quickReplyStyle}
+  ${theme('overrides.quickReply')};
+`;
+
+QuickReplyButton.displayName = 'QuickReplyButton';
 
 type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 > &
-  Button;
+  QuickReplyData;
 
 const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
   ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => (

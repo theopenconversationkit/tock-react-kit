@@ -1,9 +1,11 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
 import { useEffect } from 'react';
-import { storiesOf } from '@storybook/react';
 import React from 'react';
 
 import useTock, { UseTock } from '../../useTock';
-import { MessageType, PostBackButton, UrlButton } from '../../TockContext';
+import { PostBackButton, UrlButton } from '../../model/buttons';
+import { MessageType } from '../../model/messages';
 import Product from '../widgets/ProductWidget/Product';
 import Conversation from './Conversation';
 
@@ -176,18 +178,34 @@ const Wrapper = ({
   return children(tock);
 };
 
-storiesOf('Conversation', module).add('With messages', () => (
-  <Wrapper>
-    {({ messages, loading, quickReplies, sendAction, sendQuickReply }) => (
-      <Conversation
-        messages={messages}
-        messageDelay={500}
-        widgets={{}}
-        loading={loading}
-        quickReplies={quickReplies}
-        onAction={sendAction}
-        onQuickReplyClick={sendQuickReply}
-      />
-    )}
-  </Wrapper>
-));
+const meta: Meta<typeof Conversation> = {
+  component: Conversation,
+  tags: ['autodocs'],
+  excludeStories: ['useExampleMessages'],
+};
+
+export default meta;
+type Story = StoryObj<typeof Conversation>;
+
+export const WithMessages: Story = {
+  name: 'With messages',
+  args: {
+    messageDelay: 500,
+  },
+  // eslint-disable-next-line react/prop-types,react/display-name
+  render: ({ messageDelay }) => (
+    <Wrapper>
+      {({ messages, loading, quickReplies, sendAction, sendQuickReply }) => (
+        <Conversation
+          messages={messages}
+          messageDelay={messageDelay}
+          widgets={{}}
+          loading={loading}
+          quickReplies={quickReplies}
+          onAction={sendAction}
+          onQuickReplyClick={sendQuickReply}
+        />
+      )}
+    </Wrapper>
+  ),
+};

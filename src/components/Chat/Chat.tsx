@@ -5,13 +5,21 @@ import Container from '../Container';
 import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
 import TockLocalStorage from 'TockLocalStorage';
+import { PostInitContext } from '../../PostInitContext';
 
 export interface ChatProps {
   endPoint: string;
   referralParameter?: string;
   timeoutBetweenMessage?: number;
+  /** A callback that will be executed once the chat is able to send and receive messages */
+  afterInit?: (tock: PostInitContext) => void | Promise<void>;
+  /** An initial message to send to the backend to trigger a welcome sequence.
+   This message will be sent after the {@link afterInit} callback runs */
   openingMessage?: string;
-  widgets?: any;
+  /** A registry of custom widget factories */
+  widgets?: { [id: string]: (props: unknown) => JSX.Element };
+  /** An optional function supplying extra HTTP headers for chat requests.
+  Extra headers must be explicitly allowed by the server's CORS settings. */
   extraHeadersProvider?: () => Promise<Record<string, string>>;
   disableSse?: boolean;
   accessibility?: TockAccessibility;
@@ -22,7 +30,8 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   endPoint,
   referralParameter,
   timeoutBetweenMessage = 700,
-  openingMessage = undefined,
+  afterInit,
+  openingMessage,
   widgets = {},
   extraHeadersProvider = undefined,
   disableSse = false,
@@ -38,7 +47,8 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sendAction,
     sendReferralParameter,
     sendOpeningMessage,
-    addHistory,
+    sendPayload,
+    loadHistory,
     sseInitPromise,
     sseInitializing,
     clearMessages,
@@ -51,27 +61,27 @@ const Chat: (props: ChatProps) => JSX.Element = ({
 
   useEffect(() => {
     // When the chat gets initialized for the first time, process optional referral|opening message
-    sseInitPromise.then(() => {
+    sseInitPromise.then(async () => {
+      const history = loadHistory();
+
+      if (afterInit) {
+        await afterInit({
+          history,
+          clearMessages,
+          sendMessage,
+          sendPayload,
+        });
+      }
+
       if (referralParameter) {
-        sendReferralParameter(referralParameter);
+        await sendReferralParameter(referralParameter);
       }
-      const history =
-        localStorageHistory?.enable == true
-          ? window.localStorage.getItem('tockMessageHistory')
-          : undefined;
-      if (messages.length === 0 && openingMessage && !history) {
-        sendOpeningMessage(openingMessage);
-      }
-      if (history) {
-        addHistory(
-          JSON.parse(history),
-          JSON.parse(
-            window.localStorage.getItem('tockQuickReplyHistory') || '[]',
-          ),
-        );
+
+      if (!history && messages.length === 0 && openingMessage) {
+        await sendOpeningMessage(openingMessage);
       }
     });
-  }, [referralParameter]);
+  }, [openingMessage, referralParameter]);
 
   return (
     <Container>

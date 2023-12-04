@@ -1,6 +1,6 @@
-import { storiesOf } from '@storybook/react';
-import React from 'react';
-import { MessageType } from '../../TockContext';
+import type { Meta, StoryObj } from '@storybook/react';
+
+import { MessageType } from '../../model/messages';
 import MessageBot from './MessageBot';
 
 const message = 'A bot message';
@@ -23,28 +23,35 @@ const html = `
   </li>
 </ul>`;
 
-storiesOf('Bot message', module)
-  .add('Default', () => (
-    <MessageBot
-      message={{
-        author: 'bot',
-        message: message,
-        type: MessageType.message,
-        buttons: [],
-      }}
-      /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-      onAction={() => {}}
-    />
-  ))
-  .add('With HTML content', () => (
-    <MessageBot
-      message={{
-        author: 'bot',
-        message: html,
-        type: MessageType.message,
-        buttons: [],
-      }}
-      /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-      onAction={() => {}}
-    />
-  ));
+const meta: Meta<typeof MessageBot> = {
+  component: MessageBot,
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof MessageBot>;
+
+export const Default: Story = {
+  args: {
+    message: {
+      author: 'bot',
+      message: message,
+      type: MessageType.message,
+      buttons: [],
+    },
+    onAction: Function.bind(null),
+  },
+};
+
+export const WithHtmlContent: Story = {
+  name: 'With HTML content',
+  args: {
+    message: {
+      author: 'bot',
+      message: html,
+      type: MessageType.message,
+      buttons: [],
+    },
+    onAction: Function.bind(null),
+  },
+};

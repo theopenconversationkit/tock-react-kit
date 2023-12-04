@@ -1,29 +1,27 @@
-import styled, { StyledComponent } from '@emotion/styled';
 import React, { DetailedHTMLProps, HTMLAttributes, ReactElement } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
-import { opacify } from 'polished';
+import { useTheme } from '@emotion/react';
+import styled, { StyledComponent } from '@emotion/styled';
 import { prop } from 'styled-tools';
-import { useTheme } from 'emotion-theming';
+import { opacify } from 'polished';
 import useCarousel from './hooks/useCarousel';
 import useArrowVisibility from './hooks/useArrowVisibility';
-import TockTheme from 'styles/theme';
 import TockAccessibility from 'TockAccessibility';
+import TockTheme from '../../styles/theme';
 
-const ButtonContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
-  unknown,
-  TockTheme
-> = styled.li`
+const ButtonContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLLIElement>,
+  HTMLLIElement
+>> = styled.li`
   margin: 0.4em 0;
   position: relative;
   list-style: none;
 `;
 
-const ItemContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
-  unknown,
-  TockTheme
-> = styled.ul`
+const ItemContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>> = styled.ul`
   display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -36,21 +34,20 @@ const ItemContainer: StyledComponent<
     display: none;
   }
   scrollbar-width: none;
-  ${prop<any>('theme.overrides.carouselContainer', '')}
+  ${prop('theme.overrides.carouselContainer', '')}
 
   & > li, & > * {
     margin-left: 1em;
     margin-right: 1em;
 
-    ${prop<any>('theme.overrides.carouselItem', '')}
+    ${prop('theme.overrides.carouselItem', '')}
   }
 `;
 
-const Previous: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const Previous: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   margin: auto;
   left: 0;
@@ -67,24 +64,23 @@ const Previous: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
+    stroke: ${prop('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${prop<any>('theme.palette.text.bot')};
+      stroke: ${prop('theme.palette.text.bot')};
     }
   }
 
-  ${prop<any>('theme.overrides.carouselArrow', '')};
+  ${prop('theme.overrides.carouselArrow', '')};
 `;
 
-const Next: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
+const Next: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>> = styled.button`
   position: absolute;
   margin: auto;
   right: 0;
@@ -101,17 +97,17 @@ const Next: StyledComponent<
   z-index: 5;
 
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
+    stroke: ${prop('theme.palette.background.bot')};
   }
 
   &:hover,
   &:focus {
     svg {
-      stroke: ${prop<any>('theme.palette.text.bot')};
+      stroke: ${prop('theme.palette.text.bot')};
     }
   }
 
-  ${prop<any>('theme.overrides.carouselArrow', '')};
+  ${prop('theme.overrides.carouselArrow', '')};
 `;
 
 const Carousel: (props: {
@@ -124,7 +120,8 @@ const Carousel: (props: {
   children?: ReactElement[];
   accessibility?: TockAccessibility;
 }) => {
-  const theme: TockTheme = useTheme<TockTheme>();
+  const theme: TockTheme = useTheme();
+
   const [ref, previous, next] = useCarousel<HTMLUListElement>(children?.length);
   const [leftVisible, rightVisible] = useArrowVisibility(
     ref.container,
@@ -170,7 +167,9 @@ const Carousel: (props: {
           <ArrowRightCircle
             size={`calc(${theme.typography.fontSize} * 2)`}
             role="img"
-            aria-label={accessibility?.carousel?.nextButtonLabel || 'Next slides'}
+            aria-label={
+              accessibility?.carousel?.nextButtonLabel || 'Next slides'
+            }
             focusable="false"
           />
         </Next>

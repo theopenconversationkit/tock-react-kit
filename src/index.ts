@@ -1,7 +1,7 @@
 import _TockOptions from './TockOptions';
 import _TockTheme from './styles/theme';
 
-export { default as ThemeProvider } from 'styles/tockThemeProvider';
+export { default as ThemeProvider } from './styles/tockThemeProvider';
 export { default as Card, CardContainer, CardOuter } from './components/Card';
 export { default as Carousel } from './components/Carousel';
 export { default as Chat } from './components/Chat';
@@ -22,5 +22,15 @@ export { renderChat } from './renderChat';
 export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
 export { default as createTheme } from './styles/createTheme';
+export type {
+  Card as CardData,
+  Carousel as CarouselData,
+  Image as ImageData,
+  Message as MessageData,
+  TextMessage as TextMessageData,
+  Widget as WidgetData,
+  WidgetPayload,
+} from './model/messages';
+export type { PostInitContext, TockHistoryData } from './PostInitContext';
 export type TockTheme = _TockTheme;
 export type TockOptions = _TockOptions;

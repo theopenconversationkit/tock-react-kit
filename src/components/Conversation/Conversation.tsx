@@ -1,5 +1,6 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
 import styled from '@emotion/styled';
+import { useTheme } from '@emotion/react';
 
 import DefaultWidget from '../widgets/DefaultWidget';
 import MessageBot from '../MessageBot';
@@ -10,23 +11,21 @@ import Loader from '../Loader';
 import Image from '../Image';
 import QuickReplyList from '../QuickReplyList';
 import InlineQuickReplyList from '../InlineQuickReplyList';
-import useIntervalCounter from './hooks/useIntervalCounter';
+import useMessageCounter from './hooks/useMessageCounter';
 import useScrollBehaviour from './hooks/useScrollBehaviour';
-import { useTheme } from 'emotion-theming';
-import TockTheme from 'styles/theme';
+import TockTheme from '../../styles/theme';
 
+import TockAccessibility from '../../TockAccessibility';
+import { Button, QuickReply } from '../../model/buttons';
 import type {
-  Button,
   Card as ICard,
   Carousel as ICarousel,
-  Message,
   Image as IImage,
+  Message,
   MessageType,
   TextMessage,
   Widget,
-  QuickReply as CQuickReply,
-} from 'TockContext';
-import TockAccessibility from 'TockAccessibility';
+} from '../../model/messages';
 
 const ConversationOuterContainer = styled.div`
   display: flex;
@@ -47,13 +46,14 @@ const ConversationInnerContainer = styled.ul`
 `;
 
 interface RenderOptions {
-  widgets?: any;
+  widgets: { [id: string]: (props: unknown) => JSX.Element };
   onAction: (button: Button) => void;
 }
 
-const renderWidget = (message: Widget, options: RenderOptions) => {
-  const Widget = options?.widgets[message.widgetData.type] ?? DefaultWidget;
-  return <Widget {...message.widgetData.data} />;
+const renderWidget = (widget: Widget, options: RenderOptions) => {
+  const WidgetRenderer =
+    options.widgets?.[widget.widgetData.type] ?? DefaultWidget;
+  return <WidgetRenderer {...widget.widgetData.data} />;
 };
 
 const renderMessage = (message: TextMessage, options: RenderOptions) => {
@@ -104,7 +104,7 @@ const MESSAGE_RENDERER: {
 const makeRenderMessage = (
   options: RenderOptions,
   accessibility?: TockAccessibility,
-) => (message: Message | ICard | ICarousel | Widget, index: number) => {
+) => (message: Message, index: number) => {
   const render: Renderer = MESSAGE_RENDERER[message.type];
   if (!render) return null;
   return React.cloneElement(render(message, options, accessibility), {
@@ -118,9 +118,9 @@ type Props = DetailedHTMLProps<
 > & {
   messages: Message[];
   messageDelay: number;
-  widgets?: any;
+  widgets?: { [id: string]: (props: unknown) => JSX.Element };
   loading?: boolean;
-  quickReplies: CQuickReply[];
+  quickReplies: QuickReply[];
   onAction: (button: Button) => void;
   onQuickReplyClick: (button: Button) => void;
   accessibility?: TockAccessibility;
@@ -131,20 +131,15 @@ const Conversation = ({
   messageDelay,
   loading = false,
   onAction,
-  widgets,
+  widgets = {},
   onQuickReplyClick,
   quickReplies,
   accessibility,
   ...rest
-}: Props) => {
+}: Props): JSX.Element => {
   if (messages && messages.length !== 0) {
-    const displayableMessageCount = useIntervalCounter(
-      messages.filter((message) => message.isStoredInLocalStorage === true)
-        .length,
-      messages.length,
-      messageDelay,
-    );
-    const theme: TockTheme = useTheme<TockTheme>();
+    const displayableMessageCount = useMessageCounter(messages, messageDelay);
+    const theme: TockTheme = useTheme();
     const displayableMessages = messages.slice(0, displayableMessageCount);
     const scrollContainer = useScrollBehaviour([displayableMessages]);
     const renderMessage = makeRenderMessage(
@@ -166,21 +161,20 @@ const Conversation = ({
           {displayableMessages.map(renderMessage)}
           {loading && <Loader />}
         </ConversationInnerContainer>
-        {displayableMessageCount === messages.length &&
-          theme.inlineQuickReplies !== true && (
-            <QuickReplyList
-              items={quickReplies}
-              onItemClick={onQuickReplyClick}
-            />
-          )}
-        {displayableMessageCount === messages.length &&
-          theme.inlineQuickReplies === true && (
+        {!loading &&
+          displayableMessageCount === messages.length &&
+          (theme.inlineQuickReplies ? (
             <InlineQuickReplyList
               items={quickReplies}
               onItemClick={onQuickReplyClick}
               accessibility={accessibility}
             />
-          )}
+          ) : (
+            <QuickReplyList
+              items={quickReplies}
+              onItemClick={onQuickReplyClick}
+            />
+          ))}
       </ConversationOuterContainer>
     );
   } else {
@@ -190,7 +184,7 @@ const Conversation = ({
         aria-atomic="false"
         aria-relevant="additions"
         {...rest}
-      ></ConversationOuterContainer>
+      />
     );
   }
 };

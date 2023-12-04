@@ -1,4 +1,5 @@
-import { storiesOf } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+
 import React, { ReactNode } from 'react';
 import styled from '@emotion/styled';
 
@@ -33,8 +34,19 @@ const FullscreenContainer = styled.div`
   bottom: 0;
 `;
 
-storiesOf('Chat app', module)
-  .add('Default full screen', () => (
+const meta: Meta<typeof Chat> = {
+  component: Chat,
+  tags: ['autodocs'],
+  title: 'Chat app',
+};
+
+export default meta;
+export type Story = StoryObj<typeof Chat>;
+
+export const DefaultFullScreen: Story = {
+  name: 'Default full screen',
+  // eslint-disable-next-line react/display-name
+  render: () => (
     <Wrapper>
       <FullscreenContainer>
         <Chat
@@ -46,11 +58,17 @@ storiesOf('Chat app', module)
         />
       </FullscreenContainer>
     </Wrapper>
-  ))
-  .add('Default modal', () => (
+  ),
+};
+
+export const DefaultModal: Story = {
+  name: 'Default modal',
+  // eslint-disable-next-line react/display-name
+  render: () => (
     <Wrapper>
       <ModalContainer>
         <Chat endPoint="" referralParameter="" />
       </ModalContainer>
     </Wrapper>
-  ));
+  ),
+};

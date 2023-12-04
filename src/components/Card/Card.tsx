@@ -4,117 +4,106 @@ import React, {
   HTMLAttributes,
   ImgHTMLAttributes,
 } from 'react';
-import TockTheme from 'styles/theme';
-import { prop } from 'styled-tools';
+import { theme } from 'styled-tools';
 
-import { Button } from '../../TockContext';
+import { Button as ButtonData } from '../../model/buttons';
+import '../../styles/theme';
+import UrlButton from '../buttons/UrlButton';
+import PostBackButton from '../buttons/PostBackButton';
+import { css, Theme } from '@emotion/react';
 
-export const CardOuter: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>,
-  unknown,
-  TockTheme
-> = styled.li`
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+export const CardOuter: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLLIElement>,
+  HTMLLIElement
+>> = styled.li`
+  max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-export const CardContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  unknown,
-  TockTheme
-> = styled.div`
+export const CardContainer: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>> = styled.div`
   padding: 0.5em;
-  background: ${prop<any>('theme.palette.background.card')};
-  color: ${prop<any>('theme.palette.text.card')};
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
-  border: 2px solid ${prop<any>('theme.palette.text.card')};
+  background: ${theme('palette.background.card')};
+  color: ${theme('palette.text.card')};
+  border-radius: ${theme('sizing.borderRadius')};
+  border: 2px solid ${theme('palette.text.card')};
   width: 20em;
 
-  ${prop<any>('theme.overrides.card.cardContainer', '')};
+  ${theme('overrides.card.cardContainer')};
 `;
 
-const CardTitle: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>,
-  unknown,
-  TockTheme
-> = styled.span`
+const CardTitle: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLSpanElement>,
+  HTMLSpanElement
+>> = styled.span`
   margin: 0.5em 0;
   font-size: 1.5em;
   font-weight: bold;
   display: block;
 
-  ${prop<any>('theme.overrides.card.cardTitle', '')};
+  ${theme('overrides.card.cardTitle')};
 `;
 
-const CardSubTitle: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>,
-  unknown,
-  TockTheme
-> = styled.span`
+const CardSubTitle: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLSpanElement>,
+  HTMLSpanElement
+>> = styled.span`
   margin: 0.5em 0;
   font-size: 1em;
   font-weight: bold;
   display: block;
 
-  ${prop<any>('theme.overrides.card.cardSubTitle', '')};
+  ${theme('overrides.card.cardSubTitle')};
 `;
 
-const CardImage: StyledComponent<
-  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-  unknown,
-  TockTheme
-> = styled.img`
+const CardImage: StyledComponent<DetailedHTMLProps<
+  ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+>> = styled.img`
   max-width: 100%;
   max-height: 100%;
 
-  ${prop<any>('theme.overrides.card.cardImage', '')};
+  ${theme('overrides.card.cardImage')};
 `;
 
-const ButtonList: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>,
-  unknown,
-  TockTheme
-> = styled.ul`
+const ButtonList: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>> = styled.ul`
   margin: 0.5em 0;
   list-style: none;
   padding: 0.5em 0;
 
-  ${prop<any>('theme.overrides.card.buttonList', '')};
+  ${theme('overrides.buttons.buttonList')};
+  ${theme('overrides.card.buttonList')};
 
   & > li {
     padding: 0;
     margin: 0 0.5em;
     display: inline-block;
 
-    ${prop<any>('theme.overrides.card.buttonContainer', '')};
+    ${theme('overrides.buttons.buttonContainer')};
+    ${theme('overrides.card.buttonContainer')};
   }
 `;
 
-const Button: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
-  unknown,
-  TockTheme
-> = styled.button`
-  background: none;
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
-  color: ${prop<any>('theme.palette.text.card')};
-  border: 2px solid ${prop<any>('theme.palette.text.card')};
-  padding: 0.5em 1em;
-  cursor: pointer;
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  font-family: inherit;
-  font-size: inherit;
+const cardButtonBaseStyle = ({ theme }: { theme: Theme }) => css`
+  border: 2px solid ${theme.palette.text.card};
+  border-radius: ${theme.sizing.borderRadius};
+
+  color: ${theme.palette.text.card};
 
   &:hover,
   &:focus,
   &:active {
-    color: ${prop<any>('theme.palette.background.card')};
-    background: ${prop<any>('theme.palette.text.card')};
+    color: ${theme.palette.background.card};
+    background: ${theme.palette.text.card};
   }
 
-  ${prop<any>('theme.overrides.card.cardButton', '')};
+  margin: 0.25em 0;
 `;
 
 export interface CardProps {
@@ -122,10 +111,10 @@ export interface CardProps {
   subTitle?: string;
   imageUrl?: string;
   imageAlternative?: string;
-  buttons?: Button[];
+  buttons?: ButtonData[];
   roleDescription?: string;
   isHidden?: boolean;
-  onAction: (button: Button) => void;
+  onAction: (button: ButtonData) => void;
 }
 
 const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
@@ -139,8 +128,38 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
     isHidden = false,
     onAction,
   }: CardProps,
-  ref,
+  ref:
+    | ((instance: HTMLLIElement | null) => void)
+    | React.MutableRefObject<HTMLLIElement | null>
+    | null,
 ) {
+  const renderButton = (button: ButtonData, index: number) => (
+    // having the default index-based key is fine since we do not reorder buttons
+    <li key={index}>
+      {'url' in button ? (
+        <UrlButton
+          customStyle={[
+            cardButtonBaseStyle,
+            theme('overrides.buttons.urlButton'),
+            theme('overrides.card.cardButton'),
+          ]}
+          {...button}
+        />
+      ) : (
+        <PostBackButton
+          customStyle={[
+            cardButtonBaseStyle,
+            theme('overrides.buttons.postbackButton'),
+            theme('overrides.card.cardButton'),
+          ]}
+          onClick={onAction.bind(null, button)}
+          onKeyPress={onAction.bind(null, button)}
+          {...button}
+          {...(isHidden && { tabIndex: -1 })}
+        />
+      )}
+    </li>
+  );
   return (
     <CardOuter
       ref={ref}
@@ -162,19 +181,7 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
           </CardSubTitle>
         )}
         {Array.isArray(buttons) && buttons.length > 0 && (
-          <ButtonList>
-            {buttons.map((button, index) => (
-              <li key={index}>
-                <Button
-                  onClick={onAction.bind(null, button)}
-                  onKeyPress={onAction.bind(null, button)}
-                  {...(isHidden && { tabIndex: -1 })}
-                >
-                  {button.label}
-                </Button>
-              </li>
-            ))}
-          </ButtonList>
+          <ButtonList role="group">{buttons.map(renderButton)}</ButtonList>
         )}
       </CardContainer>
     </CardOuter>

@@ -2,13 +2,10 @@ import styled, { StyledComponent } from '@emotion/styled';
 import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import { prop } from 'styled-tools';
 
-import TockTheme from 'styles/theme';
-
-const Container: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  unknown,
-  TockTheme
-> = styled.div`
+const Container: StyledComponent<DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>> = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
