@@ -197,7 +197,7 @@ Renders an entire chat in a target element.
 | `theme`                        | `TockTheme`                                                           | Optional theme object                          |
 | `options`                      | `TockOptions`                                                         | Optional options object                        |
 
-### `useTock(tockBotApiUrl, extraHeadersProvider, disableSse, localStorageHistory, locale)`
+### `useTock(tockBotApiUrl, extraHeadersProvider, disableSse, localStorageHistory)`
 
 Hook that provides chat history and methods to communicate with the Tock Bot. It must be used alongside with `TockContext`. Returns a useTock interface.
 
@@ -207,7 +207,6 @@ Hook that provides chat history and methods to communicate with the Tock Bot. It
 | `extraHeadersProvider` | `() => Promise<Record<string, string>>` | Optional Provider of extra HTTP headers for outgoing requests |
 | `disableSse`           | `boolean`                               | Optional Force-disabling of SSE mode                      |
 | `localStorageHistory`  | `TockLocalStorage`                      | Optional Configuration for LocalStorage history   |
-| `locale`               | `string`                                | Optional Locale                                               |
 
 ### `TockTheme`
 
@@ -317,6 +316,7 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 | Property name  | Type                    | Description                                          |
 |----------------|-------------------------|------------------------------------------------------|
+| `locale`       | `string?`               | Optional user language, as an *RFC 5646* code        |
 | `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
 
 #### `LocalStorageSettings`
@@ -403,7 +403,7 @@ renderChat(
 #### Local storage history
 
 The optional `localStorageHistory` makes it possible to provide a history session of messages.
-This history loads at the creation of the chat and is stored in the locale storage of the browser.
+This history loads at the creation of the chat and is stored in the local storage of the browser.
 
 The `localStorageHistory` parameter is an object, by default not set (enable then to false).
 
@@ -425,7 +425,7 @@ renderChat(
 
 > If sensitive information appear in conversation, do not use this option.
 >
-> If browser disable or cannot handle locale storage, the chat will not store messages.
+> If browser disable or cannot handle local storage, the chat will not store messages.
 
 #### Post-initialization behaviours
 

@@ -120,15 +120,14 @@ const useTock: (
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
-  locale?: string,
 ) => UseTock = (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
-  locale?: string,
 ) => {
   const {
+    locale,
     localStorage: { prefix: localStoragePrefix },
   } = useTockSettings();
   const {
@@ -322,12 +321,12 @@ const useTock: (
         ? {
             payload,
             userId,
-            locale
+            locale,
           }
         : {
             query: message,
             userId,
-            locale
+            locale,
           };
 
       return fetch(tockEndPoint, {
@@ -353,7 +352,7 @@ const useTock: (
       body: JSON.stringify({
         ref: referralParameter,
         userId,
-        locale
+        locale,
       }),
       method: 'POST',
       headers: {
@@ -400,7 +399,7 @@ const useTock: (
       body: JSON.stringify({
         payload,
         userId,
-        locale
+        locale,
       }),
       method: 'POST',
       headers: {

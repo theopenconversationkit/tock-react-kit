@@ -56,6 +56,7 @@ export interface LocalStorageSettings {
 
 export interface TockSettings {
   localStorage: LocalStorageSettings;
+  locale?: string;
 }
 
 export interface TockState {
