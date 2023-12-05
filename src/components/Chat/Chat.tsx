@@ -24,6 +24,7 @@ export interface ChatProps {
   disableSse?: boolean;
   accessibility?: TockAccessibility;
   localStorageHistory?: TockLocalStorage;
+  autoCompletionEndPoint?: string;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -37,6 +38,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   disableSse = false,
   accessibility = {},
   localStorageHistory = {},
+  autoCompletionEndPoint,
 }: ChatProps) => {
   const {
     messages,
@@ -57,6 +59,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     extraHeadersProvider,
     disableSse,
     localStorageHistory,
+    autoCompletionEndPoint
   );
 
   useEffect(() => {
@@ -100,6 +103,8 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         onSubmit={sendMessage}
         accessibility={accessibility}
         clearMessages={clearMessages}
+        autoCompletionEndPoint={autoCompletionEndPoint as string}
+        minValueLength={3}
       />
     </Container>
   );

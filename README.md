@@ -45,11 +45,10 @@ Include `react`, `react-dom`, `@emotion-core`, `@emotion-styled`, `emotion-themi
 _React must be at least version 16.8 (must have hooks)_
 
 ```html
-<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-<script crossorigin src="https://unpkg.com/@emotion/core@10/dist/core.umd.min.js"></script>
-<script crossorigin src="https://unpkg.com/@emotion/styled@10/dist/styled.umd.min.js"></script>
-<script crossorigin src="https://unpkg.com/emotion-theming@10/dist/emotion-theming.umd.min.js"></script>
+<script crossorigin  src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+<script crossorigin  src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>:
+<script crossorigin  src="https://unpkg.com/@emotion/react@11.11.1/dist/emotion-react.umd.min.js"></script>
+<script crossorigin  src="https://unpkg.com/@emotion/styled@11.0.0/dist/emotion-styled.umd.min.js"></script>
 <script
   crossorigin
   src="https://unpkg.com/tock-react-kit@latest/build/tock-react-kit.umd.js"

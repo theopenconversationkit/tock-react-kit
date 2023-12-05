@@ -1,10 +1,12 @@
-import styled, { StyledComponent } from '@emotion/styled';
+import styled, {StyledComponent} from '@emotion/styled';
+import AutoCompleteList from '../AutoCompleteList';
 import React, {
   DetailedHTMLProps,
   FormEvent,
   FormHTMLAttributes,
   HTMLAttributes,
   InputHTMLAttributes,
+  useEffect,
   useState,
 } from 'react';
 import { Send, Trash2 } from 'react-feather';
@@ -120,6 +122,8 @@ export interface ChatInputProps {
   onSubmit: (message: string) => void;
   accessibility?: TockAccessibility;
   clearMessages: () => void;
+  autoCompletionEndPoint?: string;
+  minValueLength: number
 }
 
 const ChatInput: (props: ChatInputProps) => JSX.Element = ({
@@ -127,23 +131,70 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
   onSubmit,
   accessibility,
   clearMessages,
+  autoCompletionEndPoint,
+  minValueLength
 }: ChatInputProps): JSX.Element => {
   const [value, setValue] = useState('');
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestionSelected, setSuggestionSelected] = useState(false);
+
+    const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (value) {
       onSubmit(value);
       setValue('');
+      setSuggestionSelected(false);
     }
   };
 
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (value.length >= minValueLength && !suggestionSelected) {
+                    // Fetch data from the autoCompletionEndPoint/autocompletion.json - endpoint
+                    //autoCompletionEndPoint : 'https://example.fr'
+                    const response = await fetch(`${autoCompletionEndPoint}/autocompletion.json`); //
+                    const data = await response.json();
+                    const filteredSuggestions = data.filter((item: string) =>
+                        item.toLowerCase().includes(value.toLowerCase())
+                    );
+                    setSuggestions(filteredSuggestions);
+                } else {
+                    setSuggestions([]);
+                }
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+            }
+        };
+        fetchData();
+    }, [value, minValueLength, suggestionSelected]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+        setSuggestionSelected(false);
+    };
+
+    const handleSuggestionClick = (suggestion: string) => {
+        setValue(suggestion);
+        setSuggestions([]);
+        setSuggestionSelected(true);
+    };
+
   return (
     <InputOuterContainer onSubmit={submit}>
+        {suggestions.length > 0 && (
+            <AutoCompleteList
+                suggestions={suggestions}
+                onItemClick={handleSuggestionClick}
+                inputValue={value}
+            />
+        )}
       <Input
         disabled={disabled}
         className={disabled ? 'disabled-input' : undefined}
         value={value}
-        onChange={({ target: { value } }) => setValue(value)}
+        onChange={handleInputChange}
       />
       <SubmitIcon>
         <Send

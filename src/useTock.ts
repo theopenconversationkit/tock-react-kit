@@ -120,11 +120,13 @@ const useTock: (
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
+  autoCompletionEndPoint?:string,
 ) => UseTock = (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
+  autoCompletionEndPoint?:string,
 ) => {
   const {
     localStorage: { prefix: localStoragePrefix },
