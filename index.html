@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BOTRH AUTOCOMPLETION</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+    <script crossorigin  src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+    <script crossorigin  src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>:
+    <script crossorigin  src="https://unpkg.com/@emotion/react@11.11.1/dist/emotion-react.umd.min.js"></script>
+    <script crossorigin  src="https://unpkg.com/@emotion/styled@11.0.0/dist/emotion-styled.umd.min.js"></script>
+    <script crossorigin src="./build/tock-react-kit.umd.js"></script>
+</head>
+<body>
+
+ <div id="chat"></div>
+
+ <script type="application/javascript">
+     const chatThemeFullPage = {
+         palette: {
+             text: {
+                 card: 'rgba(62,170,252,0.8)',
+                 user: 'white',
+                 bot: 'black',
+             },
+             background: {
+                 user: 'rgba(62,170,252,0.8)',
+                 bot: 'white',
+             },
+         },
+         sizing: {
+             loaderSize: '8px',
+             borderRadius: '8px',
+             conversation: {
+                 width: '667px',
+             },
+         },
+         typography: {
+             fontFamily: '\'Arial\', sans-serif',
+             fontSize: '14px',
+         },
+         overrides: {
+             carouselArrow: 'color: white; background-color: #CCCCCC;width: 2.4em; height: 2.4em; padding: 0.2em;&:hover { background-color: #444791 }',
+             quickReply: 'border-radius: 6px; color: #333433; font-style: normal; font-weight: normal; font-size: 14px; background-color: white; border: 1px solid #444791; margin: 0px 6px 10px 16px; &:hover { color: #333433; background-color: #e8ebfa !important; }',
+             chatInput: {
+                 icon: 'width: 3vw; height: 3vh;',
+                 container: 'margin: 0.5em auto 0.5em 16px; position: absolute; bottom: 0; width: 94%;',
+                 input: 'background-color: #D7D7D7; border-radius: 30px; height: 24px'
+             },
+             chat: '& > *:first-child { margin-bottom: 3.5rem; }',
+             messageUser: 'color: #000; padding: 6px 12px; background-color: #e8ebfa; font-family: Arial; font-size: 14px; line-height: 20px; border-radius: 4px;',
+             messageBot: 'color: #333433; padding: 6px 12px; font-family: Arial; margin-left: 30px; margin-right: 40px; font-size: 14px; line-height: 20px',
+             carouselContainer: 'background-color: transparent',
+             card: {
+                 cardContainer: 'color: #333433; margin-left: 30px; max-width: 582px; border: none !important; display:inline-block; width: auto !important',
+                 cardImage: 'margin-left:0px;',
+                 buttonContainer: 'display: block; background-color: transparent',
+                 buttonList: 'width: 310px',
+                 cardButton: 'text-align: left; font-family: Arial; font-size: 14px; border-radius: 6px; color: #333433; border: 1px solid #444791; &:hover { background-color: #e8ebfa !important; color: #333433 };&:active { background-color: #e8ebfa !important; color: #333433 };&:focus { background-color: #e8ebfa !important; color: #333433 }'
+             }
+         }
+     }
+
+     const chatOptions = {
+         openingMessage: "bonjour",
+         disableSse: true,
+         accessibility: {
+             carousel: {
+                 roleDescription: "Carrousel",
+                 slideRoleDescription: "Slide",
+                 previousButtonLabel: "Slide précédente",
+                 nextButtonLabel: "Slide suivante",
+             },
+             input: {
+                 sendButtonLabel: "Envoyer un message",
+             },
+             qrCarousel: {
+                 previousButtonLabel: "Boutons précédents",
+                 nextButtonLabel: "Boutons suivants",
+             }
+         },
+         localStorage:{
+             prefix: "localStorage",
+         },
+         localStorageHistory: {
+             enable: false,
+             maxNumberMessages: 10,
+         },
+         autoCompletionEndPoint: 'https://bot-botrh.prod.aws.vsct.fr',
+
+
+     }
+
+     TockReact.renderChat(
+         document.getElementById('chat'),
+         "https://bot-botrh.prod.aws.vsct.fr/io/rh/bot_rh/web",
+         " ",
+         chatThemeFullPage,
+         chatOptions
+     )
+
+ </script>
+</body>
+</html>

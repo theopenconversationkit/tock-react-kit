@@ -51,6 +51,7 @@ export const DefaultFullScreen: Story = {
       <FullscreenContainer>
         <Chat
           endPoint=""
+          autoCompletionEndPoint=""
           referralParameter=""
           widgets={{
             ProductWidget,
@@ -67,7 +68,7 @@ export const DefaultModal: Story = {
   render: () => (
     <Wrapper>
       <ModalContainer>
-        <Chat endPoint="" referralParameter="" />
+        <Chat endPoint=""   autoCompletionEndPoint="" referralParameter="" />
       </ModalContainer>
     </Wrapper>
   ),
