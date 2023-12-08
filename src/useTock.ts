@@ -1,4 +1,4 @@
-import { Dispatch, useCallback } from 'react';
+import { Dispatch, useCallback, useRef } from 'react';
 import {
   TockAction,
   TockState,
@@ -115,6 +115,8 @@ function mapImage(image: BotConnectorImage): Image {
   } as Image;
 }
 
+const FINISHED_PROCESSING = -1;
+
 const useTock: (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
@@ -140,6 +142,7 @@ const useTock: (
   const { clearMessages }: UseLocalTools = useLocalTools(
     localStorageHistory?.enable ?? false,
   );
+  const handledResponses = useRef<Record<string, number>>({});
 
   const startLoading: () => void = () => {
     dispatch({
@@ -251,11 +254,66 @@ const useTock: (
     }
   };
 
-  const handleBotResponseIfSseDisabled: (
-    botResponse: BotConnectorResponse,
-  ) => void = (botResponse) => {
-    if (!Sse.isEnable()) {
+  const setProcessedMessageCount = (responseId: string, newCount: number) => {
+    handledResponses.current[responseId] = newCount;
+    const handledResponsesLSKeyName = retrievePrefixedLocalStorageKey(
+      localStoragePrefix,
+      'tockHandledResponses',
+    );
+
+    window.localStorage.setItem(
+      handledResponsesLSKeyName,
+      JSON.stringify(handledResponses.current),
+    );
+  };
+
+  const handlePostBotResponse: (botResponse: BotConnectorResponse) => void = (
+    botResponse,
+  ) => {
+    const responseId = botResponse.metadata?.['RESPONSE_ID'];
+    if (!responseId && !Sse.isEnable()) {
+      // no identifier and SSE enabled -> always discard POST response, handle with SSE
+      // no identifier and SSE disabled -> always handle here
       handleBotResponse(botResponse);
+    } else {
+      const processedMessageCount = handledResponses.current[responseId] ?? 0;
+      if (processedMessageCount >= 0) {
+        handleBotResponse(
+          processedMessageCount > 0 // did we already receive messages for this response through SSE?
+            ? {
+                ...botResponse,
+                // only add messages that have not been processed from SSE
+                responses: botResponse.responses.slice(processedMessageCount),
+              }
+            : botResponse,
+        );
+        // mark as processed through POST - no further messages should be handled for this response
+        setProcessedMessageCount(responseId, FINISHED_PROCESSING);
+      } else {
+        console.warn(
+          'Bot POST request yielded the same response twice, discarding',
+          botResponse,
+        );
+      }
+    }
+  };
+
+  const handleSseBotResponse: (botResponse: BotConnectorResponse) => void = (
+    botResponse,
+  ) => {
+    const responseId = botResponse.metadata?.['RESPONSE_ID'];
+    if (!responseId) {
+      // no identifier -> always handle with SSE
+      handleBotResponse(botResponse);
+    } else {
+      const processedMessageCount = handledResponses.current[responseId] ?? 0;
+      if (processedMessageCount >= 0) {
+        handleBotResponse(botResponse);
+        setProcessedMessageCount(
+          responseId,
+          processedMessageCount + botResponse.responses.length,
+        );
+      }
     }
   };
 
@@ -337,7 +395,7 @@ const useTock: (
         },
       })
         .then((res) => res.json())
-        .then(handleBotResponseIfSseDisabled)
+        .then(handlePostBotResponse)
         .finally(stopLoading);
     },
     [],
@@ -358,7 +416,7 @@ const useTock: (
       },
     })
       .then((res) => res.json())
-      .then(handleBotResponseIfSseDisabled)
+      .then(handlePostBotResponse)
       .finally(stopLoading);
   }, []);
 
@@ -404,7 +462,7 @@ const useTock: (
       },
     })
       .then((res) => res.json())
-      .then(handleBotResponseIfSseDisabled)
+      .then(handlePostBotResponse)
       .finally(stopLoading);
   }
 
@@ -496,7 +554,7 @@ const useTock: (
   const sseInitPromise =
     disableSse == true
       ? Sse.disable()
-      : Sse.init(tockEndPoint, userId, handleBotResponse, onSseStateChange);
+      : Sse.init(tockEndPoint, userId, handleSseBotResponse, onSseStateChange);
 
   const addHistory: (
     messageHistory: Array<Message>,
@@ -533,6 +591,10 @@ const useTock: (
       localStoragePrefix,
       'tockQuickReplyHistory',
     );
+    const handledResponsesLSKeyName = retrievePrefixedLocalStorageKey(
+      localStoragePrefix,
+      'tockHandledResponses',
+    );
 
     const serializedHistory =
       storageAvailable('localStorage') && localStorageHistory?.enable === true
@@ -545,6 +607,12 @@ const useTock: (
         window.localStorage.getItem(quickReplyHistoryLSKey) || '[]',
       );
       addHistory(messages, quickReplies);
+      handledResponses.current = {
+        ...JSON.parse(
+          window.localStorage.getItem(handledResponsesLSKeyName) || '{}',
+        ),
+        ...handledResponses.current,
+      };
       return { messages, quickReplies };
     }
 
