@@ -129,6 +129,7 @@ const useTock: (
   localStorageHistory?: TockLocalStorage,
 ) => {
   const {
+    locale,
     localStorage: { prefix: localStoragePrefix },
   } = useTockSettings();
   const {
@@ -378,12 +379,14 @@ const useTock: (
       startLoading();
       const body = payload
         ? {
-            payload: payload,
-            userId: userId,
+            payload,
+            userId,
+            locale,
           }
         : {
             query: message,
-            userId: userId,
+            userId,
+            locale,
           };
 
       return fetch(tockEndPoint, {
@@ -408,7 +411,8 @@ const useTock: (
     return fetch(tockEndPoint, {
       body: JSON.stringify({
         ref: referralParameter,
-        userId: userId,
+        userId,
+        locale,
       }),
       method: 'POST',
       headers: {
@@ -454,7 +458,8 @@ const useTock: (
     return fetch(tockEndPoint, {
       body: JSON.stringify({
         payload,
-        userId: userId,
+        userId,
+        locale,
       }),
       method: 'POST',
       headers: {

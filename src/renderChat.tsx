@@ -19,7 +19,7 @@ export const renderChat: (
   endPoint: string,
   referralParameter?: string,
   theme: TockTheme = defaultTheme,
-  { localStorage, ...options }: TockOptions = {},
+  { localStorage, locale, ...options }: TockOptions = {},
 ): void => {
   if (typeof localStorage === 'boolean') {
     throw new Error(
@@ -28,7 +28,7 @@ export const renderChat: (
   }
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext settings={{ localStorage }}>
+      <TockContext settings={{ localStorage, locale }}>
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}
