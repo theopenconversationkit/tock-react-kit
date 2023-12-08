@@ -1,3 +1,2 @@
-import Conversation from './Conversation';
-
-export default Conversation;
+export { default } from './Conversation';
+export { default as useMessageCounter } from './hooks/useMessageCounter';

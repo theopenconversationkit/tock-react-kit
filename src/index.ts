@@ -8,7 +8,10 @@ export { default as Chat } from './components/Chat';
 export { default as ChatInput } from './components/ChatInput';
 export { default as Container } from './components/Container';
 export { default as Loader } from './components/Loader';
-export { default as Conversation } from './components/Conversation';
+export {
+  default as Conversation,
+  useMessageCounter,
+} from './components/Conversation';
 export { default as Image } from './components/Image';
 export {
   default as MessageBot,
