@@ -15,6 +15,10 @@ export const MessageContainer: StyledComponent<{}> = styled.li`
   max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
+
+  p {
+    margin: 0;
+  }
 `;
 
 export const Message: StyledComponent<{}> = styled.div`
