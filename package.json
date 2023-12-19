@@ -7,6 +7,9 @@
   "author": "François Nguyen <https://github.com/phurytw>",
   "homepage": "https://github.com/theopenconversationkit/tock-react-kit",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.10.0"
+  },
   "scripts": {
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
