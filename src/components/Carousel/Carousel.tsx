@@ -3,7 +3,6 @@ import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import { useTheme } from '@emotion/react';
 import styled, { StyledComponent } from '@emotion/styled';
 import { prop } from 'styled-tools';
-import { opacify } from 'polished';
 import useCarousel from './hooks/useCarousel';
 import useArrowVisibility from './hooks/useArrowVisibility';
 import TockAccessibility from 'TockAccessibility';
@@ -54,7 +53,11 @@ const Previous: StyledComponent<DetailedHTMLProps<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: color-mix(
+    in srgb,
+    ${(props) => props.theme.palette.background.bot} 20%,
+    transparent
+  );
   border: none;
   width: 4em;
   height: 4em;
@@ -87,7 +90,11 @@ const Next: StyledComponent<DetailedHTMLProps<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: color-mix(
+    in srgb,
+    ${(props) => props.theme.palette.background.bot} 20%,
+    transparent
+  );
   border: none;
   width: 4em;
   height: 4em;
