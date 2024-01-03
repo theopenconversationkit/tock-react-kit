@@ -55,9 +55,13 @@ const Previous: StyledComponent<DetailedHTMLProps<
   padding: 1em;
   background: color-mix(
     in srgb,
-    ${(props) => props.theme.palette.background.bot} 20%,
+    ${(props) => props.theme.palette.background.bot} 15%,
     transparent
   );
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   width: 4em;
   height: 4em;
@@ -92,9 +96,13 @@ const Next: StyledComponent<DetailedHTMLProps<
   padding: 1em;
   background: color-mix(
     in srgb,
-    ${(props) => props.theme.palette.background.bot} 20%,
+    ${(props) => props.theme.palette.background.bot} 15%,
     transparent
   );
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   width: 4em;
   height: 4em;
