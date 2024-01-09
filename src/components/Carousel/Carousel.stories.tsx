@@ -48,6 +48,12 @@ export const Default: Story = {
   },
 };
 
+export const Empty: Story = {
+  args: {
+    children: [],
+  },
+};
+
 export const WithButtons: Story = {
   name: 'With buttons',
   args: {
