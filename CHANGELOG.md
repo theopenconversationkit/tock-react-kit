@@ -2,9 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v23.9.0](https://github.com/theopenconversationkit/tock-react-kit/compare/v22.3.1-2...v23.9.0)
+
 #### [v22.3.1-2](https://github.com/theopenconversationkit/tock-react-kit/compare/v22.3.1-1...v22.3.1-2)
 
-- Bump Node20 [`43108b8`](https://github.com/theopenconversationkit/tock-react-kit/commit/43108b822cf238123513b6e4924beed5d34c777c)
+> 19 December 2023
 
 #### [v22.3.1-1](https://github.com/theopenconversationkit/tock-react-kit/compare/v22.3.1-0...v22.3.1-1)
 
