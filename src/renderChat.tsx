@@ -19,7 +19,7 @@ export const renderChat: (
   endPoint: string,
   referralParameter?: string,
   theme: TockTheme = defaultTheme,
-  { localStorage, autoCompletionEndPoint, ...options }: TockOptions = {},
+  { localStorage, SearchHintList, ...options }: TockOptions = {},
 ): void => {
   if (typeof localStorage === 'boolean') {
     throw new Error(
@@ -31,7 +31,7 @@ export const renderChat: (
       <TockContext settings={{ localStorage }}>
         <Chat
           endPoint={endPoint}
-          autoCompletionEndPoint={autoCompletionEndPoint}
+          SearchHintList={SearchHintList}
           referralParameter={referralParameter}
           {...options}
         />

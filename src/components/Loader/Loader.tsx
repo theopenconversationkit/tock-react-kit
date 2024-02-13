@@ -4,10 +4,9 @@ import { keyframes } from '@emotion/react';
 import { Keyframes } from '@emotion/serialize';
 import { prop } from 'styled-tools';
 
-const LoaderContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+const LoaderContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   width: 100%;
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   margin: 0.5em auto;

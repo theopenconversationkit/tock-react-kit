@@ -1,22 +1,20 @@
-import styled, {StyledComponent} from '@emotion/styled';
-import AutoCompleteList from '../AutoCompleteList';
+import styled, { StyledComponent } from '@emotion/styled';
+import InputAutoCompletion from '../InputAutoCompletion';
 import React, {
   DetailedHTMLProps,
   FormEvent,
   FormHTMLAttributes,
   HTMLAttributes,
   InputHTMLAttributes,
-  useEffect,
   useState,
 } from 'react';
 import { Send, Trash2 } from 'react-feather';
 import { prop } from 'styled-tools';
 import TockAccessibility from 'TockAccessibility';
 
-const InputOuterContainer: StyledComponent<DetailedHTMLProps<
-  FormHTMLAttributes<HTMLFormElement>,
-  HTMLFormElement
->> = styled.form`
+const InputOuterContainer: StyledComponent<
+  DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>
+> = styled.form`
   max-width: ${prop<any>('theme.sizing.conversation.width')};
   width: 100%;
   position: relative;
@@ -26,10 +24,9 @@ const InputOuterContainer: StyledComponent<DetailedHTMLProps<
   ${prop<any>('theme.overrides.chatInput.container', '')}
 `;
 
-const Input: StyledComponent<DetailedHTMLProps<
-  InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->> = styled.input`
+const Input: StyledComponent<
+  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+> = styled.input`
   width: 100%;
   height: 2em;
   flex: 1;
@@ -52,10 +49,9 @@ const Input: StyledComponent<DetailedHTMLProps<
   ${prop<any>('theme.overrides.chatInput.input', '')}
 `;
 
-const SubmitIcon: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const SubmitIcon: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   background: none;
   border: none;
@@ -85,10 +81,9 @@ const SubmitIcon: StyledComponent<DetailedHTMLProps<
   ${prop<any>('theme.overrides.chatInput.icon', '')}
 `;
 
-const ClearIcon: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const ClearIcon: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   background: none;
   border: none;
@@ -122,8 +117,8 @@ export interface ChatInputProps {
   onSubmit: (message: string) => void;
   accessibility?: TockAccessibility;
   clearMessages: () => void;
-  autoCompletionEndPoint?: string;
-  minValueLength: number
+  provideHintList: string[] | null;
+  minCharsHint: number;
 }
 
 const ChatInput: (props: ChatInputProps) => JSX.Element = ({
@@ -131,65 +126,36 @@ const ChatInput: (props: ChatInputProps) => JSX.Element = ({
   onSubmit,
   accessibility,
   clearMessages,
-  autoCompletionEndPoint,
-  minValueLength
+  provideHintList,
+  minCharsHint,
 }: ChatInputProps): JSX.Element => {
   const [value, setValue] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [suggestionSelected, setSuggestionSelected] = useState(false);
-
-    const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (value) {
       onSubmit(value);
       setValue('');
-      setSuggestionSelected(false);
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (value.length >= minValueLength && !suggestionSelected) {
-                    // Fetch data from the autoCompletionEndPoint/autocompletion.json - endpoint
-                    //autoCompletionEndPoint : 'https://example.fr'
-                    const response = await fetch(`${autoCompletionEndPoint}/autocompletion.json`); //
-                    const data = await response.json();
-                    const filteredSuggestions = data.filter((item: string) =>
-                        item.toLowerCase().includes(value.toLowerCase())
-                    );
-                    setSuggestions(filteredSuggestions);
-                } else {
-                    setSuggestions([]);
-                }
-            } catch (error) {
-                console.error('Error fetching suggestions:', error);
-            }
-        };
-        fetchData();
-    }, [value, minValueLength, suggestionSelected]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value);
-        setSuggestionSelected(false);
-    };
-
-    const handleSuggestionClick = (suggestion: string) => {
-        setValue(suggestion);
-        setSuggestions([]);
-        setSuggestionSelected(true);
-    };
+  const onSuggestionSelected = (suggestion: string) => {
+    setValue(suggestion);
+  };
 
   return (
     <InputOuterContainer onSubmit={submit}>
-        {suggestions.length > 0 && (
-            <AutoCompleteList
-                suggestions={suggestions}
-                onItemClick={handleSuggestionClick}
-                inputValue={value}
-            />
-        )}
+      {value.length > minCharsHint && (
+        <InputAutoCompletion
+          provideHintList={provideHintList}
+          minCharsHint={minCharsHint}
+          inputValue={value}
+          onSuggestionSelected={onSuggestionSelected}
+        />
+      )}
       <Input
         disabled={disabled}
         className={disabled ? 'disabled-input' : undefined}

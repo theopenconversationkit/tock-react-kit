@@ -42,10 +42,9 @@ export const quickReplyStyle: ({
   }
 `;
 
-const QuickReplyButton: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const QuickReplyButton: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   ${baseButtonStyle};
   ${quickReplyStyle}
   ${theme('overrides.quickReply')};

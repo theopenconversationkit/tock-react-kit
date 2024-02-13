@@ -18,7 +18,7 @@ export interface TockOptions extends PartialDeep<TockSettings> {
   disableSse?: boolean;
   accessibility?: TockAccessibility;
   localStorageHistory?: TockLocalStorage;
-  autoCompletionEndPoint?:String;
+  provideHintList: [];
 }
 
 export default TockOptions;

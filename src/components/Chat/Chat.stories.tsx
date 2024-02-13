@@ -51,8 +51,9 @@ export const DefaultFullScreen: Story = {
       <FullscreenContainer>
         <Chat
           endPoint=""
-          autoCompletionEndPoint=""
           referralParameter=""
+          provideHintList={[]}
+          minCharsHint={0}
           widgets={{
             ProductWidget,
           }}
@@ -68,7 +69,12 @@ export const DefaultModal: Story = {
   render: () => (
     <Wrapper>
       <ModalContainer>
-        <Chat endPoint=""   autoCompletionEndPoint="" referralParameter="" />
+        <Chat
+          endPoint=""
+          provideHintList={[]}
+          referralParameter=""
+          minCharsHint={0}
+        />
       </ModalContainer>
     </Wrapper>
   ),

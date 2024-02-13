@@ -24,7 +24,8 @@ export interface ChatProps {
   disableSse?: boolean;
   accessibility?: TockAccessibility;
   localStorageHistory?: TockLocalStorage;
-  autoCompletionEndPoint?: string;
+  provideHintList: string[] | null;
+  minCharsHint: number;
 }
 
 const Chat: (props: ChatProps) => JSX.Element = ({
@@ -38,7 +39,8 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   disableSse = false,
   accessibility = {},
   localStorageHistory = {},
-  autoCompletionEndPoint,
+  provideHintList = [],
+  minCharsHint = 0,
 }: ChatProps) => {
   const {
     messages,
@@ -59,7 +61,6 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     extraHeadersProvider,
     disableSse,
     localStorageHistory,
-    autoCompletionEndPoint
   );
 
   useEffect(() => {
@@ -103,8 +104,8 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         onSubmit={sendMessage}
         accessibility={accessibility}
         clearMessages={clearMessages}
-        autoCompletionEndPoint={autoCompletionEndPoint as string}
-        minValueLength={3}
+        provideHintList={provideHintList}
+        minCharsHint={minCharsHint}
       />
     </Container>
   );

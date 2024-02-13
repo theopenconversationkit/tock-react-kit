@@ -120,13 +120,11 @@ const useTock: (
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
-  autoCompletionEndPoint?:string,
 ) => UseTock = (
   tockEndPoint: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
-  autoCompletionEndPoint?:string,
 ) => {
   const {
     localStorage: { prefix: localStoragePrefix },
@@ -343,24 +341,23 @@ const useTock: (
     [],
   );
 
-  const sendReferralParameter: (
-    referralParameter: string,
-  ) => Promise<void> = useCallback((referralParameter: string) => {
-    startLoading();
-    return fetch(tockEndPoint, {
-      body: JSON.stringify({
-        ref: referralParameter,
-        userId: userId,
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then(handleBotResponseIfSseDisabled)
-      .finally(stopLoading);
-  }, []);
+  const sendReferralParameter: (referralParameter: string) => Promise<void> =
+    useCallback((referralParameter: string) => {
+      startLoading();
+      return fetch(tockEndPoint, {
+        body: JSON.stringify({
+          ref: referralParameter,
+          userId: userId,
+        }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then(handleBotResponseIfSseDisabled)
+        .finally(stopLoading);
+    }, []);
 
   const sendQuickReply: (button: Button) => Promise<void> = (
     button: Button,
