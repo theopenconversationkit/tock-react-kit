@@ -3,7 +3,7 @@ import { quickReplyStyle } from '../../QuickReply/QuickReply';
 import { prop, theme } from 'styled-tools';
 import { Interpolation } from '@emotion/react';
 import { baseButtonStyle } from '../../QuickReply';
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import QuickReplyImage from '../../QuickReply/QuickReplyImage';
 
 const PostBackButtonBase = styled.button`

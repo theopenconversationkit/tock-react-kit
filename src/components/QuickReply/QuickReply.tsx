@@ -1,6 +1,11 @@
 import styled, { StyledComponent } from '@emotion/styled';
 import { css, SerializedStyles, Theme } from '@emotion/react';
-import React, { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
+import {
+  forwardRef,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  RefObject,
+} from 'react';
 import { theme } from 'styled-tools';
 
 import { QuickReply as QuickReplyData } from '../../model/buttons';
@@ -59,7 +64,7 @@ type Props = DetailedHTMLProps<
 > &
   QuickReplyData;
 
-const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
+const QuickReply = forwardRef<HTMLButtonElement, Props>(
   ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => (
     <QuickReplyButtonContainer>
       <QuickReplyButton ref={ref} {...rest}>

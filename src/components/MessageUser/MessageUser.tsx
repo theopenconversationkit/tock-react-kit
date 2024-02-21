@@ -1,5 +1,5 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { theme } from 'styled-tools';
 import { MessageContainer as BotMessageContainer } from '../MessageBot';
 

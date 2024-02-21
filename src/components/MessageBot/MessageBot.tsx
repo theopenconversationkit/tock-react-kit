@@ -1,5 +1,4 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import linkifyHtml from 'linkifyjs/html';

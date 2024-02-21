@@ -10,8 +10,8 @@ const Container: StyledComponent<DetailedHTMLProps<
   height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: ${prop<any>('theme.typography.fontFamily')};
-  font-size: ${prop<any>('theme.typography.fontSize')};
+  font-family: ${prop('theme.typography.fontFamily')};
+  font-size: ${prop('theme.typography.fontSize')};
 
   & > *:first-child {
     flex: 1;
@@ -30,7 +30,7 @@ const Container: StyledComponent<DetailedHTMLProps<
     font: inherit;
   }
 
-  ${prop<any>('theme.overrides.chat', '')};
+  ${prop('theme.overrides.chat', '')};
 `;
 
 export default Container;

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { quickReplyStyle } from '../../QuickReply/QuickReply';
 import { prop, theme } from 'styled-tools';

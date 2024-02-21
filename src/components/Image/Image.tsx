@@ -1,5 +1,6 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, {
+import {
+  forwardRef,
   DetailedHTMLProps,
   HTMLAttributes,
   ImgHTMLAttributes,
@@ -11,7 +12,7 @@ export const CardOuter: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLLIElement>,
   HTMLLIElement
 >> = styled.li`
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+  max-width: ${prop('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
@@ -23,7 +24,7 @@ const CardImage: StyledComponent<DetailedHTMLProps<
   max-width: 100%;
   max-height: 100%;
 
-  ${prop<any>('theme.overrides.card.cardImage', '')};
+  ${prop('theme.overrides.card.cardImage', '')};
 `;
 
 export const CardContainer: StyledComponent<DetailedHTMLProps<
@@ -31,13 +32,13 @@ export const CardContainer: StyledComponent<DetailedHTMLProps<
   HTMLDivElement
 >> = styled.div`
   padding: 0.5em;
-  background: ${prop<any>('theme.palette.background.card')};
-  color: ${prop<any>('theme.palette.text.card')};
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
-  border: 2px solid ${prop<any>('theme.palette.text.card')};
+  background: ${prop('theme.palette.background.card')};
+  color: ${prop('theme.palette.text.card')};
+  border-radius: ${prop('theme.sizing.borderRadius')};
+  border: 2px solid ${prop('theme.palette.text.card')};
   width: 20em;
 
-  ${prop<any>('theme.overrides.card.cardContainer', '')};
+  ${prop('theme.overrides.card.cardContainer', '')};
 `;
 
 export interface ImageProps {
@@ -46,8 +47,8 @@ export interface ImageProps {
   alternative?: string;
 }
 
-const Image = React.forwardRef<HTMLLIElement, ImageProps>(function imageRender(
-  { title, url, alternative }: ImageProps,
+const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
+  { url, alternative }: ImageProps,
   ref,
 ) {
   return (

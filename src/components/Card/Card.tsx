@@ -1,9 +1,6 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  ImgHTMLAttributes,
-} from 'react';
+import { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes } from 'react';
+import * as React from 'react';
 import { theme } from 'styled-tools';
 
 import { Button as ButtonData } from '../../model/buttons';

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import useTock, { UseTock } from '../../useTock';
 import ChatInput from '../ChatInput';
 import Container from '../Container';

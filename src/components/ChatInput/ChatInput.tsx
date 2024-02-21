@@ -1,5 +1,5 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, {
+import {
   DetailedHTMLProps,
   FormEvent,
   FormHTMLAttributes,
@@ -8,20 +8,20 @@ import React, {
   useState,
 } from 'react';
 import { Send, Trash2 } from 'react-feather';
-import { prop } from 'styled-tools';
+import { theme } from 'styled-tools';
 import TockAccessibility from 'TockAccessibility';
 
 const InputOuterContainer: StyledComponent<DetailedHTMLProps<
   FormHTMLAttributes<HTMLFormElement>,
   HTMLFormElement
 >> = styled.form`
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+  max-width: ${theme('sizing.conversation.width')};
   width: 100%;
   position: relative;
   margin: 0.5em auto;
   display: flex;
   align-items: center;
-  ${prop<any>('theme.overrides.chatInput.container', '')}
+  ${theme('overrides.chatInput.container', '')}
 `;
 
 const Input: StyledComponent<DetailedHTMLProps<
@@ -31,11 +31,11 @@ const Input: StyledComponent<DetailedHTMLProps<
   width: 100%;
   height: 2em;
   flex: 1;
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
+  border-radius: ${theme('sizing.borderRadius')};
   padding: 0.5em 3em 0.5em 1em;
 
-  background: ${prop<any>('theme.palette.background.input')};
-  color: ${prop<any>('theme.palette.text.input')};
+  background: ${theme('palette.background.input')};
+  color: ${theme('palette.text.input')};
 
   border: none;
   outline: none;
@@ -44,10 +44,10 @@ const Input: StyledComponent<DetailedHTMLProps<
   font-size: inherit;
 
   &.disabled-input {
-    background: ${prop<any>('theme.palette.background.inputDisabled')};
+    background: ${theme('palette.background.inputDisabled')};
   }
 
-  ${prop<any>('theme.overrides.chatInput.input', '')}
+  ${theme('overrides.chatInput.input', '')}
 `;
 
 const SubmitIcon: StyledComponent<DetailedHTMLProps<
@@ -58,14 +58,14 @@ const SubmitIcon: StyledComponent<DetailedHTMLProps<
   background: none;
   border: none;
   border-radius: 50%;
-  right: calc(${prop<any>('theme.typography.fontSize')} * 2);
+  right: calc(${theme('typography.fontSize')} * 2);
   flex: 0;
   cursor: pointer;
   height: 100%;
-  width: calc(${prop<any>('theme.typography.fontSize')} * 3);
+  width: calc(${theme('typography.fontSize')} * 3);
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
-    fill: ${prop<any>('theme.palette.text.bot')};
+    stroke: ${theme('palette.background.bot')};
+    fill: ${theme('palette.text.bot')};
   }
 
   & > svg {
@@ -76,11 +76,11 @@ const SubmitIcon: StyledComponent<DetailedHTMLProps<
 
     &:hover,
     &:focus {
-      stroke: ${prop<any>('theme.palette.text.bot')};
-      fill: ${prop<any>('theme.palette.background.bot')};
+      stroke: ${theme('palette.text.bot')};
+      fill: ${theme('palette.background.bot')};
     }
   }
-  ${prop<any>('theme.overrides.chatInput.icon', '')}
+  ${theme('overrides.chatInput.icon', '')}
 `;
 
 const ClearIcon: StyledComponent<DetailedHTMLProps<
@@ -95,10 +95,10 @@ const ClearIcon: StyledComponent<DetailedHTMLProps<
   flex: 0;
   cursor: pointer;
   height: 100%;
-  width: calc(${prop<any>('theme.typography.fontSize')} * 3);
+  width: calc(${theme('typography.fontSize')} * 3);
   & svg {
-    stroke: ${prop<any>('theme.palette.background.bot')};
-    fill: ${prop<any>('theme.palette.text.bot')};
+    stroke: ${theme('palette.background.bot')};
+    fill: ${theme('palette.text.bot')};
   }
 
   & > svg {
@@ -108,11 +108,11 @@ const ClearIcon: StyledComponent<DetailedHTMLProps<
 
     &:hover,
     &:focus {
-      stroke: ${prop<any>('theme.palette.text.bot')};
-      fill: ${prop<any>('theme.palette.background.bot')};
+      stroke: ${theme('palette.text.bot')};
+      fill: ${theme('palette.background.bot')};
     }
   }
-  ${prop<any>('theme.overrides.chatInput.icon', '')}
+  ${theme('overrides.chatInput.icon', '')}
 `;
 
 export interface ChatInputProps {

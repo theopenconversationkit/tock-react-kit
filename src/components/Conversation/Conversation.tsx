@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { cloneElement, DetailedHTMLProps, HTMLAttributes } from 'react';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 
@@ -107,7 +107,7 @@ const makeRenderMessage = (
 ) => (message: Message, index: number) => {
   const render: Renderer = MESSAGE_RENDERER[message.type];
   if (!render) return null;
-  return React.cloneElement(render(message, options, accessibility), {
+  return cloneElement(render(message, options, accessibility), {
     key: `${message.type}-${index}`,
   });
 };
