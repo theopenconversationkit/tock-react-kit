@@ -25,6 +25,7 @@ export { renderChat } from './renderChat';
 export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
 export { default as createTheme } from './styles/createTheme';
+export { useMessageMetadata, MessageMetadataContext } from './MessageMetadata';
 export type {
   Card as CardData,
   Carousel as CarouselData,

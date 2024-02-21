@@ -181,7 +181,8 @@ ensure data stays available if required.
 
 The metadata from each response is also attached to the corresponding messages.
 This metadata is persisted with the messages, including through page reloads if [local storage history](#local-storage-history) is enabled.
-At the current time, it is only available to custom React-based frontends that handle message rendering themselves.
+It is available to custom renderers through the use of the `useMessageMetadata` hook,
+as well as to custom React-based frontends that handle message rendering themselves.
 
 ## API Reference
 
