@@ -12,6 +12,7 @@ import { PartialDeep } from 'type-fest';
 import { retrieveUserId } from './utils';
 import { QuickReply } from './model/buttons';
 import { Message } from './model/messages';
+import { defaultSettings, TockSettings } from './settings/TockSettings';
 
 export const TockSettingsContext: Context<
   TockSettings | undefined
@@ -49,15 +50,6 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
   }
   return dispatch;
 };
-
-export interface LocalStorageSettings {
-  prefix?: string;
-}
-
-export interface TockSettings {
-  localStorage: LocalStorageSettings;
-  locale?: string;
-}
 
 export interface TockState {
   quickReplies: QuickReply[];
@@ -142,10 +134,6 @@ const tockReducer: Reducer<TockState, TockAction> = (
   return state;
 };
 
-const defaultSettings: TockSettings = {
-  localStorage: {},
-};
-
 const TockContext: (props: {
   children?: ReactNode;
   settings?: PartialDeep<TockSettings>;
@@ -156,18 +144,15 @@ const TockContext: (props: {
   children?: ReactNode;
   settings: PartialDeep<TockSettings>;
 }) => {
-  const mergedSettings = deepmerge(defaultSettings, settings);
-  const [state, dispatch]: [TockState, Dispatch<TockAction>] = useReducer(
-    tockReducer,
-    {
-      quickReplies: [],
-      messages: [],
-      userId: retrieveUserId(mergedSettings.localStorage.prefix),
-      loading: false,
-      sseInitializing: false,
-      metadata: {},
-    },
-  );
+  const mergedSettings = deepmerge(defaultSettings, settings) as TockSettings;
+  const [state, dispatch] = useReducer(tockReducer, {
+    quickReplies: [],
+    messages: [],
+    userId: retrieveUserId(mergedSettings.localStorage.prefix),
+    loading: false,
+    sseInitializing: false,
+    metadata: {},
+  });
   return (
     <TockSettingsContext.Provider value={mergedSettings}>
       <TockStateContext.Provider value={state}>

@@ -1,13 +1,18 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import { DetailedHTMLProps, HTMLAttributes, ImgHTMLAttributes } from 'react';
-import * as React from 'react';
+import {
+  DetailedHTMLProps,
+  forwardRef,
+  HTMLAttributes,
+  MutableRefObject,
+} from 'react';
 import { theme } from 'styled-tools';
 
 import { Button as ButtonData } from '../../model/buttons';
 import '../../styles/theme';
 import UrlButton from '../buttons/UrlButton';
 import PostBackButton from '../buttons/PostBackButton';
-import { css, Theme } from '@emotion/react';
+import { css, Theme, useTheme } from '@emotion/react';
+import { useImageRenderer } from '../../settings/RendererSettings';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLLIElement>,
@@ -56,16 +61,6 @@ const CardSubTitle: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.card.cardSubTitle')};
 `;
 
-const CardImage: StyledComponent<DetailedHTMLProps<
-  ImgHTMLAttributes<HTMLImageElement>,
-  HTMLImageElement
->> = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-
-  ${theme('overrides.card.cardImage')};
-`;
-
 const ButtonList: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLUListElement>,
   HTMLUListElement
@@ -87,7 +82,7 @@ const ButtonList: StyledComponent<DetailedHTMLProps<
   }
 `;
 
-const cardButtonBaseStyle = ({ theme }: { theme: Theme }) => css`
+const cardButtonBaseStyle = (theme: Theme) => css`
   border: 2px solid ${theme.palette.text.card};
   border-radius: ${theme.sizing.borderRadius};
 
@@ -114,7 +109,7 @@ export interface CardProps {
   onAction: (button: ButtonData) => void;
 }
 
-const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
+const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
   {
     title,
     subTitle,
@@ -127,9 +122,18 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
   }: CardProps,
   ref:
     | ((instance: HTMLLIElement | null) => void)
-    | React.MutableRefObject<HTMLLIElement | null>
+    | MutableRefObject<HTMLLIElement | null>
     | null,
 ) {
+  const theme = useTheme();
+  const cardImageCss = [
+    css`
+      max-width: 100%;
+      max-height: 100%;
+    `,
+    theme.overrides?.card?.cardImage,
+  ];
+  const renderImage = useImageRenderer('card');
   const renderButton = (button: ButtonData, index: number) => (
     // having the default index-based key is fine since we do not reorder buttons
     <li key={index}>
@@ -137,8 +141,8 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
         <UrlButton
           customStyle={[
             cardButtonBaseStyle,
-            theme('overrides.buttons.urlButton'),
-            theme('overrides.card.cardButton'),
+            theme.overrides?.buttons?.urlButton,
+            theme.overrides?.card?.cardButton,
           ]}
           {...button}
         />
@@ -146,8 +150,8 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
         <PostBackButton
           customStyle={[
             cardButtonBaseStyle,
-            theme('overrides.buttons.postbackButton'),
-            theme('overrides.card.cardButton'),
+            theme.overrides?.buttons?.postbackButton,
+            theme.overrides?.card?.cardButton,
           ]}
           onClick={onAction.bind(null, button)}
           onKeyPress={onAction.bind(null, button)}
@@ -170,7 +174,12 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
       }
     >
       <CardContainer aria-hidden={isHidden}>
-        {imageUrl && <CardImage src={imageUrl} alt={imageAlternative} />}
+        {imageUrl &&
+          renderImage({
+            src: imageUrl,
+            alt: imageAlternative,
+            css: cardImageCss,
+          })}
         <CardTitle>{title}</CardTitle>
         {subTitle && (
           <CardSubTitle>

@@ -1,7 +1,7 @@
 import { PartialDeep } from 'type-fest';
 import TockAccessibility from './TockAccessibility';
 import TockLocalStorage from './TockLocalStorage';
-import { TockSettings } from './TockContext';
+import { TockSettings } from './settings/TockSettings';
 import { PostInitContext } from './PostInitContext';
 
 export interface TockOptions extends PartialDeep<TockSettings> {

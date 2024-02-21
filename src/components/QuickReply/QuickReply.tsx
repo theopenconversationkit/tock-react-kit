@@ -1,12 +1,6 @@
-import styled, { StyledComponent } from '@emotion/styled';
-import { css, SerializedStyles, Theme } from '@emotion/react';
-import {
-  forwardRef,
-  DetailedHTMLProps,
-  HTMLAttributes,
-  RefObject,
-} from 'react';
-import { theme } from 'styled-tools';
+import styled from '@emotion/styled';
+import { css, Interpolation, SerializedStyles, Theme } from '@emotion/react';
+import React, { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
 
 import { QuickReply as QuickReplyData } from '../../model/buttons';
 
@@ -26,11 +20,9 @@ export const baseButtonStyle = css`
   font-size: inherit;
 `;
 
-export const quickReplyStyle: ({
+export const quickReplyStyle: (theme: Theme) => SerializedStyles = (
   theme,
-}: {
-  theme: Theme;
-}) => SerializedStyles = ({ theme }) => css`
+) => css`
   margin: 0 0.5em;
   border: 2px solid ${theme.palette.background.bot};
   border-radius: ${theme.sizing.borderRadius};
@@ -47,16 +39,11 @@ export const quickReplyStyle: ({
   }
 `;
 
-const QuickReplyButton: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
-  ${baseButtonStyle};
-  ${quickReplyStyle}
-  ${theme('overrides.quickReply')};
-`;
-
-QuickReplyButton.displayName = 'QuickReplyButton';
+const qrButtonCss: Interpolation<Theme> = [
+  baseButtonStyle,
+  quickReplyStyle,
+  (theme) => theme.overrides?.quickReply,
+];
 
 type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLButtonElement>,
@@ -64,13 +51,13 @@ type Props = DetailedHTMLProps<
 > &
   QuickReplyData;
 
-const QuickReply = forwardRef<HTMLButtonElement, Props>(
+const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
   ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => (
     <QuickReplyButtonContainer>
-      <QuickReplyButton ref={ref} {...rest}>
+      <button ref={ref} css={qrButtonCss} {...rest}>
         {imageUrl && <QuickReplyImage src={imageUrl} />}
         {label}
-      </QuickReplyButton>
+      </button>
     </QuickReplyButtonContainer>
   ),
 );
