@@ -65,7 +65,7 @@ const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
 ) {
   const theme = useTheme();
   const [zoomed, setZoomed] = useState(false);
-  const renderImage = useImageRenderer('image');
+  const renderImage = useImageRenderer('standalone');
   const normalImageCss = [
     css`
       max-width: 100%;

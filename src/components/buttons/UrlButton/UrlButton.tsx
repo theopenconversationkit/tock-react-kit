@@ -2,6 +2,7 @@ import { quickReplyStyle } from '../../QuickReply/QuickReply';
 import { css, Interpolation, useTheme } from '@emotion/react';
 import { baseButtonStyle } from '../../QuickReply';
 import QuickReplyImage from '../../QuickReply/QuickReplyImage';
+import { useTextRenderer } from '../../../settings/RendererSettings';
 
 type Props = {
   customStyle?: Interpolation<unknown>;
@@ -33,10 +34,11 @@ export const UrlButton: (props: Props) => JSX.Element = ({
       theme.overrides?.buttons?.urlButton || theme.overrides?.quickReply,
     ],
   ];
+  const renderText = useTextRenderer('urlButton');
   return (
     <a href={url} target={target} css={anchorStyle}>
       {imageUrl && <QuickReplyImage src={imageUrl} />}
-      {label}
+      {renderText(label)}
     </a>
   );
 };

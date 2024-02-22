@@ -5,6 +5,7 @@ import React, { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
 import { QuickReply as QuickReplyData } from '../../model/buttons';
 
 import QuickReplyImage from './QuickReplyImage';
+import { useTextRenderer } from '../../settings/RendererSettings';
 
 const QuickReplyButtonContainer = styled.li`
   list-style: none;
@@ -52,14 +53,17 @@ type Props = DetailedHTMLProps<
   QuickReplyData;
 
 const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
-  ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => (
-    <QuickReplyButtonContainer>
-      <button ref={ref} css={qrButtonCss} {...rest}>
-        {imageUrl && <QuickReplyImage src={imageUrl} />}
-        {label}
-      </button>
-    </QuickReplyButtonContainer>
-  ),
+  ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => {
+    const renderText = useTextRenderer('quickReply');
+    return (
+      <QuickReplyButtonContainer>
+        <button ref={ref} css={qrButtonCss} {...rest}>
+          {imageUrl && <QuickReplyImage src={imageUrl} />}
+          {renderText(label)}
+        </button>
+      </QuickReplyButtonContainer>
+    );
+  },
 );
 
 QuickReply.displayName = 'QuickReply';

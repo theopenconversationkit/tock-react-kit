@@ -3,6 +3,7 @@ import { Interpolation, Theme } from '@emotion/react';
 import { baseButtonStyle } from '../../QuickReply';
 import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import QuickReplyImage from '../../QuickReply/QuickReplyImage';
+import { useTextRenderer } from '../../../settings/RendererSettings';
 
 type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLButtonElement>,
@@ -29,10 +30,11 @@ export const PostBackButton = ({
         theme?.overrides?.quickReply,
     ],
   ];
+  const renderText = useTextRenderer('postbackButton');
   return (
     <button css={postBackButtonCss}>
       {imageUrl && <QuickReplyImage src={imageUrl} />}
-      {label}
+      {renderText(label)}
     </button>
   );
 };

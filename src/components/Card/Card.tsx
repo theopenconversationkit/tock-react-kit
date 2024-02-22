@@ -12,7 +12,10 @@ import '../../styles/theme';
 import UrlButton from '../buttons/UrlButton';
 import PostBackButton from '../buttons/PostBackButton';
 import { css, Theme, useTheme } from '@emotion/react';
-import { useImageRenderer } from '../../settings/RendererSettings';
+import {
+  useImageRenderer,
+  useTextRenderer,
+} from '../../settings/RendererSettings';
 
 export const CardOuter: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLLIElement>,
@@ -24,9 +27,9 @@ export const CardOuter: StyledComponent<DetailedHTMLProps<
 `;
 
 export const CardContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+  HTMLAttributes<HTMLElement>,
+  HTMLElement
+>> = styled.article`
   padding: 0.5em;
   background: ${theme('palette.background.card')};
   color: ${theme('palette.text.card')};
@@ -40,23 +43,21 @@ export const CardContainer: StyledComponent<DetailedHTMLProps<
 const CardTitle: StyledComponent<DetailedHTMLProps<
   HTMLAttributes<HTMLSpanElement>,
   HTMLSpanElement
->> = styled.span`
+>> = styled.h3`
   margin: 0.5em 0;
   font-size: 1.5em;
   font-weight: bold;
-  display: block;
 
   ${theme('overrides.card.cardTitle')};
 `;
 
 const CardSubTitle: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLSpanElement>,
-  HTMLSpanElement
->> = styled.span`
+  HTMLAttributes<HTMLParagraphElement>,
+  HTMLParagraphElement
+>> = styled.p`
   margin: 0.5em 0;
   font-size: 1em;
   font-weight: bold;
-  display: block;
 
   ${theme('overrides.card.cardSubTitle')};
 `;
@@ -134,6 +135,11 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
     theme.overrides?.card?.cardImage,
   ];
   const renderImage = useImageRenderer('card');
+  const renderTitle = useTextRenderer('cardTitle', 'defaultInlineRichText');
+  const renderSubtitle = useTextRenderer(
+    'cardSubtitle',
+    'defaultInlineRichText',
+  );
   const renderButton = (button: ButtonData, index: number) => (
     // having the default index-based key is fine since we do not reorder buttons
     <li key={index}>
@@ -180,12 +186,8 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
             alt: imageAlternative,
             css: cardImageCss,
           })}
-        <CardTitle>{title}</CardTitle>
-        {subTitle && (
-          <CardSubTitle>
-            <div dangerouslySetInnerHTML={{ __html: subTitle }} />
-          </CardSubTitle>
-        )}
+        <CardTitle>{renderTitle(title)}</CardTitle>
+        {subTitle && <CardSubTitle>{renderSubtitle(subTitle)}</CardSubTitle>}
         {Array.isArray(buttons) && buttons.length > 0 && (
           <ButtonList role="group">{buttons.map(renderButton)}</ButtonList>
         )}

@@ -14,7 +14,8 @@ export interface Overrides {
   carouselArrow: Interpolation<unknown>;
   messageBot: Interpolation<unknown>;
   messageUser: Interpolation<unknown>;
-  modalDismissButton: Interpolation<unknown>;
+  modal: Interpolation<unknown>;
+  modalDismiss: Interpolation<unknown>;
   quickReply: Interpolation<unknown>;
   quickReplyImage: Interpolation<unknown>;
   chat: Interpolation<unknown>;

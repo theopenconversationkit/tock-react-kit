@@ -1,5 +1,5 @@
-import React from 'react';
-import { ImageRenderingProps, RendererSettings } from './RendererSettings';
+import { RendererSettings } from './RendererSettings';
+import linkifyHtml from 'linkify-html';
 
 export interface LocalStorageSettings {
   prefix?: string;
@@ -15,12 +15,20 @@ export const defaultSettings: TockSettings = {
   localStorage: {},
   renderers: {
     imageRenderers: {
-      default: ({ src, alt, css }: ImageRenderingProps): React.ReactNode => (
-        <img src={src} alt={alt} css={css} />
-      ),
+      default({ src, alt, css }) {
+        return <img src={src} alt={alt} css={css} />;
+      },
     },
     textRenderers: {
-      default: (text: string): React.ReactNode => text,
+      default(text) {
+        return text;
+      },
+      defaultRichText(text) {
+        return <div dangerouslySetInnerHTML={{ __html: linkifyHtml(text) }} />;
+      },
+      defaultInlineRichText(text) {
+        return <span dangerouslySetInnerHTML={{ __html: linkifyHtml(text) }} />;
+      },
     },
   },
 };

@@ -12,6 +12,8 @@ import TockAccessibility from '../../TockAccessibility';
 const ModalDialog = styled.dialog`
   position: relative;
   padding: 1.5em;
+
+  ${(props) => props.theme.overrides?.modal}
 `;
 
 const DismissButton = styled.button`
@@ -33,7 +35,7 @@ const DismissButton = styled.button`
     width: 100%;
   }
 
-  ${(props) => props.theme.overrides?.modalDismissButton}
+  ${(props) => props.theme.overrides?.modalDismiss}
 `;
 
 type Props = PropsWithChildren<{

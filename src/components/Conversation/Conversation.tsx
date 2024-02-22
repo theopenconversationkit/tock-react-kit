@@ -27,6 +27,7 @@ import type {
   Widget,
 } from '../../model/messages';
 import { MessageMetadataContext } from '../../MessageMetadata';
+import { useTextRenderer } from '../../settings/RendererSettings';
 
 const ConversationOuterContainer = styled.div`
   display: flex;
@@ -58,10 +59,12 @@ const renderWidget = (widget: Widget, options: RenderOptions) => {
 };
 
 const renderMessage = (message: TextMessage, options: RenderOptions) => {
+  const renderUserText = useTextRenderer('userMessage');
+
   if (message.author === 'bot') {
     return <MessageBot message={message} onAction={options.onAction} />;
   }
-  return <MessageUser>{message.message}</MessageUser>;
+  return <MessageUser>{renderUserText(message.message)}</MessageUser>;
 };
 
 const renderImage = (image: IImage) => {
