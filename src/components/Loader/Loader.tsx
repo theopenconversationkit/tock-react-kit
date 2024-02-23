@@ -4,16 +4,15 @@ import { keyframes } from '@emotion/react';
 import { Keyframes } from '@emotion/serialize';
 import { prop } from 'styled-tools';
 
-const LoaderContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+const LoaderContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   width: 100%;
   max-width: ${prop('theme.sizing.conversation.width')};
   margin: 0.5em auto;
 `;
 
-const BulletList: StyledComponent<{}> = styled.div`
+const BulletList = styled.div`
   display: inline-block;
   color: ${prop('theme.palette.text.bot')};
   padding: 0.5em 1.5em;
@@ -36,7 +35,7 @@ const beat: Keyframes = keyframes`
   }
 `;
 
-const Bullet: StyledComponent<{}> = styled.div<{ 'data-rank': number }>`
+const Bullet = styled.div<{ 'data-rank': number }>`
   display: inline-block;
   background-color: ${prop('theme.palette.text.bot')};
   width: ${prop('theme.sizing.loaderSize')};

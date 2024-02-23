@@ -6,8 +6,11 @@ import ButtonList from '../buttons/ButtonList';
 
 import '../../styles/theme';
 import { useTextRenderer } from '../../settings/RendererSettings';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 
-export const MessageContainer: StyledComponent<{}> = styled.li`
+export const MessageContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled.li`
   width: 100%;
   max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
@@ -18,7 +21,9 @@ export const MessageContainer: StyledComponent<{}> = styled.li`
   }
 `;
 
-export const Message: StyledComponent<{}> = styled.div`
+export const Message: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   display: inline-block;
   background: ${theme('palette.background.bot')};
   color: ${theme('palette.text.bot')};
@@ -40,7 +45,7 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
   message: { buttons, message = '' },
   onAction,
 }: MessageProps) => {
-  const renderText = useTextRenderer('botMessage');
+  const renderText = useTextRenderer('botMessage', 'defaultRichText');
 
   return (
     <MessageContainer>

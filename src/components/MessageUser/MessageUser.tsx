@@ -1,13 +1,17 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import { ReactNode } from 'react';
+import { DetailedHTMLProps, HTMLAttributes, ReactNode } from 'react';
 import { theme } from 'styled-tools';
 import { MessageContainer as BotMessageContainer } from '../MessageBot';
 
-const MessageContainer: StyledComponent<{}> = styled(BotMessageContainer)`
+const MessageContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled(BotMessageContainer)`
   text-align: right;
 `;
 
-const Message: StyledComponent<{}> = styled.div`
+const Message: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   display: inline-block;
   background: ${theme('palette.background.user')};
   color: ${theme('palette.text.user')};
