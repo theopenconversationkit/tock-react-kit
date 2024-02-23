@@ -1,7 +1,8 @@
 import { Interpolation } from '@emotion/react';
 
-export interface TockThemeImageStyle {
-  normal?: Interpolation<unknown>;
-  zoomed?: Interpolation<unknown>;
+export default interface TockThemeImageStyle {
+  imageContainer?: Interpolation<unknown>;
+  baseImage?: Interpolation<unknown>;
+  zoomedImage?: Interpolation<unknown>;
   zoomedModal?: Interpolation<unknown>;
 }

@@ -5,7 +5,7 @@ import Container from '../Container';
 import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
 import TockLocalStorage from 'TockLocalStorage';
-import { PostInitContext } from '../../PostInitContext';
+import PostInitContext from '../../PostInitContext';
 
 export interface ChatProps {
   endPoint: string;

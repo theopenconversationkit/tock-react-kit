@@ -7,7 +7,7 @@ export interface TockHistoryData {
   readonly quickReplies: QuickReply[];
 }
 
-export interface PostInitContext extends UseLocalTools {
+export default interface PostInitContext extends UseLocalTools {
   /**
    * The full chat history at the time the Chat component is initialized, which includes messages from local storage
    * and/or from TockContext, or null if there is no chat history at all.

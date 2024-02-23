@@ -1,6 +1,3 @@
-import _TockOptions from './TockOptions';
-import _TockTheme from './styles/theme';
-
 export { default as ThemeProvider } from './styles/tockThemeProvider';
 export { default as Card, CardContainer, CardOuter } from './components/Card';
 export { default as Carousel } from './components/Carousel';
@@ -35,6 +32,10 @@ export type {
   Widget as WidgetData,
   WidgetPayload,
 } from './model/messages';
-export type { PostInitContext, TockHistoryData } from './PostInitContext';
-export type TockTheme = _TockTheme;
-export type TockOptions = _TockOptions;
+export type {
+  default as PostInitContext,
+  TockHistoryData,
+} from './PostInitContext';
+export type { default as TockTheme } from './styles/theme';
+export type { default as TockOptions } from './TockOptions';
+export type { default as TockSettings } from './settings/TockSettings';

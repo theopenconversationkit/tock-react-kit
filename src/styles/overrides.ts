@@ -2,7 +2,7 @@ import { Interpolation } from '@emotion/react';
 import TockThemeButtonStyle from './tockThemeButtonStyle';
 import TockThemeCardStyle from './tockThemeCardStyle';
 import TockThemeInputStyle from './tockThemeInputStyle';
-import { TockThemeImageStyle } from './tockThemeImageStyle';
+import TockThemeImageStyle from './tockThemeImageStyle';
 
 export interface Overrides {
   buttons?: Partial<TockThemeButtonStyle>;

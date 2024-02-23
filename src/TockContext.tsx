@@ -12,7 +12,7 @@ import { PartialDeep } from 'type-fest';
 import { retrieveUserId } from './utils';
 import { QuickReply } from './model/buttons';
 import { Message } from './model/messages';
-import { defaultSettings, TockSettings } from './settings/TockSettings';
+import TockSettings, { defaultSettings } from './settings/TockSettings';
 
 export const TockSettingsContext: Context<TockSettings | undefined> =
   createContext<TockSettings | undefined>(undefined);

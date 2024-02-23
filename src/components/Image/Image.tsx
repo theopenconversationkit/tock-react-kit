@@ -7,7 +7,7 @@ import { useImageRenderer } from '../../settings/RendererSettings';
 import { Modal } from '../Modal/Modal';
 import TockAccessibility from '../../TockAccessibility';
 
-export const CardOuter: StyledComponent<
+const ImageOuter: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
 > = styled.li`
   max-width: ${theme('sizing.conversation.width')};
@@ -15,7 +15,7 @@ export const CardOuter: StyledComponent<
   list-style: none;
 `;
 
-export const CardContainer: StyledComponent<
+const ImageContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 > = styled.div`
   padding: 0.5em;
@@ -25,7 +25,9 @@ export const CardContainer: StyledComponent<
   border: 2px solid ${theme('palette.text.card')};
   width: 20em;
 
-  ${theme('overrides.card.cardContainer', '')};
+  ${(props) =>
+    props.theme.overrides?.image?.imageContainer ??
+    props.theme.overrides?.card?.cardContainer};
 `;
 
 const ZoomImageButton = styled.button`
@@ -64,12 +66,12 @@ const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
   const theme = useTheme();
   const [zoomed, setZoomed] = useState(false);
   const renderImage = useImageRenderer('standalone');
-  const normalImageCss = [
+  const baseImageCss = [
     css`
       max-width: 100%;
       max-height: 100%;
     `,
-    theme.overrides?.image?.normal ?? theme.overrides?.card?.cardImage,
+    theme.overrides?.image?.baseImage ?? theme.overrides?.card?.cardImage,
   ];
   const zoomedDialogCss = [
     css`
@@ -79,23 +81,23 @@ const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
     theme.overrides?.image?.zoomedModal,
   ];
   const zoomedImageCss = [
-    normalImageCss,
+    baseImageCss,
     css`
       width: 100%;
       height: 100%;
     `,
-    theme.overrides?.image?.zoomed,
+    theme.overrides?.image?.zoomedImage,
   ];
   return (
-    <CardOuter ref={ref}>
-      <CardContainer>
+    <ImageOuter ref={ref}>
+      <ImageContainer>
         {src && (
           <>
             <ZoomImageButton onClick={() => setZoomed(true)}>
               {renderImage({
                 src,
                 alt,
-                css: normalImageCss,
+                css: baseImageCss,
               })}
               <ZoomInstructions>
                 {accessibility?.image?.zoomedImageLabel ??
@@ -120,8 +122,8 @@ const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
             </Modal>
           </>
         )}
-      </CardContainer>
-    </CardOuter>
+      </ImageContainer>
+    </ImageOuter>
   );
 });
 
