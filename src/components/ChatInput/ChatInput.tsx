@@ -11,10 +11,9 @@ import { Send, Trash2 } from 'react-feather';
 import { theme } from 'styled-tools';
 import TockAccessibility from 'TockAccessibility';
 
-const InputOuterContainer: StyledComponent<DetailedHTMLProps<
-  FormHTMLAttributes<HTMLFormElement>,
-  HTMLFormElement
->> = styled.form`
+const InputOuterContainer: StyledComponent<
+  DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>
+> = styled.form`
   max-width: ${theme('sizing.conversation.width')};
   width: 100%;
   position: relative;
@@ -24,10 +23,9 @@ const InputOuterContainer: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.chatInput.container', '')}
 `;
 
-const Input: StyledComponent<DetailedHTMLProps<
-  InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->> = styled.input`
+const Input: StyledComponent<
+  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+> = styled.input`
   width: 100%;
   height: 2em;
   flex: 1;
@@ -50,10 +48,9 @@ const Input: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.chatInput.input', '')}
 `;
 
-const SubmitIcon: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const SubmitIcon: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   background: none;
   border: none;
@@ -83,10 +80,9 @@ const SubmitIcon: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.chatInput.icon', '')}
 `;
 
-const ClearIcon: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const ClearIcon: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   background: none;
   border: none;

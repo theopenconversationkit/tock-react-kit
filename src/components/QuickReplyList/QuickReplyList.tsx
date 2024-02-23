@@ -23,10 +23,9 @@ export const baseButtonListStyle: (props: {
   padding: 0 1em;
 `;
 
-const QuickReplyListContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLUListElement>,
-  HTMLUListElement
->> = styled.ul`
+const QuickReplyListContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+> = styled.ul`
   ${baseButtonListStyle};
 
   & > li {
@@ -34,10 +33,9 @@ const QuickReplyListContainer: StyledComponent<DetailedHTMLProps<
   }
 `;
 
-const QuickReplyListOuterContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div``;
+const QuickReplyListOuterContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div``;
 
 type Props = {
   items: Button[];

@@ -14,16 +14,14 @@ import { QuickReply } from './model/buttons';
 import { Message } from './model/messages';
 import { defaultSettings, TockSettings } from './settings/TockSettings';
 
-export const TockSettingsContext: Context<
-  TockSettings | undefined
-> = createContext<TockSettings | undefined>(undefined);
+export const TockSettingsContext: Context<TockSettings | undefined> =
+  createContext<TockSettings | undefined>(undefined);
 
 export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
 >(undefined);
-export const TockStateDispatch: Context<
-  Dispatch<TockAction> | undefined
-> = createContext<Dispatch<TockAction> | undefined>(undefined);
+export const TockStateDispatch: Context<Dispatch<TockAction> | undefined> =
+  createContext<Dispatch<TockAction> | undefined>(undefined);
 
 export const useTockSettings: () => TockSettings = () => {
   const settings = useContext(TockSettingsContext);
@@ -42,9 +40,8 @@ export const useTockState: () => TockState = () => {
 };
 
 export const useTockDispatch: () => Dispatch<TockAction> = () => {
-  const dispatch: Dispatch<TockAction> | undefined = useContext(
-    TockStateDispatch,
-  );
+  const dispatch: Dispatch<TockAction> | undefined =
+    useContext(TockStateDispatch);
   if (!dispatch) {
     throw new Error('useTockDispatch must be used in a TockContext');
   }

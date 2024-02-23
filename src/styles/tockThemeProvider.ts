@@ -14,7 +14,7 @@ export default function TockThemeProvider<Theme>(
     );
     return ThemeProvider(
       deepmerge<ThemeProviderProps>(
-        { theme: (createTheme({}) as unknown) as Partial<Theme> },
+        { theme: createTheme({}) as unknown as Partial<Theme> },
         { ...props },
       ),
     );

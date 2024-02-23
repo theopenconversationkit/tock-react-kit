@@ -7,19 +7,17 @@ import { useImageRenderer } from '../../settings/RendererSettings';
 import { Modal } from '../Modal/Modal';
 import TockAccessibility from '../../TockAccessibility';
 
-export const CardOuter: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLLIElement>,
-  HTMLLIElement
->> = styled.li`
+export const CardOuter: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled.li`
   max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-export const CardContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+export const CardContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   padding: 0.5em;
   background: ${theme('palette.background.card')};
   color: ${theme('palette.text.card')};

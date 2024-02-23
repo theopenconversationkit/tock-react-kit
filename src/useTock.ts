@@ -404,25 +404,24 @@ const useTock: (
     [],
   );
 
-  const sendReferralParameter: (
-    referralParameter: string,
-  ) => Promise<void> = useCallback((referralParameter: string) => {
-    startLoading();
-    return fetch(tockEndPoint, {
-      body: JSON.stringify({
-        ref: referralParameter,
-        userId,
-        locale,
-      }),
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then(handlePostBotResponse)
-      .finally(stopLoading);
-  }, []);
+  const sendReferralParameter: (referralParameter: string) => Promise<void> =
+    useCallback((referralParameter: string) => {
+      startLoading();
+      return fetch(tockEndPoint, {
+        body: JSON.stringify({
+          ref: referralParameter,
+          userId,
+          locale,
+        }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then(handlePostBotResponse)
+        .finally(stopLoading);
+    }, []);
 
   const sendQuickReply: (button: Button) => Promise<void> = (
     button: Button,

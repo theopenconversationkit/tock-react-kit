@@ -12,10 +12,9 @@ import useArrowVisibility from '../Carousel/hooks/useArrowVisibility';
 import QuickReply from '../QuickReply/QuickReply';
 import TockAccessibility from 'TockAccessibility';
 
-const InlineQuickReplyListContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLUListElement>,
-  HTMLUListElement
->> = styled.ul`
+const InlineQuickReplyListContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+> = styled.ul`
   display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -35,10 +34,9 @@ const InlineQuickReplyListContainer: StyledComponent<DetailedHTMLProps<
   }
 `;
 
-const Previous: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const Previous: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   margin: auto;
   left: 0;
@@ -68,10 +66,9 @@ const Previous: StyledComponent<DetailedHTMLProps<
   ${prop('theme.overrides.quickReplyArrow', '')};
 `;
 
-const Next: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const Next: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   margin: auto;
   right: 0;
@@ -101,10 +98,9 @@ const Next: StyledComponent<DetailedHTMLProps<
   ${prop('theme.overrides.quickReplyArrow', '')};
 `;
 
-const InlineQuickReplyListOuterContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+const InlineQuickReplyListOuterContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   position: relative;
 `;
 type Props = {

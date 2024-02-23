@@ -9,10 +9,9 @@ import { Button } from '../../../model/buttons';
 
 import '../../../styles/theme';
 
-const ButtonListContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLUListElement>,
-  HTMLUListElement
->> = styled.ul`
+const ButtonListContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+> = styled.ul`
   ${baseButtonListStyle}
   ${theme('overrides.buttons.buttonList')}
 
@@ -22,10 +21,9 @@ const ButtonListContainer: StyledComponent<DetailedHTMLProps<
   }
 `;
 
-const ButtonListOuterContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div``;
+const ButtonListOuterContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div``;
 
 type Props = {
   items: Button[];

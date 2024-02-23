@@ -17,19 +17,17 @@ import {
   useTextRenderer,
 } from '../../settings/RendererSettings';
 
-export const CardOuter: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLLIElement>,
-  HTMLLIElement
->> = styled.li`
+export const CardOuter: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled.li`
   max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-export const CardContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLElement>,
-  HTMLElement
->> = styled.article`
+export const CardContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>
+> = styled.article`
   padding: 0.5em;
   background: ${theme('palette.background.card')};
   color: ${theme('palette.text.card')};
@@ -40,10 +38,9 @@ export const CardContainer: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.card.cardContainer')};
 `;
 
-const CardTitle: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLSpanElement>,
-  HTMLSpanElement
->> = styled.h3`
+const CardTitle: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>
+> = styled.h3`
   margin: 0.5em 0;
   font-size: 1.5em;
   font-weight: bold;
@@ -51,10 +48,9 @@ const CardTitle: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.card.cardTitle')};
 `;
 
-const CardSubTitle: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLParagraphElement>,
-  HTMLParagraphElement
->> = styled.p`
+const CardSubTitle: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>
+> = styled.p`
   margin: 0.5em 0;
   font-size: 1em;
   font-weight: bold;
@@ -62,10 +58,9 @@ const CardSubTitle: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.card.cardSubTitle')};
 `;
 
-const ButtonList: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLUListElement>,
-  HTMLUListElement
->> = styled.ul`
+const ButtonList: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+> = styled.ul`
   margin: 0.5em 0;
   list-style: none;
   padding: 0.5em 0;
@@ -175,8 +170,8 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
         ref == undefined
           ? undefined
           : roleDescription
-          ? roleDescription
-          : 'Slide'
+            ? roleDescription
+            : 'Slide'
       }
     >
       <CardContainer aria-hidden={isHidden}>
