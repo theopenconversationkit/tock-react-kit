@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v23.9.1](https://github.com/theopenconversationkit/tock-react-kit/compare/v23.9.0...v23.9.1)
+
+-  fix #137: publish type declarations, source maps and ESM file  [`#156`](https://github.com/theopenconversationkit/tock-react-kit/pull/156)
+- fix #137: publish type declarations, source maps and ESM file  (#156) [`#137`](https://github.com/theopenconversationkit/tock-react-kit/issues/137) [`#137`](https://github.com/theopenconversationkit/tock-react-kit/issues/137)
+
 #### [v23.9.0](https://github.com/theopenconversationkit/tock-react-kit/compare/v22.3.1-2...v23.9.0)
+
+> 1 February 2024
 
 #### [v22.3.1-2](https://github.com/theopenconversationkit/tock-react-kit/compare/v22.3.1-1...v22.3.1-2)
 
