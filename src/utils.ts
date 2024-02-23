@@ -45,8 +45,10 @@ export const fromLocalStorage: <T>(
  * @param type - Storage type
  * @returns true - if locale storage is available on the user's browser
  */
-export const storageAvailable: (type: string) => boolean = (type) => {
-  let storage = undefined;
+export const storageAvailable: (
+  type: 'localStorage' | 'sessionStorage',
+) => boolean = (type) => {
+  let storage: Storage | undefined = undefined;
   try {
     storage = window[type];
     const x = '__storage_test__';
