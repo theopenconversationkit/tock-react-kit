@@ -23,6 +23,7 @@ export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
 export { default as createTheme } from './styles/createTheme';
 export { useMessageMetadata, MessageMetadataContext } from './MessageMetadata';
+export { useImageRenderer, useTextRenderer } from './settings/RendererSettings';
 export type {
   Card as CardData,
   Carousel as CarouselData,
@@ -39,3 +40,10 @@ export type {
 export type { default as TockTheme } from './styles/theme';
 export type { default as TockOptions } from './TockOptions';
 export type { default as TockSettings } from './settings/TockSettings';
+export type {
+  ImageRenderer,
+  TextRenderer,
+  RendererSettings,
+  TextRendererSettings,
+  ImageRendererSettings,
+} from './settings/RendererSettings';

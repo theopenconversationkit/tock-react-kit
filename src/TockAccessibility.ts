@@ -2,13 +2,6 @@ export interface TockAccessibility {
   input?: InputAccessibility;
   carousel?: CarouselAccessibility;
   qrCarousel?: QRCarouselAccessibility;
-  image?: ImageAccessibility;
-  closeButtonLabel?: string;
-}
-
-export interface ImageAccessibility {
-  zoomedImageLabel?: string;
-  zoomButtonLabel?: string;
 }
 
 export interface CarouselAccessibility {
