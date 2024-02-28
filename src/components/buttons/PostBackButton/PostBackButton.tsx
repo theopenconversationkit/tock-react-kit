@@ -12,12 +12,14 @@ type Props = DetailedHTMLProps<
   customStyle?: Interpolation<unknown>;
   imageUrl?: string;
   label: string;
+  tabIndex?: 0 | -1;
 };
 
 export const PostBackButton = ({
   imageUrl,
   label,
   customStyle,
+  tabIndex,
 }: Props): JSX.Element => {
   const postBackButtonCss: Interpolation<Theme> = [
     baseButtonStyle,
@@ -32,7 +34,7 @@ export const PostBackButton = ({
   ];
   const renderText = useTextRenderer('postbackButton');
   return (
-    <button css={postBackButtonCss}>
+    <button css={postBackButtonCss} tabIndex={tabIndex}>
       {imageUrl && <QuickReplyImage src={imageUrl} />}
       {renderText(label)}
     </button>

@@ -10,6 +10,7 @@ type Props = {
   label: string;
   target?: string;
   url: string;
+  tabIndex?: 0 | -1;
 };
 
 const defaultAnchorStyle = css`
@@ -23,6 +24,7 @@ export const UrlButton: (props: Props) => JSX.Element = ({
   label,
   target = '_blank',
   customStyle,
+  tabIndex,
 }: Props) => {
   const theme = useTheme();
   const anchorStyle = [
@@ -36,7 +38,7 @@ export const UrlButton: (props: Props) => JSX.Element = ({
   ];
   const renderText = useTextRenderer('urlButton');
   return (
-    <a href={url} target={target} css={anchorStyle}>
+    <a href={url} target={target} css={anchorStyle} tabIndex={tabIndex}>
       {imageUrl && <QuickReplyImage src={imageUrl} />}
       {renderText(label)}
     </a>
