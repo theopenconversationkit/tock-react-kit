@@ -41,18 +41,14 @@ The toolkit is currently used in production by various conversational assistants
 
 ## Quick Start
 
-Include `react`, `react-dom`, `@emotion-core`, `@emotion-styled`, `emotion-theming` and `tock-react-kit` in an HTML page.
-_React must be at least version 16.8 (must have hooks)_
+Include the standalone bundle for the `tock-react-kit` in an HTML page.
+Note that this bundle includes its own copy of React - if you have an existing React application, please refer to the
+[module instructions below](#use-as-a-module).
 
 ```html
-<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-<script crossorigin src="https://unpkg.com/@emotion/core@10/dist/core.umd.min.js"></script>
-<script crossorigin src="https://unpkg.com/@emotion/styled@10/dist/styled.umd.min.js"></script>
-<script crossorigin src="https://unpkg.com/emotion-theming@10/dist/emotion-theming.umd.min.js"></script>
 <script
   crossorigin
-  src="https://unpkg.com/tock-react-kit@latest/build/tock-react-kit.umd.js"
+  src="https://unpkg.com/tock-react-kit@latest/build/tock-react-kit-standalone.umd.js"
 ></script>
 ```
 
@@ -69,15 +65,34 @@ Render your app in an element:
 
 ## Use as a module
 
-You can also use it as a module (i.e [Create React App](https://github.com/facebook/create-react-app)) and bundle it:
+In all but the most simple cases, you should import `tock-react-kit` as a module and bundle it alongside its peer dependencies:
 
 ```
-npm i tock-react-kit
-npm i @emotion/react@11
-npm i @emotion/styled@11
+npm i react@18 react-dom@18 @emotion/react@11 @emotion/styled@11 tock-react-kit
+```
+
+Your bundler must support ESM modules, which is the case for Webpack, Rollup and Vite among others.
+
+### Use in a non-React app
+
+When working in a non-React app, you can once again use `renderChat` to render the app in an existing element:
+
+```js
+import { renderChat } from 'tock-react-kit';
+
+renderChat(
+    document.getElementById('chat'),
+    '<TOCK_BOT_API_URL>',
+    /* The following parameters are optional */
+    'referralParameter',
+    { /* ... */ },
+    { /* ... */ },
+);
 ```
 
 ### Use in a React app
+
+If you already use React, you can integrate the components directly in your JSX:
 
 ```jsx
 import { ThemeProvider } from "@emotion/react";
@@ -101,21 +116,6 @@ Note that unmounting `TockContext` at any point may cause bugs in the chat due t
 Therefore, in apps where the `Chat` component is susceptible to being unmounted and remounted (e.g. Single Page Applications),
 `TockContext` should go at the root of the page (hoisting out of render).
 `ThemeProvider` should also be hoisted out of render for performance reasons, as noted in the [Emotion docs](https://emotion.sh/docs/theming#themeprovider-reactcomponenttype).
-
-### Use in a non-React app
-
-```js
-import { renderChat } from 'tock-react-kit';
-
-renderChat(
-    document.getElementById('chat'),
-    '<TOCK_BOT_API_URL>',
-    /* The following parameters are optional */
-    'referralParameter',
-    { /* ... */ },
-    { /* ... */ },
-);
-```
 
 ## Styling your chat
 
