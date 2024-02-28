@@ -2,7 +2,7 @@ import styled, { StyledComponent } from '@emotion/styled';
 import { forwardRef, DetailedHTMLProps, HTMLAttributes } from 'react';
 import { prop } from 'styled-tools';
 import '../../styles/theme';
-import { css, useTheme } from '@emotion/react';
+import { css, Interpolation, Theme } from '@emotion/react';
 import { useImageRenderer } from '../../settings/RendererSettings';
 
 export const ImageOuter: StyledComponent<
@@ -26,6 +26,14 @@ export const ImageContainer: StyledComponent<
   ${prop('theme.overrides.card.cardContainer', '')};
 `;
 
+const normalImageCss: Interpolation<Theme> = [
+  css`
+    max-width: 100%;
+    max-height: 100%;
+  `,
+  (theme) => theme.overrides?.card?.cardImage,
+];
+
 export interface ImageProps {
   title?: string;
   url?: string;
@@ -36,15 +44,7 @@ const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
   { url: src, alternative: alt }: ImageProps,
   ref,
 ) {
-  const theme = useTheme();
   const renderImage = useImageRenderer('standalone');
-  const normalImageCss = [
-    css`
-      max-width: 100%;
-      max-height: 100%;
-    `,
-    theme.overrides?.image?.img ?? theme.overrides?.card?.cardImage,
-  ];
   return (
     <ImageOuter ref={ref}>
       <ImageContainer>

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Interpolation } from '@emotion/react';
+import { Interpolation, Theme } from '@emotion/react';
 import { useTockSettings } from '../TockContext';
 
 /**
@@ -45,7 +45,7 @@ export const useTextRenderer = (
 export type ImageRenderingProps = {
   src?: string;
   alt?: string;
-  css?: Interpolation<unknown>;
+  css?: Interpolation<Theme>;
 };
 
 export type ImageRenderer = (props: ImageRenderingProps) => ReactNode;

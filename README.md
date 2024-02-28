@@ -293,14 +293,11 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `buttons`           | `TockThemeButtonStyle` | Object for adding CSS styles on button components (see below)                    |
 | `card`              | `TockThemeCardStyle`   | Object for adding CSS styles on card component (see below)                       |
 | `chatInput`         | `TockThemeInputStyle?` | Object for adding CSS styles on chat input component (see below)                 |
-| `image`             | `TockThemeImageStyle?` | Object for adding CSS styles on image component (see below)                      |
 | `carouselContainer` | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
 | `carouselItem`      | `string?`              | Additional CSS styles for carousel cards container (overrides base styles)       |
 | `carouselArrow`     | `string?`              | Additional CSS styles for carousel scrolling arrows (overrides base styles)      |
 | `messageBot`        | `string?`              | Additional CSS styles for the bot's speech balloons (overrides base styles)      |
 | `messageUser`       | `string?`              | Additional CSS styles for the user's speech balloons (overrides base styles)     |
-| `modal`             | `string?`              | Additional CSS styles for modal dialogs (overrides base styles)                  |
-| `modalDismiss`      | `string?`              | Additional CSS styles for the modal dismiss button (overrides base styles)       |
 | `quickReply`        | `string?`              | Additional CSS styles for the quick reply buttons (overrides base styles)        |
 | `chat`              | `string?`              | Additional CSS styles for the chat container (overrides base styles)             |
 | `quickReplyArrow`   | `string?`              | Additional CSS styles for quick replies scrolling arrows (overrides base styles) |
@@ -333,14 +330,6 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 | `container`         | `string?`              | Additional CSS styles for input container (overrides base styles)                |
 | `input`             | `string?`              | Additional CSS styles for input (overrides base styles)                          |
 | `icon`              | `string?`              | Additional CSS styles for input icon (overrides base styles)                     |
-
-#### `TockThemeImageStyle`
-
-| Property name | Type      | Description                                                                                          |
-|---------------|-----------|------------------------------------------------------------------------------------------------------|
-| `normal`      | `string?` | Additional CSS styles for image messages in the default state (overrides base styles)                |
-| `zoomed`      | `string?` | Additional CSS styles for the image in detail view (overrides base styles)                           |
-| `zoomedModal` | `string?` | Additional CSS styles for the modal of the detail view (overrides base styles and `overrides.modal`) |
 
 ### `TockSettings`
 

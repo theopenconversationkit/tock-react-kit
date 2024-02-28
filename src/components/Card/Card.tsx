@@ -11,7 +11,7 @@ import { Button as ButtonData } from '../../model/buttons';
 import '../../styles/theme';
 import UrlButton from '../buttons/UrlButton';
 import PostBackButton from '../buttons/PostBackButton';
-import { css, Theme, useTheme } from '@emotion/react';
+import { css, Interpolation, Theme } from '@emotion/react';
 import {
   useImageRenderer,
   useTextRenderer,
@@ -94,6 +94,26 @@ const cardButtonBaseStyle = (theme: Theme) => css`
   margin: 0.25em 0;
 `;
 
+const cardImageCss: Interpolation<Theme> = [
+  css`
+    max-width: 100%;
+    max-height: 100%;
+  `,
+  (theme) => theme.overrides?.card?.cardImage,
+];
+
+const urlButtonStyle: Interpolation<Theme> = [
+  cardButtonBaseStyle,
+  (theme) => theme.overrides?.buttons?.urlButton,
+  (theme) => theme.overrides?.card?.cardButton,
+];
+
+const postBackButtonStyle: Interpolation<Theme> = [
+  cardButtonBaseStyle,
+  (theme) => theme.overrides?.buttons?.postbackButton,
+  (theme) => theme.overrides?.card?.cardButton,
+];
+
 export interface CardProps {
   title: string;
   subTitle?: string;
@@ -121,35 +141,16 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
     | MutableRefObject<HTMLLIElement | null>
     | null,
 ) {
-  const theme = useTheme();
-  const cardImageCss = [
-    css`
-      max-width: 100%;
-      max-height: 100%;
-    `,
-    theme.overrides?.card?.cardImage,
-  ];
   const renderImage = useImageRenderer('card');
   const renderHtml = useTextRenderer('htmlPhrase');
   const renderButton = (button: ButtonData, index: number) => (
     // having the default index-based key is fine since we do not reorder buttons
     <li key={index}>
       {'url' in button ? (
-        <UrlButton
-          customStyle={[
-            cardButtonBaseStyle,
-            theme.overrides?.buttons?.urlButton,
-            theme.overrides?.card?.cardButton,
-          ]}
-          {...button}
-        />
+        <UrlButton customStyle={urlButtonStyle} {...button} />
       ) : (
         <PostBackButton
-          customStyle={[
-            cardButtonBaseStyle,
-            theme.overrides?.buttons?.postbackButton,
-            theme.overrides?.card?.cardButton,
-          ]}
+          customStyle={postBackButtonStyle}
           onClick={onAction.bind(null, button)}
           onKeyPress={onAction.bind(null, button)}
           {...button}
