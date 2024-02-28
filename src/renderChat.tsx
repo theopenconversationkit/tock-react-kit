@@ -2,11 +2,12 @@ import { ThemeProvider } from '@emotion/react';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Chat from './components/Chat';
-import TockContext from './TockContext';
+import TockContext, { TockSettings } from './TockContext';
 import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
 import { default as createTheme } from './styles/createTheme';
+import { PartialDeep } from 'type-fest';
 
 export const renderChat: (
   container: HTMLElement,
@@ -26,9 +27,14 @@ export const renderChat: (
       'Enabling local storage history through the localStorage option is now unsupported, use localStorageHistory.enable instead',
     );
   }
+
+  const settings: PartialDeep<TockSettings> = {};
+  if (localStorage) settings.localStorage = localStorage;
+  if (locale) settings.locale = locale;
+
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext settings={{ localStorage, locale }}>
+      <TockContext settings={settings}>
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}

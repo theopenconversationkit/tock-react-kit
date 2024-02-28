@@ -7,37 +7,34 @@ import React, {
 import { prop } from 'styled-tools';
 import '../../styles/theme';
 
-export const CardOuter: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLLIElement>,
-  HTMLLIElement
->> = styled.li`
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+export const CardOuter: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled.li`
+  max-width: ${prop('theme.sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-const CardImage: StyledComponent<DetailedHTMLProps<
-  ImgHTMLAttributes<HTMLImageElement>,
-  HTMLImageElement
->> = styled.img`
+const CardImage: StyledComponent<
+  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
+> = styled.img`
   max-width: 100%;
   max-height: 100%;
 
-  ${prop<any>('theme.overrides.card.cardImage', '')};
+  ${prop('theme.overrides.card.cardImage', '')};
 `;
 
-export const CardContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+export const CardContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   padding: 0.5em;
-  background: ${prop<any>('theme.palette.background.card')};
-  color: ${prop<any>('theme.palette.text.card')};
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
-  border: 2px solid ${prop<any>('theme.palette.text.card')};
+  background: ${prop('theme.palette.background.card')};
+  color: ${prop('theme.palette.text.card')};
+  border-radius: ${prop('theme.sizing.borderRadius')};
+  border: 2px solid ${prop('theme.palette.text.card')};
   width: 20em;
 
-  ${prop<any>('theme.overrides.card.cardContainer', '')};
+  ${prop('theme.overrides.card.cardContainer', '')};
 `;
 
 export interface ImageProps {
@@ -47,7 +44,7 @@ export interface ImageProps {
 }
 
 const Image = React.forwardRef<HTMLLIElement, ImageProps>(function imageRender(
-  { title, url, alternative }: ImageProps,
+  { url, alternative }: ImageProps,
   ref,
 ) {
   return (

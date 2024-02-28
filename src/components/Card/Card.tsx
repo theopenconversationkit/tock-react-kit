@@ -12,19 +12,17 @@ import UrlButton from '../buttons/UrlButton';
 import PostBackButton from '../buttons/PostBackButton';
 import { css, Theme } from '@emotion/react';
 
-export const CardOuter: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLLIElement>,
-  HTMLLIElement
->> = styled.li`
+export const CardOuter: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled.li`
   max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
   list-style: none;
 `;
 
-export const CardContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+export const CardContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   padding: 0.5em;
   background: ${theme('palette.background.card')};
   color: ${theme('palette.text.card')};
@@ -35,10 +33,9 @@ export const CardContainer: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.card.cardContainer')};
 `;
 
-const CardTitle: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLSpanElement>,
-  HTMLSpanElement
->> = styled.span`
+const CardTitle: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>
+> = styled.span`
   margin: 0.5em 0;
   font-size: 1.5em;
   font-weight: bold;
@@ -47,10 +44,9 @@ const CardTitle: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.card.cardTitle')};
 `;
 
-const CardSubTitle: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLSpanElement>,
-  HTMLSpanElement
->> = styled.span`
+const CardSubTitle: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>
+> = styled.span`
   margin: 0.5em 0;
   font-size: 1em;
   font-weight: bold;
@@ -59,20 +55,18 @@ const CardSubTitle: StyledComponent<DetailedHTMLProps<
   ${theme('overrides.card.cardSubTitle')};
 `;
 
-const CardImage: StyledComponent<DetailedHTMLProps<
-  ImgHTMLAttributes<HTMLImageElement>,
-  HTMLImageElement
->> = styled.img`
+const CardImage: StyledComponent<
+  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
+> = styled.img`
   max-width: 100%;
   max-height: 100%;
 
   ${theme('overrides.card.cardImage')};
 `;
 
-const ButtonList: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLUListElement>,
-  HTMLUListElement
->> = styled.ul`
+const ButtonList: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+> = styled.ul`
   margin: 0.5em 0;
   list-style: none;
   padding: 0.5em 0;
@@ -168,8 +162,8 @@ const Card = React.forwardRef<HTMLLIElement, CardProps>(function cardRender(
         ref == undefined
           ? undefined
           : roleDescription
-          ? roleDescription
-          : 'Slide'
+            ? roleDescription
+            : 'Slide'
       }
     >
       <CardContainer aria-hidden={isHidden}>

@@ -101,16 +101,15 @@ const MESSAGE_RENDERER: {
   image: renderImage,
 };
 
-const makeRenderMessage = (
-  options: RenderOptions,
-  accessibility?: TockAccessibility,
-) => (message: Message, index: number) => {
-  const render: Renderer = MESSAGE_RENDERER[message.type];
-  if (!render) return null;
-  return React.cloneElement(render(message, options, accessibility), {
-    key: `${message.type}-${index}`,
-  });
-};
+const makeRenderMessage =
+  (options: RenderOptions, accessibility?: TockAccessibility) =>
+  (message: Message, index: number) => {
+    const render: Renderer = MESSAGE_RENDERER[message.type];
+    if (!render) return null;
+    return React.cloneElement(render(message, options, accessibility), {
+      key: `${message.type}-${index}`,
+    });
+  };
 
 type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
