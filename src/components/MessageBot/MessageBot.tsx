@@ -45,7 +45,7 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
   message: { buttons, message = '' },
   onAction,
 }: MessageProps) => {
-  const renderText = useTextRenderer('botMessage', 'defaultRichText');
+  const renderText = useTextRenderer('html');
 
   return (
     <MessageContainer>

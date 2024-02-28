@@ -23,10 +23,10 @@ export const defaultSettings: TockSettings = {
       default(text) {
         return text;
       },
-      defaultRichText(text) {
+      html(text) {
         return <div dangerouslySetInnerHTML={{ __html: linkifyHtml(text) }} />;
       },
-      defaultInlineRichText(text) {
+      htmlPhrase(text) {
         return <span dangerouslySetInnerHTML={{ __html: linkifyHtml(text) }} />;
       },
     },

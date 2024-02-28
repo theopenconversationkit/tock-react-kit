@@ -14,7 +14,7 @@ interface Props {
 
 const QuickReplyImage = ({ src }: Props): JSX.Element => {
   const theme = useTheme();
-  const renderImage = useImageRenderer('qrIcon');
+  const renderImage = useImageRenderer('buttonIcon');
 
   return (
     <>

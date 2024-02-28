@@ -32,7 +32,7 @@ export const PostBackButton = ({
         theme?.overrides?.quickReply,
     ],
   ];
-  const renderText = useTextRenderer('postbackButton');
+  const renderText = useTextRenderer('default');
   return (
     <button css={postBackButtonCss} tabIndex={tabIndex}>
       {imageUrl && <QuickReplyImage src={imageUrl} />}

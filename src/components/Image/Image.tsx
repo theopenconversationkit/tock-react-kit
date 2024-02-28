@@ -27,7 +27,7 @@ export const ImageContainer: StyledComponent<
 `;
 
 export interface ImageProps {
-  title: string;
+  title?: string;
   url?: string;
   alternative?: string;
 }

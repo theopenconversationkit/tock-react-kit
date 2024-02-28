@@ -26,50 +26,20 @@ export interface TextRendererSettings {
    */
   default: TextRenderer;
   /**
-   * Renders <em>HTML rich text</em> in the form of <em>flow content</em>
+   * Renders <em>HTML-formatted text</em> in the form of <em>flow content</em>
    */
-  defaultRichText: TextRenderer;
+  html: TextRenderer;
   /**
-   * Renders <em>HTML rich text</em> in the form of <em>phrasing content</em>
+   * Renders <em>HTML-formatted text</em> in the form of <em>phrasing content</em>
    */
-  defaultInlineRichText: TextRenderer;
-  /**
-   * Renders the text in a {@link PostBackButton}, in the form of <em>non-interactive phrasing content</em>
-   */
-  postbackButton?: TextRenderer;
-  /**
-   * Renders the text in a {@link UrlButton}, in the form of <em>non-interactive phrasing content</em>
-   */
-  urlButton?: TextRenderer;
-  /**
-   * Renders the text in a quick reply button, in the form of <em>non-interactable phrasing content</em>
-   */
-  quickReply?: TextRenderer;
-  /**
-   * Renders the title in a {@link Card}, in the form of <em>phrasing content</em>
-   */
-  cardTitle?: TextRenderer;
-  /**
-   * Renders the <em>HTML rich text</em> in the subtitle in a {@link Card}, in the form of <em>phrasing content</em>
-   */
-  cardSubtitle?: TextRenderer;
-  /**
-   * Renders the <em>HTML rich text</em> in a text bot message, in the form of <em>flow content</em>
-   */
-  botMessage?: TextRenderer;
-  /**
-   * Renders the text in a user message, in the form of <em>flow content</em>
-   */
-  userMessage?: TextRenderer;
+  htmlPhrase: TextRenderer;
 }
 
 export const useTextRenderer = (
-  name: keyof TextRendererSettings,
-  fallback: keyof TextRendererSettings &
-    ('default' | 'defaultRichText' | 'defaultInlineRichText') = 'default',
+  name: keyof TextRendererSettings = 'default',
 ): TextRenderer => {
   const textRenderers = useTockSettings().renderers.textRenderers;
-  return textRenderers[name] ?? textRenderers[fallback];
+  return textRenderers[name] ?? textRenderers.default;
 };
 
 export type ImageRenderingProps = {
@@ -84,7 +54,7 @@ export interface ImageRendererSettings {
   default: ImageRenderer;
   standalone?: ImageRenderer;
   card?: ImageRenderer;
-  qrIcon?: ImageRenderer;
+  buttonIcon?: ImageRenderer;
 }
 
 export interface RendererSettings {

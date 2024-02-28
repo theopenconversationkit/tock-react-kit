@@ -54,7 +54,7 @@ type Props = DetailedHTMLProps<
 
 const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
   ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => {
-    const renderText = useTextRenderer('quickReply');
+    const renderText = useTextRenderer('default');
     return (
       <QuickReplyButtonContainer>
         <button ref={ref} css={qrButtonCss} {...rest}>

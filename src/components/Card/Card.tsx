@@ -130,11 +130,7 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
     theme.overrides?.card?.cardImage,
   ];
   const renderImage = useImageRenderer('card');
-  const renderTitle = useTextRenderer('cardTitle', 'defaultInlineRichText');
-  const renderSubtitle = useTextRenderer(
-    'cardSubtitle',
-    'defaultInlineRichText',
-  );
+  const renderHtml = useTextRenderer('htmlPhrase');
   const renderButton = (button: ButtonData, index: number) => (
     // having the default index-based key is fine since we do not reorder buttons
     <li key={index}>
@@ -181,8 +177,8 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
             alt: imageAlternative,
             css: cardImageCss,
           })}
-        <CardTitle>{renderTitle(title)}</CardTitle>
-        {subTitle && <CardSubTitle>{renderSubtitle(subTitle)}</CardSubTitle>}
+        <CardTitle>{renderHtml(title)}</CardTitle>
+        {subTitle && <CardSubTitle>{renderHtml(subTitle)}</CardSubTitle>}
         {Array.isArray(buttons) && buttons.length > 0 && (
           <ButtonList role="group">{buttons.map(renderButton)}</ButtonList>
         )}
