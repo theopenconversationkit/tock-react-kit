@@ -380,18 +380,12 @@ However, some contexts allow interactive phrasing content, or even any [flow con
 Some renderers are expected to handle rich text, that is text that already contains HTML formatting.
 Such rich text renderers may strip HTML tags or attributes that are deemed dangerous to add to the DOM.
 
-| Property name           | Type of content          | Description                                                                                               |
-|-------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------|
-| `default`               | non-interactive phrasing | The fallback renderer. By default, renders the whole string as a single text node                         |
-| `defaultRichText`       | flow                     | The fallback renderer for rich text. By default, renders the string into a `div` with `innerHTML`         |
-| `defaultInlineRichText` | phrasing                 | The fallback renderer for inline rich text. By default, renders the string into a `span` with `innerHTML` |
-| `postbackButton`        | non-interactive phrasing | Renders text in postback buttons. If unspecified, falls back to `default`                                 |
-| `urlButton`             | non-interactive phrasing | Renders text in URL buttons. If unspecified, falls back to `default`                                      |
-| `quickReply`            | non-interactive phrasing | Renders text in quick reply buttons. If unspecified, falls back to `default`                              |
-| `cardTitle`             | phrasing                 | Renders title text in cards. If unspecified, falls back to `default`                                      |
-| `cardSubtitle`          | phrasing                 | Renders subtitle text in cards. If unspecified, falls back to `defaultInlineRichText`                     |
-| `botMessage`            | flow                     | Renders formatted text in bot messages. If unspecified, falls back to `defaultRichText`                   |
-| `userMessage`           | flow                     | Renders text in user messages. If unspecified, falls back to `default`                                    |
+| Property name | Type of content          | Description                                                                                               |
+|---------------|--------------------------|-----------------------------------------------------------------------------------------------------------|
+| `default`     | non-interactive phrasing | The fallback renderer. By default, renders the whole string as a single text node                         |
+| `html`        | flow                     | The fallback renderer for rich text. By default, renders the string into a `div` with `innerHTML`         |
+| `htmlPhrase`  | phrasing                 | The fallback renderer for inline rich text. By default, renders the string into a `span` with `innerHTML` |
+| `userContent` | phrasing                 | Renders text in user messages. If unspecified, falls back to `default`                                    |
 
 ### `TockOptions`
 
