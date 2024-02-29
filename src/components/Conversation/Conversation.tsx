@@ -59,7 +59,7 @@ const renderWidget = (widget: Widget, options: RenderOptions) => {
 };
 
 const renderMessage = (message: TextMessage, options: RenderOptions) => {
-  const renderUserText = useTextRenderer();
+  const renderUserText = useTextRenderer('userContent');
 
   if (message.author === 'bot') {
     return <MessageBot message={message} onAction={options.onAction} />;

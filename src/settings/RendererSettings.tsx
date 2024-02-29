@@ -33,6 +33,10 @@ export interface TextRendererSettings {
    * Renders <em>HTML-formatted text</em> in the form of <em>phrasing content</em>
    */
   htmlPhrase: TextRenderer;
+  /**
+   * Renders text written by a user
+   */
+  userContent?: TextRenderer;
 }
 
 export const useTextRenderer = (
