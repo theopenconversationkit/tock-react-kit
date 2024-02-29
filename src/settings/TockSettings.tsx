@@ -15,8 +15,8 @@ export const defaultSettings: TockSettings = {
   localStorage: {},
   renderers: {
     imageRenderers: {
-      default({ src, alt, css }) {
-        return <img src={src} alt={alt} css={css} />;
+      default({ src, alt, ...props }) {
+        return <img src={src} alt={alt} {...props} />;
       },
     },
     textRenderers: {

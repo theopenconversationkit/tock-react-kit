@@ -35,7 +35,7 @@ export const WithCustomRendering: Story = {
       settings={{
         renderers: {
           imageRenderers: {
-            standalone: ({ src, alt, css }) => {
+            standalone: ({ src, alt, ...props }) => {
               const [width, height] = useMessageMetadata()
                 ['DIMENSIONS']?.split('x')
                 ?.map((d) => +d);
@@ -43,9 +43,9 @@ export const WithCustomRendering: Story = {
                 <img
                   src={src}
                   alt={alt}
-                  css={css}
                   width={width}
                   height={height}
+                  {...props}
                 />
               );
             },

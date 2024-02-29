@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import { Interpolation, Theme } from '@emotion/react';
 import { useTockSettings } from '../TockContext';
 
@@ -42,7 +42,7 @@ export const useTextRenderer = (
   return textRenderers[name] ?? textRenderers.default;
 };
 
-export type ImageRenderingProps = {
+export type ImageRenderingProps = HTMLAttributes<HTMLElement> & {
   src?: string;
   alt?: string;
   css?: Interpolation<Theme>;
