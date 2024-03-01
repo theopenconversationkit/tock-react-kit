@@ -4,25 +4,24 @@ import { keyframes } from '@emotion/react';
 import { Keyframes } from '@emotion/serialize';
 import { prop } from 'styled-tools';
 
-const LoaderContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->> = styled.div`
+const LoaderContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   width: 100%;
-  max-width: ${prop<any>('theme.sizing.conversation.width')};
+  max-width: ${prop('theme.sizing.conversation.width')};
   margin: 0.5em auto;
 `;
 
-const BulletList: StyledComponent<{}> = styled.div`
+const BulletList = styled.div`
   display: inline-block;
-  color: ${prop<any>('theme.palette.text.bot')};
+  color: ${prop('theme.palette.text.bot')};
   padding: 0.5em 1.5em;
   margin-left: 1em;
   white-space: pre-line;
-  border-radius: ${prop<any>('theme.sizing.borderRadius')};
+  border-radius: ${prop('theme.sizing.borderRadius')};
   border-bottom-left-radius: 0;
 
-  ${prop<any>('theme.overrides.messageBot', '')}
+  ${prop('theme.overrides.messageBot', '')}
 `;
 
 const beat: Keyframes = keyframes`
@@ -36,11 +35,11 @@ const beat: Keyframes = keyframes`
   }
 `;
 
-const Bullet: StyledComponent<{}> = styled.div`
+const Bullet = styled.div<{ 'data-rank': number }>`
   display: inline-block;
-  background-color: ${prop<any>('theme.palette.text.bot')};
-  width: ${prop<any>('theme.sizing.loaderSize')};
-  height: ${prop<any>('theme.sizing.loaderSize')};
+  background-color: ${prop('theme.palette.text.bot')};
+  width: ${prop('theme.sizing.loaderSize')};
+  height: ${prop('theme.sizing.loaderSize')};
   margin: 0.5em 0.5em 0.5em 0;
   border-radius: 50%;
   animation: ${beat} 0.7s linear

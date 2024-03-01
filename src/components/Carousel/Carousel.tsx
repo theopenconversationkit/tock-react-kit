@@ -9,19 +9,17 @@ import useArrowVisibility from './hooks/useArrowVisibility';
 import TockAccessibility from 'TockAccessibility';
 import TockTheme from '../../styles/theme';
 
-const ButtonContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLLIElement>,
-  HTMLLIElement
->> = styled.li`
+const ButtonContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled.li`
   margin: 0.4em 0;
   position: relative;
   list-style: none;
 `;
 
-const ItemContainer: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLUListElement>,
-  HTMLUListElement
->> = styled.ul`
+const ItemContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+> = styled.ul`
   display: flex;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -44,10 +42,9 @@ const ItemContainer: StyledComponent<DetailedHTMLProps<
   }
 `;
 
-const Previous: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const Previous: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   margin: auto;
   left: 0;
@@ -77,10 +74,9 @@ const Previous: StyledComponent<DetailedHTMLProps<
   ${prop('theme.overrides.carouselArrow', '')};
 `;
 
-const Next: StyledComponent<DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->> = styled.button`
+const Next: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = styled.button`
   position: absolute;
   margin: auto;
   right: 0;
