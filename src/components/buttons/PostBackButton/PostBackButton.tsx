@@ -19,7 +19,7 @@ export const PostBackButton = ({
   imageUrl,
   label,
   customStyle,
-  tabIndex,
+  ...rest
 }: Props): JSX.Element => {
   const postBackButtonCss: Interpolation<Theme> = [
     baseButtonStyle,
@@ -34,7 +34,7 @@ export const PostBackButton = ({
   ];
   const TextRenderer = useTextRenderer('default');
   return (
-    <button css={postBackButtonCss} tabIndex={tabIndex}>
+    <button css={postBackButtonCss} {...rest}>
       {imageUrl && <QuickReplyImage src={imageUrl} />}
       <TextRenderer text={label} />
     </button>
