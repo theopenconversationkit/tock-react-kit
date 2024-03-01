@@ -16,7 +16,7 @@ const Container: StyledComponent<
     flex: 1;
     overflow-y: auto;
     ::-webkit-scrollbar {
-      width: 0px; /* Remove scrollbar space */
+      width: 0; /* Remove scrollbar space */
       background: transparent; /* Optional: just make scrollbar invisible */
     }
   }

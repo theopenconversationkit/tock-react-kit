@@ -41,9 +41,9 @@ The toolkit is currently used in production by various conversational assistants
 
 ## Quick Start
 
-Include the standalone bundle for the `tock-react-kit` in an HTML page.
-Note that this bundle includes its own copy of React - if you have an existing React application, please refer to the
-[module instructions below](#use-as-a-module).
+If you do not use a package manager, you can include the standalone bundle for the `tock-react-kit` in an HTML page.
+Note that this bundle includes its own copy of React - if you have an existing React application,
+please refer to the [module instructions below](#use-as-a-module).
 
 ```html
 <script
@@ -65,7 +65,8 @@ Render your app in an element:
 
 ## Use as a module
 
-In all but the most simple cases, you should import `tock-react-kit` as a module and bundle it alongside its peer dependencies:
+You can install this package alongside its peer dependencies using the package manager of your choice,
+and then bundle it with the rest of your web application. For example with NPM:
 
 ```
 npm i react@18 react-dom@18 @emotion/react@11 @emotion/styled@11 tock-react-kit
@@ -73,26 +74,7 @@ npm i react@18 react-dom@18 @emotion/react@11 @emotion/styled@11 tock-react-kit
 
 Your bundler must support ESM modules, which is the case for Webpack, Rollup and Vite among others.
 
-### Use in a non-React app
-
-When working in a non-React app, you can once again use `renderChat` to render the app in an existing element:
-
-```js
-import { renderChat } from 'tock-react-kit';
-
-renderChat(
-    document.getElementById('chat'),
-    '<TOCK_BOT_API_URL>',
-    /* The following parameters are optional */
-    'referralParameter',
-    { /* ... */ },
-    { /* ... */ },
-);
-```
-
 ### Use in a React app
-
-If you already use React, you can integrate the components directly in your JSX:
 
 ```jsx
 import { ThemeProvider } from "@emotion/react";
@@ -116,6 +98,23 @@ Note that unmounting `TockContext` at any point may cause bugs in the chat due t
 Therefore, in apps where the `Chat` component is susceptible to being unmounted and remounted (e.g. Single Page Applications),
 `TockContext` should go at the root of the page (hoisting out of render).
 `ThemeProvider` should also be hoisted out of render for performance reasons, as noted in the [Emotion docs](https://emotion.sh/docs/theming#themeprovider-reactcomponenttype).
+
+### Use in a non-React app
+
+When working in a non-React app, you can once again use `renderChat` to render the app in an existing element:
+
+```js
+import { renderChat } from 'tock-react-kit';
+
+renderChat(
+    document.getElementById('chat'),
+    '<TOCK_BOT_API_URL>',
+    /* The following parameters are optional */
+    'referralParameter',
+    { /* ... */ },
+    { /* ... */ },
+);
+```
 
 ## Styling your chat
 

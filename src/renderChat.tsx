@@ -6,6 +6,8 @@ import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
 import { default as createTheme } from './styles/createTheme';
+import { PartialDeep } from 'type-fest';
+import TockSettings from './settings/TockSettings';
 
 export const renderChat: (
   container: HTMLElement,
@@ -25,9 +27,14 @@ export const renderChat: (
       'Enabling local storage history through the localStorage option is now unsupported, use localStorageHistory.enable instead',
     );
   }
+
+  const settings: PartialDeep<TockSettings> = {};
+  if (localStorage) settings.localStorage = localStorage;
+  if (locale) settings.locale = locale;
+
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext settings={{ localStorage, locale }}>
+      <TockContext settings={settings}>
         <Chat
           endPoint={endPoint}
           referralParameter={referralParameter}

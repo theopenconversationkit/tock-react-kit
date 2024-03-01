@@ -2,10 +2,10 @@ import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import styled, { StyledComponent } from '@emotion/styled';
 import { theme } from 'styled-tools';
 
+import { Button } from '../../../model/buttons';
 import PostBackButton from '../PostBackButton';
 import UrlButton from '../UrlButton';
 import { baseButtonListStyle } from '../../QuickReplyList/QuickReplyList';
-import { Button } from '../../../model/buttons';
 
 import '../../../styles/theme';
 

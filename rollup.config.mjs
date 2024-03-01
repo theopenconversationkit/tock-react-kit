@@ -39,10 +39,12 @@ export default [
         file: 'build/tock-react-kit-standalone.umd.js',
         format: 'umd',
         name: 'TockReact',
+        sourcemap: true,
       },
       {
         file: 'build/tock-react-kit-standalone.esm.js',
-        format: 'esm'
+        format: 'esm',
+        sourcemap: true,
       },
     ],
     plugins: [
