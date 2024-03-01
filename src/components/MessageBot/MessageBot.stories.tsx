@@ -82,7 +82,7 @@ export const WithCustomRendering: Story = {
       settings={{
         renderers: {
           textRenderers: {
-            html: (text) => {
+            html: ({ text }) => {
               const split = text.split(':)');
               return split.reduce(
                 (acc, s, i) =>

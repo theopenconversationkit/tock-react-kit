@@ -53,13 +53,17 @@ type Props = DetailedHTMLProps<
   QuickReplyData;
 
 const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
-  ({ imageUrl, label, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => {
-    const renderText = useTextRenderer('default');
+  (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { imageUrl, label, payload, nlpText, ...rest }: Props,
+    ref: RefObject<HTMLButtonElement>,
+  ) => {
+    const TextRenderer = useTextRenderer('default');
     return (
       <QuickReplyButtonContainer>
         <button ref={ref} css={qrButtonCss} {...rest}>
           {imageUrl && <QuickReplyImage src={imageUrl} />}
-          {renderText(label)}
+          <TextRenderer text={label} />
         </button>
       </QuickReplyButtonContainer>
     );

@@ -1,6 +1,13 @@
-import { HTMLAttributes, ReactNode } from 'react';
-import { Interpolation, Theme } from '@emotion/react';
+import { ComponentType, HTMLAttributes } from 'react';
 import { useTockSettings } from '../TockContext';
+
+interface RendererRegistry {
+  default: NonNullable<ComponentType<unknown>>;
+}
+
+export type TextRendererProps = {
+  text: string;
+};
 
 /**
  * Renders text into React content.
@@ -18,9 +25,9 @@ import { useTockSettings } from '../TockContext';
  * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#interactive_content interactable content
  * @see https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html dangers of arbitrary HTML rendering
  */
-export type TextRenderer = (text: string) => ReactNode;
+export type TextRenderer = ComponentType<TextRendererProps>;
 
-export interface TextRendererSettings {
+export interface TextRenderers extends RendererRegistry {
   /**
    * Renders regular text in the form of <em>non-interactive phrasing content</em>
    */
@@ -35,26 +42,26 @@ export interface TextRendererSettings {
   htmlPhrase: TextRenderer;
   /**
    * Renders text written by a user
+   *
+   * <p>If left unspecified, falls back to {@link #default}
    */
   userContent?: TextRenderer;
 }
 
-export const useTextRenderer = (
-  name: keyof TextRendererSettings = 'default',
-): TextRenderer => {
+export const useTextRenderer = (name: keyof TextRenderers): TextRenderer => {
   const textRenderers = useTockSettings().renderers.textRenderers;
-  return textRenderers[name] ?? textRenderers.default;
+  return getRendererOrDefault('TextRenderer', textRenderers, name);
 };
 
-export type ImageRenderingProps = HTMLAttributes<HTMLElement> & {
+export type ImageRendererProps = HTMLAttributes<HTMLElement> & {
   src?: string;
   alt?: string;
-  css?: Interpolation<Theme>;
+  className?: string;
 };
 
-export type ImageRenderer = (props: ImageRenderingProps) => ReactNode;
+export type ImageRenderer = ComponentType<ImageRendererProps>;
 
-export interface ImageRendererSettings {
+export interface ImageRenderers extends RendererRegistry {
   default: ImageRenderer;
   standalone?: ImageRenderer;
   card?: ImageRenderer;
@@ -62,13 +69,34 @@ export interface ImageRendererSettings {
 }
 
 export interface RendererSettings {
-  imageRenderers: ImageRendererSettings;
-  textRenderers: TextRendererSettings;
+  imageRenderers: ImageRenderers;
+  textRenderers: TextRenderers;
 }
 
-export const useImageRenderer = (
-  name: keyof ImageRendererSettings,
-): ImageRenderer => {
+export const useImageRenderer = (name: keyof ImageRenderers): ImageRenderer => {
   const imageRenderers = useTockSettings().renderers.imageRenderers;
-  return imageRenderers[name] ?? imageRenderers.default;
+  return getRendererOrDefault('ImageRenderer', imageRenderers, name);
 };
+
+function getRendererOrDefault<
+  R extends RendererRegistry,
+  K extends keyof R & string,
+>(type: string, renderers: R, name: K): NonNullable<R[K]> {
+  return (
+    getRenderer(type, renderers, name) ??
+    (getRenderer(type, renderers, 'default') as NonNullable<R[K]>)
+  );
+}
+
+function getRenderer<R extends RendererRegistry, K extends keyof R & string>(
+  type: string,
+  renderers: R,
+  name: K,
+): R[K] {
+  const renderer = renderers[name] as ComponentType & R[K];
+  if (renderer && !renderer.displayName) {
+    // giving the renderer a pretty name like "ImageRenderer(standalone)"
+    renderer.displayName = `${type}(${renderer.name?.length ? renderer.name : name})`;
+  }
+  return renderer;
+}

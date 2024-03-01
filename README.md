@@ -355,10 +355,8 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 #### `ImageRendererSettings`
 
 Image renderers all implement the `ImageRenderer` interface.
-They are tasked with rendering a graphical component using a source URL, a description, some CSS, and other generic HTML attributes.
-
-The passed in CSS contains the default style for the rendered component, as well as applicable [overrides](#overrides).
-It is intended to be used through [Emotion's CSS prop](https://emotion.sh/docs/css-prop).
+They are tasked with rendering a graphical component using a source URL, a description, a class name, and other generic HTML attributes.
+The passed in class name provides the default style for the rendered component, as well as applicable [overrides](#overrides).
 
 | Property name | Description                                                                                       |
 |---------------|---------------------------------------------------------------------------------------------------|

@@ -141,8 +141,8 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
     | MutableRefObject<HTMLLIElement | null>
     | null,
 ) {
-  const renderImage = useImageRenderer('card');
-  const renderHtml = useTextRenderer('htmlPhrase');
+  const ImageRenderer = useImageRenderer('card');
+  const HtmlRenderer = useTextRenderer('htmlPhrase');
   const renderButton = (button: ButtonData, index: number) => (
     // having the default index-based key is fine since we do not reorder buttons
     <li key={index}>
@@ -172,14 +172,21 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
       }
     >
       <CardContainer aria-hidden={isHidden}>
-        {imageUrl &&
-          renderImage({
-            src: imageUrl,
-            alt: imageAlternative,
-            css: cardImageCss,
-          })}
-        <CardTitle>{renderHtml(title)}</CardTitle>
-        {subTitle && <CardSubTitle>{renderHtml(subTitle)}</CardSubTitle>}
+        {imageUrl && (
+          <ImageRenderer
+            src={imageUrl}
+            alt={imageAlternative}
+            css={cardImageCss}
+          />
+        )}
+        <CardTitle>
+          <HtmlRenderer text={title} />
+        </CardTitle>
+        {subTitle && (
+          <CardSubTitle>
+            <HtmlRenderer text={subTitle} />
+          </CardSubTitle>
+        )}
         {Array.isArray(buttons) && buttons.length > 0 && (
           <ButtonList role="group">{buttons.map(renderButton)}</ButtonList>
         )}

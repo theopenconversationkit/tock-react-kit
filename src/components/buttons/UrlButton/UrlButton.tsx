@@ -36,11 +36,11 @@ export const UrlButton: (props: Props) => JSX.Element = ({
       theme.overrides?.buttons?.urlButton || theme.overrides?.quickReply,
     ],
   ];
-  const renderText = useTextRenderer('default');
+  const TextRenderer = useTextRenderer('default');
   return (
     <a href={url} target={target} css={anchorStyle} tabIndex={tabIndex}>
       {imageUrl && <QuickReplyImage src={imageUrl} />}
-      {renderText(label)}
+      <TextRenderer text={label} />
     </a>
   );
 };

@@ -1,7 +1,9 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import { DetailedHTMLProps, HTMLAttributes, ReactNode } from 'react';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import { theme } from 'styled-tools';
 import { MessageContainer as BotMessageContainer } from '../MessageBot';
+
+import { useTextRenderer } from '../../settings/RendererSettings';
 
 const MessageContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
@@ -24,13 +26,18 @@ const Message: StyledComponent<
 `;
 
 type Props = {
-  children: ReactNode;
+  children: string;
 };
 
-const MessageUser: (props: Props) => JSX.Element = ({ children }: Props) => (
-  <MessageContainer>
-    <Message>{children}</Message>
-  </MessageContainer>
-);
+const MessageUser = ({ children }: Props): JSX.Element => {
+  const TextRenderer = useTextRenderer('userContent');
+  return (
+    <MessageContainer>
+      <Message>
+        <TextRenderer text={children} />
+      </Message>
+    </MessageContainer>
+  );
+};
 
 export default MessageUser;

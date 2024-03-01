@@ -16,16 +16,8 @@ interface Props {
 }
 
 const QuickReplyImage = ({ src }: Props): JSX.Element => {
-  const renderImage = useImageRenderer('buttonIcon');
-
-  return (
-    <>
-      {renderImage({
-        src,
-        css: qrImageStyle,
-      })}
-    </>
-  );
+  const ImageRenderer = useImageRenderer('buttonIcon');
+  return <ImageRenderer src={src} css={qrImageStyle} />;
 };
 
 export default QuickReplyImage;

@@ -20,13 +20,13 @@ export const defaultSettings: TockSettings = {
       },
     },
     textRenderers: {
-      default(text) {
+      default({ text }) {
         return text;
       },
-      html(text) {
+      html({ text }) {
         return <div dangerouslySetInnerHTML={{ __html: linkifyHtml(text) }} />;
       },
-      htmlPhrase(text) {
+      htmlPhrase({ text }) {
         return <span dangerouslySetInnerHTML={{ __html: linkifyHtml(text) }} />;
       },
     },

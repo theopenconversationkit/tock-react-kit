@@ -44,13 +44,13 @@ const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
   { url: src, alternative: alt }: ImageProps,
   ref,
 ) {
-  const renderImage = useImageRenderer('standalone');
+  const ImageRenderer = useImageRenderer('standalone');
   return (
     <ImageOuter ref={ref}>
       <ImageContainer>
         {src && (
           <a target="_blank" href={src} rel="noreferrer">
-            {renderImage({ src, alt, css: normalImageCss })}
+            <ImageRenderer src={src} alt={alt} css={normalImageCss} />
           </a>
         )}
       </ImageContainer>

@@ -44,6 +44,6 @@ export type {
   ImageRenderer,
   TextRenderer,
   RendererSettings,
-  TextRendererSettings,
-  ImageRendererSettings,
+  TextRenderers,
+  ImageRenderers,
 } from './settings/RendererSettings';

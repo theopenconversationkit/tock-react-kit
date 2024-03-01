@@ -45,11 +45,13 @@ const MessageBot: (props: MessageProps) => JSX.Element = ({
   message: { buttons, message = '' },
   onAction,
 }: MessageProps) => {
-  const renderText = useTextRenderer('html');
+  const HtmlRenderer = useTextRenderer('html');
 
   return (
     <MessageContainer>
-      <Message>{renderText(message)}</Message>
+      <Message>
+        <HtmlRenderer text={message} />
+      </Message>
       {Array.isArray(buttons) && buttons.length > 0 && (
         <ButtonList items={buttons} onItemClick={onAction} />
       )}
