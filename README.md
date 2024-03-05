@@ -362,12 +362,12 @@ The passed in class name provides the default style for the rendered component, 
 | `default`     | The fallback renderer. By default, renders a single `img` component using the provided properties |
 | `standalone`  | Renders images in the dedicated image component, including the zoomed-in view                     |
 | `card`        | Renders images in the card component (including in carousels)                                     |
-| `buttonIcon`  | Renders icons in the quick reply component                                                        |
+| `buttonIcon`  | Renders icons in quick replies, URL buttons, and postback buttons                                 |
 
 #### `TextRendererSettings`
 
 Text renderers all implement the `TextRenderer` interface.
-They are tasked with rendering a string into text component.
+They are tasked with rendering a string into a text component.
 
 A renderer can be restricted in the kind of HTML nodes it emits depending on the context in which it is invoked.
 Most text renderers should only emit [phrasing content](https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#phrasing_content)
