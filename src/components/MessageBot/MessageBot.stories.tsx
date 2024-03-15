@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { MessageType } from '../../model/messages';
 import MessageBot from './MessageBot';
+import { TockContext } from '../../index';
 
 const message = 'A bot message';
 
@@ -20,6 +21,9 @@ const html = `
 const meta: Meta<typeof MessageBot> = {
   component: MessageBot,
   tags: ['autodocs'],
+  args: {
+    onAction: Function.bind(null),
+  },
 };
 
 export default meta;
@@ -46,7 +50,6 @@ export const WithBasicFormatting: Story = {
       type: MessageType.message,
       buttons: [],
     },
-    onAction: Function.bind(null),
   },
 };
 
@@ -59,6 +62,47 @@ export const WithHtmlContent: Story = {
       type: MessageType.message,
       buttons: [],
     },
-    onAction: Function.bind(null),
   },
+};
+
+/**
+ * Converts <q>:)</q> emoticons into emojis with custom ARIA labels
+ */
+export const WithCustomRendering: Story = {
+  args: {
+    message: {
+      author: 'bot',
+      message: 'Hello :)',
+      type: MessageType.message,
+      buttons: [],
+    },
+  },
+  render: (args) => (
+    <TockContext
+      settings={{
+        renderers: {
+          textRenderers: {
+            html: ({ text }) => {
+              const split = text.split(':)');
+              return split.reduce(
+                (acc, s, i) =>
+                  acc.length
+                    ? [
+                        ...acc,
+                        <span key={`smiley-${i}`} aria-label="happy to see you">
+                          🙂
+                        </span>,
+                        s,
+                      ]
+                    : [s],
+                [],
+              );
+            },
+          },
+        },
+      }}
+    >
+      <MessageBot message={args.message} onAction={args.onAction} />
+    </TockContext>
+  ),
 };

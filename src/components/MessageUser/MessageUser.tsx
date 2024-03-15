@@ -1,13 +1,19 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, { ReactNode } from 'react';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import { theme } from 'styled-tools';
 import { MessageContainer as BotMessageContainer } from '../MessageBot';
 
-const MessageContainer: StyledComponent<{}> = styled(BotMessageContainer)`
+import { useTextRenderer } from '../../settings/RendererSettings';
+
+const MessageContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled(BotMessageContainer)`
   text-align: right;
 `;
 
-const Message: StyledComponent<{}> = styled.div`
+const Message: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   display: inline-block;
   background: ${theme('palette.background.user')};
   color: ${theme('palette.text.user')};
@@ -20,13 +26,18 @@ const Message: StyledComponent<{}> = styled.div`
 `;
 
 type Props = {
-  children: ReactNode;
+  children: string;
 };
 
-const MessageUser: (props: Props) => JSX.Element = ({ children }: Props) => (
-  <MessageContainer>
-    <Message>{children}</Message>
-  </MessageContainer>
-);
+const MessageUser = ({ children }: Props): JSX.Element => {
+  const TextRenderer = useTextRenderer('userContent');
+  return (
+    <MessageContainer>
+      <Message>
+        <TextRenderer text={children} />
+      </Message>
+    </MessageContainer>
+  );
+};
 
 export default MessageUser;

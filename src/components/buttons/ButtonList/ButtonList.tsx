@@ -1,12 +1,13 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import styled, { StyledComponent } from '@emotion/styled';
 import { theme } from 'styled-tools';
 
 import { Button } from '../../../model/buttons';
-import '../../../styles/theme';
 import PostBackButton from '../PostBackButton';
 import UrlButton from '../UrlButton';
 import { baseButtonListStyle } from '../../QuickReplyList/QuickReplyList';
+
+import '../../../styles/theme';
 
 const ButtonListContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>

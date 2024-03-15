@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { useEffect } from 'react';
-import React from 'react';
 
 import useTock, { UseTock } from '../../useTock';
 import { PostBackButton, UrlButton } from '../../model/buttons';

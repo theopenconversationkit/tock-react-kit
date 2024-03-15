@@ -108,7 +108,7 @@ function mapCard(card: BotConnectorCard): Card {
 
 function mapImage(image: BotConnectorImage): Image {
   return {
-    title: image.file?.name,
+    title: image.title,
     url: image.file?.url,
     alternative: image.file?.description ?? image.file?.name,
     type: MessageType.image,

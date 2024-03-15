@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Message, MessageContainer } from '../../MessageBot';
 
 const DefaultWidget: (props: Record<string, unknown>) => JSX.Element = (

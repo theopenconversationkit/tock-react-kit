@@ -1,13 +1,11 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React, {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  ImgHTMLAttributes,
-} from 'react';
+import { forwardRef, DetailedHTMLProps, HTMLAttributes } from 'react';
 import { prop } from 'styled-tools';
 import '../../styles/theme';
+import { css, Interpolation, Theme } from '@emotion/react';
+import { useImageRenderer } from '../../settings/RendererSettings';
 
-export const CardOuter: StyledComponent<
+export const ImageOuter: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
 > = styled.li`
   max-width: ${prop('theme.sizing.conversation.width')};
@@ -15,16 +13,7 @@ export const CardOuter: StyledComponent<
   list-style: none;
 `;
 
-const CardImage: StyledComponent<
-  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
-> = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-
-  ${prop('theme.overrides.card.cardImage', '')};
-`;
-
-export const CardContainer: StyledComponent<
+export const ImageContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 > = styled.div`
   padding: 0.5em;
@@ -37,26 +26,35 @@ export const CardContainer: StyledComponent<
   ${prop('theme.overrides.card.cardContainer', '')};
 `;
 
+const normalImageCss: Interpolation<Theme> = [
+  css`
+    max-width: 100%;
+    max-height: 100%;
+  `,
+  (theme) => theme.overrides?.card?.cardImage,
+];
+
 export interface ImageProps {
-  title: string;
+  title?: string;
   url?: string;
   alternative?: string;
 }
 
-const Image = React.forwardRef<HTMLLIElement, ImageProps>(function imageRender(
-  { url, alternative }: ImageProps,
+const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
+  { url: src, alternative: alt }: ImageProps,
   ref,
 ) {
+  const ImageRenderer = useImageRenderer('standalone');
   return (
-    <CardOuter ref={ref}>
-      <CardContainer>
-        {url && (
-          <a target="_blank" href={url} rel="noreferrer">
-            <CardImage src={url} alt={alternative} />
+    <ImageOuter ref={ref}>
+      <ImageContainer>
+        {src && (
+          <a target="_blank" href={src} rel="noreferrer">
+            <ImageRenderer src={src} alt={alt} css={normalImageCss} />
           </a>
         )}
-      </CardContainer>
-    </CardOuter>
+      </ImageContainer>
+    </ImageOuter>
   );
 });
 

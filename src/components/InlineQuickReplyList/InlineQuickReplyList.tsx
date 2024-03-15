@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import { useTheme } from '@emotion/react';
 import styled, { StyledComponent } from '@emotion/styled';

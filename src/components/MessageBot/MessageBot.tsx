@@ -1,16 +1,16 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import React from 'react';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import linkifyHtml from 'linkifyjs/html';
 import { theme } from 'styled-tools';
 import { Button } from '../../model/buttons';
 import { TextMessage } from '../../model/messages';
 import ButtonList from '../buttons/ButtonList';
 
 import '../../styles/theme';
+import { useTextRenderer } from '../../settings/RendererSettings';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 
-export const MessageContainer: StyledComponent<{}> = styled.li`
+export const MessageContainer: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+> = styled.li`
   width: 100%;
   max-width: ${theme('sizing.conversation.width')};
   margin: 0.5em auto;
@@ -21,7 +21,9 @@ export const MessageContainer: StyledComponent<{}> = styled.li`
   }
 `;
 
-export const Message: StyledComponent<{}> = styled.div`
+export const Message: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   display: inline-block;
   background: ${theme('palette.background.bot')};
   color: ${theme('palette.text.bot')};
@@ -40,21 +42,18 @@ export interface MessageProps {
 }
 
 const MessageBot: (props: MessageProps) => JSX.Element = ({
-  message,
+  message: { buttons, message = '' },
   onAction,
 }: MessageProps) => {
-  function getHtmlContent() {
-    const content = message.message?.toString() || '';
-    return linkifyHtml(content);
-  }
+  const HtmlRenderer = useTextRenderer('html');
 
   return (
     <MessageContainer>
       <Message>
-        <div dangerouslySetInnerHTML={{ __html: getHtmlContent() }} />
+        <HtmlRenderer text={message} />
       </Message>
-      {Array.isArray(message.buttons) && message.buttons.length > 0 && (
-        <ButtonList items={message.buttons} onItemClick={onAction} />
+      {Array.isArray(buttons) && buttons.length > 0 && (
+        <ButtonList items={buttons} onItemClick={onAction} />
       )}
     </MessageContainer>
   );

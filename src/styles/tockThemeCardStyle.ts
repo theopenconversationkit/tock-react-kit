@@ -1,6 +1,6 @@
 import { Interpolation } from '@emotion/react';
 
-export interface TockThemeCardStyle {
+export default interface TockThemeCardStyle {
   cardContainer: Interpolation<unknown>;
   cardTitle: Interpolation<unknown>;
   cardSubTitle: Interpolation<unknown>;
@@ -9,5 +9,3 @@ export interface TockThemeCardStyle {
   buttonList: Interpolation<unknown>;
   buttonContainer: Interpolation<unknown>;
 }
-
-export default TockThemeCardStyle;

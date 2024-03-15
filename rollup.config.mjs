@@ -8,20 +8,15 @@ import typescript from '@rollup/plugin-typescript';
 export default [
   {
     input: 'src/index.ts',
-    external: ['react', 'react-dom', '@emotion/react', '@emotion/styled'],
+    external: [
+      'react',
+      'react/jsx-runtime',
+      'react-dom',
+      '@emotion/react',
+      '@emotion/react/jsx-runtime',
+      '@emotion/styled',
+    ],
     output: [
-      {
-        // TODO deprecated build output, remove in 24.x
-        file: 'build/tock-react-kit.umd.js',
-        format: 'umd',
-        name: 'TockReact',
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          '@emotion/styled': 'emotionStyled',
-          '@emotion/react': 'emotionReact',
-        },
-      },
       {
         file: 'build/tock-react-kit.esm.js',
         format: 'esm',

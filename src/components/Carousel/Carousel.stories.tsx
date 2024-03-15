@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { UrlButton } from '../../model/buttons';
 import Carousel from './Carousel';

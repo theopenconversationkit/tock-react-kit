@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Product from './Product';
 import { Message, MessageContainer } from '../../MessageBot';
 

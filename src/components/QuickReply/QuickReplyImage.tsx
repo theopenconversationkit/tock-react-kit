@@ -1,16 +1,23 @@
-import styled, { StyledComponent } from '@emotion/styled';
-import { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
-import { theme } from 'styled-tools';
+import { css, Interpolation, Theme } from '@emotion/react';
+import { useImageRenderer } from '../../settings/RendererSettings';
 
-const QuickReplyImage: StyledComponent<
-  DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
-> = styled.img`
-  margin-right: inherit;
-  max-width: 15px;
-  max-height: 15px;
-  vertical-align: middle;
+const qrImageStyle: Interpolation<Theme> = [
+  css`
+    margin-right: inherit;
+    max-width: 15px;
+    max-height: 15px;
+    vertical-align: middle;
+  `,
+  (theme) => theme.overrides?.quickReplyImage,
+];
 
-  ${theme('overrides.quickReplyImage')};
-`;
+interface Props {
+  src: string;
+}
+
+const QuickReplyImage = ({ src }: Props): JSX.Element => {
+  const ImageRenderer = useImageRenderer('buttonIcon');
+  return <ImageRenderer src={src} css={qrImageStyle} />;
+};
 
 export default QuickReplyImage;
