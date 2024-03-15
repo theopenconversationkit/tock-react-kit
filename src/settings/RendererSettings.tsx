@@ -1,13 +1,13 @@
-import { ComponentType, HTMLAttributes } from 'react';
+import { AriaAttributes, ComponentType, DOMAttributes } from 'react';
 import { useTockSettings } from '../TockContext';
 
 interface RendererRegistry {
   default: NonNullable<ComponentType<unknown>>;
 }
 
-export type TextRendererProps = {
+export interface TextRendererProps {
   text: string;
-};
+}
 
 /**
  * Renders text into React content.
@@ -53,11 +53,13 @@ export const useTextRenderer = (name: keyof TextRenderers): TextRenderer => {
   return getRendererOrDefault('TextRenderer', textRenderers, name);
 };
 
-export type ImageRendererProps = HTMLAttributes<HTMLElement> & {
+export interface ImageRendererProps
+  extends AriaAttributes,
+    DOMAttributes<HTMLElement | SVGElement> {
   src?: string;
   alt?: string;
   className?: string;
-};
+}
 
 export type ImageRenderer = ComponentType<ImageRendererProps>;
 
