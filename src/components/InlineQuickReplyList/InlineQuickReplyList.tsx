@@ -3,7 +3,6 @@ import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import { useTheme } from '@emotion/react';
 import styled, { StyledComponent } from '@emotion/styled';
 import { prop } from 'styled-tools';
-import { opacify } from 'polished';
 import '../../styles/theme';
 import TockTheme from '../../styles/theme';
 import { Button } from '../../model/buttons';
@@ -43,7 +42,15 @@ const Previous: StyledComponent<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: color-mix(
+    in srgb,
+    ${(props) => props.theme.palette.background.bot} 10%,
+    transparent
+  );
+  backdrop-filter: blur(1px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   width: 3em;
   height: 3em;
@@ -75,7 +82,15 @@ const Next: StyledComponent<
   top: 0;
   bottom: 0;
   padding: 1em;
-  background: ${(props) => opacify(-0.8, props.theme.palette.background.bot)};
+  background: color-mix(
+    in srgb,
+    ${(props) => props.theme.palette.background.bot} 10%,
+    transparent
+  );
+  backdrop-filter: blur(1px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   width: 3em;
   height: 3em;

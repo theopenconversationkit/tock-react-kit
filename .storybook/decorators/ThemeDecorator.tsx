@@ -17,7 +17,7 @@ export const palettes: Record<string, Partial<Palette>> = {
         },
         background: {
             user: '#e58e26',
-            bot: '#b71540',
+            bot: 'var(--test, #b71540)',
             card: '#0c2461',
             input: '#0a3d62',
             inputDisabled: '#079992',
