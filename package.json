@@ -15,7 +15,6 @@
     "build/tock-react-kit.d.ts",
     "build/tock-react-kit.esm.js",
     "build/tock-react-kit.esm.js.map",
-    "build/tock-react-kit.umd.js",
     "build/tock-react-kit-standalone.umd.js",
     "build/tock-react-kit-standalone.esm.js"
   ],
@@ -33,16 +32,13 @@
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
-    "linkifyjs": "^2.1.9",
+    "linkify-html": "^3.0.5",
+    "linkifyjs": "^3.0.5",
     "polished": "^3.6.5",
     "react-feather": "^2.0.8",
     "styled-tools": "^1.7.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.15",
-    "@babel/preset-env": "^7.22.15",
-    "@babel/preset-react": "^7.22.15",
-    "@babel/preset-typescript": "^7.22.15",
     "@emotion/eslint-plugin": "^11.11.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -65,7 +61,6 @@
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "auto-changelog": "^2.4.0",
-    "babel-loader": "^9.1.3",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

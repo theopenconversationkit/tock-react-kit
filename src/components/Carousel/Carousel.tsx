@@ -1,4 +1,9 @@
-import React, { DetailedHTMLProps, HTMLAttributes, ReactElement } from 'react';
+import {
+  cloneElement,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  ReactElement,
+} from 'react';
 import { ArrowLeftCircle, ArrowRightCircle } from 'react-feather';
 import { useTheme } from '@emotion/react';
 import styled, { StyledComponent } from '@emotion/styled';
@@ -162,7 +167,7 @@ const Carousel: (props: {
         tabIndex={-1}
       >
         {children?.map((child, i) =>
-          React.cloneElement(
+          cloneElement(
             child,
             {
               ref: ref.items[i].refObject,

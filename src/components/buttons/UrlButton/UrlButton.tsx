@@ -1,25 +1,8 @@
-import React from 'react';
-import styled from '@emotion/styled';
 import { quickReplyStyle } from '../../QuickReply/QuickReply';
-import { prop, theme } from 'styled-tools';
-import { Interpolation } from '@emotion/react';
+import { css, Interpolation, Theme } from '@emotion/react';
 import { baseButtonStyle } from '../../QuickReply';
 import QuickReplyImage from '../../QuickReply/QuickReplyImage';
-
-const UrlButtonAnchor = styled.a`
-  ${baseButtonStyle};
-  text-align: center;
-  text-decoration: none;
-  ${
-    // Allow custom override for the card's button styling
-    prop<Interpolation<unknown>>('customStyle', [
-      quickReplyStyle,
-      // Fall back to historical quick reply override if the new url button override is not used
-      theme('overrides.buttons.urlButton', theme('overrides.quickReply')),
-    ])
-  }
-  )};
-`;
+import { useTextRenderer } from '../../../settings/RendererSettings';
 
 type Props = {
   customStyle?: Interpolation<unknown>;
@@ -27,17 +10,40 @@ type Props = {
   label: string;
   target?: string;
   url: string;
+  tabIndex?: 0 | -1;
 };
+
+const baseUrlButtonCss = css([
+  baseButtonStyle,
+  css`
+    text-align: center;
+    text-decoration: none;
+  `,
+]);
+
+const defaultUrlButtonCss: Interpolation<Theme> = [
+  baseUrlButtonCss,
+  quickReplyStyle,
+  // Fall back to historical quick reply override if the new url button override is not used
+  (theme) => theme.overrides?.buttons?.urlButton || theme.overrides?.quickReply,
+];
 
 export const UrlButton: (props: Props) => JSX.Element = ({
   url,
   imageUrl,
   label,
   target = '_blank',
-  ...rest
-}: Props) => (
-  <UrlButtonAnchor href={url} target={target} {...rest}>
-    {imageUrl && <QuickReplyImage src={imageUrl} />}
-    {label}
-  </UrlButtonAnchor>
-);
+  customStyle,
+  tabIndex,
+}: Props) => {
+  const css = customStyle
+    ? [baseUrlButtonCss, customStyle]
+    : defaultUrlButtonCss;
+  const TextRenderer = useTextRenderer('default');
+  return (
+    <a href={url} target={target} css={css} tabIndex={tabIndex}>
+      {imageUrl && <QuickReplyImage src={imageUrl} />}
+      <TextRenderer text={label} />
+    </a>
+  );
+};

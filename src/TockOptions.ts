@@ -1,8 +1,8 @@
 import { PartialDeep } from 'type-fest';
 import TockAccessibility from './TockAccessibility';
 import TockLocalStorage from './TockLocalStorage';
-import { TockSettings } from './TockContext';
-import { PostInitContext } from './PostInitContext';
+import TockSettings from './settings/TockSettings';
+import PostInitContext from './PostInitContext';
 
 export interface TockOptions extends PartialDeep<TockSettings> {
   // a callback that will be executed once the chat is able to send and receive messages

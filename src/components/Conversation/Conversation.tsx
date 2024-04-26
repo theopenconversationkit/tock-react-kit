@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 
@@ -26,6 +26,7 @@ import type {
   TextMessage,
   Widget,
 } from '../../model/messages';
+import { MessageMetadataContext } from '../../MessageMetadata';
 
 const ConversationOuterContainer = styled.div`
   display: flex;
@@ -101,16 +102,6 @@ const MESSAGE_RENDERER: {
   image: renderImage,
 };
 
-const makeRenderMessage =
-  (options: RenderOptions, accessibility?: TockAccessibility) =>
-  (message: Message, index: number) => {
-    const render: Renderer = MESSAGE_RENDERER[message.type];
-    if (!render) return null;
-    return React.cloneElement(render(message, options, accessibility), {
-      key: `${message.type}-${index}`,
-    });
-  };
-
 type Props = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
@@ -145,13 +136,25 @@ const Conversation = ({
     const theme: TockTheme = useTheme();
     const displayableMessages = messages.slice(0, displayableMessageCount);
     const scrollContainer = useScrollBehaviour([displayableMessages]);
-    const renderMessage = makeRenderMessage(
-      {
-        widgets,
-        onAction,
-      },
-      accessibility,
-    );
+    const renderMessage = (message: Message, index: number) => {
+      const render: Renderer = MESSAGE_RENDERER[message.type];
+      if (!render) return null;
+      return (
+        <MessageMetadataContext
+          value={message.metadata ?? {}}
+          key={`${message.type}-${index}`}
+        >
+          {render(
+            message,
+            {
+              widgets,
+              onAction,
+            },
+            accessibility,
+          )}
+        </MessageMetadataContext>
+      );
+    };
 
     return (
       <ConversationOuterContainer

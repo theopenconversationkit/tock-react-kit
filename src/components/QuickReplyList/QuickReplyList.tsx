@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes, useCallback } from 'react';
+import { DetailedHTMLProps, HTMLAttributes, useCallback } from 'react';
 import { css, SerializedStyles, Theme } from '@emotion/react';
 import styled, { StyledComponent } from '@emotion/styled';
 

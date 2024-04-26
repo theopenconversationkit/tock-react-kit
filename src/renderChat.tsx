@@ -1,13 +1,13 @@
 import { ThemeProvider } from '@emotion/react';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Chat from './components/Chat';
-import TockContext, { TockSettings } from './TockContext';
+import TockContext from './TockContext';
 import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
 import { default as createTheme } from './styles/createTheme';
 import { PartialDeep } from 'type-fest';
+import TockSettings from './settings/TockSettings';
 
 export const renderChat: (
   container: HTMLElement,

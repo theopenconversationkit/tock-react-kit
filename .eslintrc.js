@@ -21,6 +21,14 @@ module.exports = {
 
   rules: {
     '@emotion/pkg-renaming': 'error',
+    '@emotion/no-vanilla': 'error',
+    '@emotion/import-from-emotion': 'error',
+    '@emotion/styled-import': 'error',
+    // Modern JSX transform does not require explicit React import
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
+    // Ignore the css property added to React components by Emotion
+    'react/no-unknown-property': ['error', { ignore: ['css'] }],
     '@typescript-eslint/ban-types': [
       'error',
       {

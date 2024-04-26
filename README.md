@@ -162,7 +162,25 @@ renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParam
 
 ## Customize interface
 
-If the chat does not suit your needs you can also use the components separately.
+If the chat does not suit your needs, there are two main ways to customize the interface rendering.
+
+### Configure custom renderers
+
+Custom rendering can currently be defined for text and images. Here are some examples of what this enables:
+
+- processing custom markup in the text of any component
+- stripping harmful HTML tags and attributes when the backend is untrustworthy
+- dynamically decorating text messages
+- automatically embedding SVG images into the DOM
+- implementing fallback behavior when an image fails to load
+- using [metadata](#message-metadata) sent by the server to set image properties like width and height
+
+See the [`TockSettings`](#renderersettings) API reference for the details of available renderers.
+
+### Use the chat components separately
+
+The `tock-react-kit` exports its main components, so you can re-use them to build your own chat interface.
+This approach can be used alongside custom renderers to control more granular aspects of rendering.
 
 ## Message Metadata
 
@@ -180,7 +198,8 @@ ensure data stays available if required.
 
 The metadata from each response is also attached to the corresponding messages.
 This metadata is persisted with the messages, including through page reloads if [local storage history](#local-storage-history) is enabled.
-At the current time, it is only available to custom React-based frontends that handle message rendering themselves.
+It is available to [custom renderers](#configure-custom-renderers) through the use of the `useMessageMetadata` hook,
+as well as to custom React-based frontends that handle message rendering themselves.
 
 ## API Reference
 
@@ -188,36 +207,36 @@ At the current time, it is only available to custom React-based frontends that h
 
 Renders an entire chat in a target element.
 
-| Argument name                  | Type                                                                  | Description                                    |
-| ------------------------------ | --------------------------------------------------------------------- | ---------------------------------------------- |
-| `element`                      | [`Element`](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Target element where the chat will be rendered |
-| `tockBotApiUrl`                | `string`                                                              | URL to the Tock Bot REST API                   |
-| `referralParameter`            | `string`                                                              | Optional referal parameter                     |
-| `theme`                        | `TockTheme`                                                           | Optional theme object                          |
-| `options`                      | `TockOptions`                                                         | Optional options object                        |
+| Argument name       | Type                                                                  | Description                                    |
+|---------------------|-----------------------------------------------------------------------|------------------------------------------------|
+| `element`           | [`Element`](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Target element where the chat will be rendered |
+| `tockBotApiUrl`     | `string`                                                              | URL to the Tock Bot REST API                   |
+| `referralParameter` | `string`                                                              | Optional referal parameter                     |
+| `theme`             | `TockTheme`                                                           | Optional theme object                          |
+| `options`           | `TockOptions`                                                         | Optional options object                        |
 
 ### `useTock(tockBotApiUrl, extraHeadersProvider, disableSse, localStorageHistory)`
 
 Hook that provides chat history and methods to communicate with the Tock Bot. It must be used alongside with `TockContext`. Returns a useTock interface.
 
 | Argument name          | Type                                    | Description                                                   |
-| ---------------------- | --------------------------------------- | ------------------------------------------------------------- |
+|------------------------|-----------------------------------------|---------------------------------------------------------------|
 | `tockBotApiUrl`        | `string`                                | URL to the Tock Bot REST API                                  |
 | `extraHeadersProvider` | `() => Promise<Record<string, string>>` | Optional Provider of extra HTTP headers for outgoing requests |
-| `disableSse`           | `boolean`                               | Optional Force-disabling of SSE mode                      |
-| `localStorageHistory`  | `TockLocalStorage`                      | Optional Configuration for LocalStorage history   |
+| `disableSse`           | `boolean`                               | Optional Force-disabling of SSE mode                          |
+| `localStorageHistory`  | `TockLocalStorage`                      | Optional Configuration for LocalStorage history               |
 
 ### `TockTheme`
 
 A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`](https://emotion.sh/docs/theming) (bundled with the library) or as a third argument of `renderChat`.
 
-| Property name       | Type              | Description                                               |
-|---------------------|-------------------|-----------------------------------------------------------|
-| `palette`           | `Palette`         | Object for customising colors (see below)                 |
-| `sizing`            | `Sizing`          | Object for customising elements sizing (see below)        |
-| `typography`        | `Typography`      | Object for customising typographies (see below)           |
-| `overrides`         | `Overrides?`      | Object allowing further styling (see below)               |
-| `inlineQuickReplies`| `boolean?`        | Displaying quick replies inline (by default false)        |
+| Property name        | Type         | Description                                        |
+|----------------------|--------------|----------------------------------------------------|
+| `palette`            | `Palette`    | Object for customising colors (see below)          |
+| `sizing`             | `Sizing`     | Object for customising elements sizing (see below) |
+| `typography`         | `Typography` | Object for customising typographies (see below)    |
+| `overrides`          | `Overrides?` | Object allowing further styling (see below)        |
+| `inlineQuickReplies` | `boolean?`   | Displaying quick replies inline (by default false) |
 
 #### `Palette`
 
@@ -317,12 +336,53 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 |----------------|-------------------------|------------------------------------------------------|
 | `locale`       | `string?`               | Optional user language, as an *RFC 5646* code        |
 | `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
+| `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers    |
 
 #### `LocalStorageSettings`
 
 | Property name   | Type      | Description                                                                                   |
 |-----------------|-----------|-----------------------------------------------------------------------------------------------|
 | `storagePrefix` | `string?` | Prefix for local storage keys allowing communication with different bots from the same domain |
+
+#### `RendererSettings`
+
+| Property name    | Type                     | Description                                                                   |
+|------------------|--------------------------|-------------------------------------------------------------------------------|
+| `imageRenderers` | `ImageRendererSettings?` | Configuration of renderers for dynamic images displayed in the chat interface |
+| `textRenderers`  | `TextRendererSettings?`  | Configuration of renderers for dynamic text displayed in the chat interface   |
+
+#### `ImageRendererSettings`
+
+Image renderers all implement the `ImageRenderer` interface.
+They are tasked with rendering a graphical component using a source URL, a description, a class name, and other generic HTML attributes.
+The passed in class name provides the default style for the rendered component, as well as applicable [overrides](#overrides).
+
+| Property name | Description                                                                                       |
+|---------------|---------------------------------------------------------------------------------------------------|
+| `default`     | The fallback renderer. By default, renders a single `img` component using the provided properties |
+| `standalone`  | Renders images in the dedicated image component, including the zoomed-in view                     |
+| `card`        | Renders images in the card component (including in carousels)                                     |
+| `buttonIcon`  | Renders icons in quick replies, URL buttons, and postback buttons                                 |
+
+#### `TextRendererSettings`
+
+Text renderers all implement the `TextRenderer` interface.
+They are tasked with rendering a string into a text component.
+
+A renderer can be restricted in the kind of HTML nodes it emits depending on the context in which it is invoked.
+Most text renderers should only emit [phrasing content](https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#phrasing_content)
+that is also [non-interactive](https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#interactive_content).
+However, some contexts allow interactive phrasing content, or even any [flow content](https://developer.mozilla.org/en-US/docs/Web/HTML/Content_categories#flow_content).
+
+Some renderers are expected to handle rich text, that is text that already contains HTML formatting.
+Such rich text renderers may strip HTML tags or attributes that are deemed dangerous to add to the DOM.
+
+| Property name | Type of content          | Description                                                                                               |
+|---------------|--------------------------|-----------------------------------------------------------------------------------------------------------|
+| `default`     | non-interactive phrasing | The fallback renderer. By default, renders the whole string as a single text node                         |
+| `html`        | flow                     | The fallback renderer for rich text. By default, renders the string into a `div` with `innerHTML`         |
+| `htmlPhrase`  | phrasing                 | The fallback renderer for inline rich text. By default, renders the string into a `span` with `innerHTML` |
+| `userContent` | phrasing                 | Renders text in user messages. If unspecified, falls back to `default`                                    |
 
 ### `TockOptions`
 
