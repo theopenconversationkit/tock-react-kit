@@ -80,10 +80,11 @@ Your bundler must support ESM modules, which is the case for Webpack, Rollup and
 import { ThemeProvider } from "@emotion/react";
 import { TockContext, Chat, createTheme } from 'tock-react-kit';
 
-<TockContext settings={ /* ... */ }>
+<TockContext settings={{
+    endPoint: "<TOCK_BOT_API_URL>",
+}}>
     <ThemeProvider theme={createTheme({ /* ... */})}>
         <Chat
-            endPoint="<TOCK_BOT_API_URL>"
             /* The following parameters are optional */
             referralParameter="referralParameter"
             // also accepts all properties from TockOptions, like:
@@ -166,14 +167,15 @@ If the chat does not suit your needs, there are two main ways to customize the i
 
 ### Configure custom renderers
 
-Custom rendering can currently be defined for text and images. Here are some examples of what this enables:
+Custom rendering can currently be defined for text, images, and buttons. Here are some examples of what this enables:
 
 - processing custom markup in the text of any component
 - stripping harmful HTML tags and attributes when the backend is untrustworthy
-- dynamically decorating text messages
+- dynamically decorating text messages and buttons
 - automatically embedding SVG images into the DOM
 - implementing fallback behavior when an image fails to load
 - using [metadata](#message-metadata) sent by the server to set image properties like width and height
+- setting up redirects for links
 
 See the [`TockSettings`](#renderersettings) API reference for the details of available renderers.
 
@@ -334,6 +336,7 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 | Property name  | Type                    | Description                                          |
 |----------------|-------------------------|------------------------------------------------------|
+| `endPoint`     | `string`                | URL for the bot's web connector endpoint             |
 | `locale`       | `string?`               | Optional user language, as an *RFC 5646* code        |
 | `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
 | `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers    |
@@ -346,10 +349,24 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `RendererSettings`
 
-| Property name    | Type                     | Description                                                                   |
-|------------------|--------------------------|-------------------------------------------------------------------------------|
-| `imageRenderers` | `ImageRendererSettings?` | Configuration of renderers for dynamic images displayed in the chat interface |
-| `textRenderers`  | `TextRendererSettings?`  | Configuration of renderers for dynamic text displayed in the chat interface   |
+| Property name     | Type               | Description                                                                   |
+|-------------------|--------------------|-------------------------------------------------------------------------------|
+| `buttonRenderers` | `ButtonRenderers?` | Configuration of renderers for buttons displayed in the chat interface        |
+| `imageRenderers`  | `ImageRenderers?`  | Configuration of renderers for dynamic images displayed in the chat interface |
+| `textRenderers`   | `TextRenderers?`   | Configuration of renderers for dynamic text displayed in the chat interface   |
+
+#### `ButtonRendererSettings`
+
+Button renderers all implement some specialization of the `ButtonRenderer` interface.
+They are tasked with rendering a graphical component using button-specific data, a class name, and other generic HTML attributes.
+The passed in class name provides the default style for the rendered component, as well as applicable [overrides](#overrides).
+
+| Property name | Type                        | Description                                                                                          |
+|---------------|-----------------------------|------------------------------------------------------------------------------------------------------|
+| `default`     | `ButtonRenderer`            | The fallback renderer. By default, renders a single `button` component using the provided properties |
+| `url`         | `UrlButtonRenderer`         | Renders an `UrlButton`. By default, renders a single `a` component using the provided properties     |
+| `postback`    | `PostBackButtonRenderer?`   | Renders a `PostBackButton`                                                                           |
+| `quickReply`  | `QuickReplyButtonRenderer?` | Renders a `QuickReply`                                                                               |
 
 #### `ImageRendererSettings`
 

@@ -6,6 +6,7 @@ export interface LocalStorageSettings {
 }
 
 export default interface TockSettings {
+  endPoint?: string;
   localStorage: LocalStorageSettings;
   locale?: string;
   renderers: RendererSettings;
@@ -14,6 +15,14 @@ export default interface TockSettings {
 export const defaultSettings: TockSettings = {
   localStorage: {},
   renderers: {
+    buttonRenderers: {
+      default({ buttonData, children, ...rest }) {
+        return <button {...rest}>{children}</button>;
+      },
+      url({ buttonData, children, ...rest }) {
+        return <a {...rest}>{children}</a>;
+      },
+    },
     imageRenderers: {
       default({ src, alt, ...props }) {
         return <img src={src} alt={alt} {...props} />;

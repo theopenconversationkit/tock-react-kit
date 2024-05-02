@@ -28,18 +28,16 @@ export const renderChat: (
     );
   }
 
-  const settings: PartialDeep<TockSettings> = {};
+  const settings: PartialDeep<TockSettings> = {
+    endPoint,
+  };
   if (localStorage) settings.localStorage = localStorage;
   if (locale) settings.locale = locale;
 
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
       <TockContext settings={settings}>
-        <Chat
-          endPoint={endPoint}
-          referralParameter={referralParameter}
-          {...options}
-        />
+        <Chat referralParameter={referralParameter} {...options} />
       </TockContext>
     </ThemeProvider>,
   );

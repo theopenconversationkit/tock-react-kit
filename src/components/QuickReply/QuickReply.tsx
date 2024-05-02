@@ -5,7 +5,10 @@ import React, { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
 import { QuickReply as QuickReplyData } from '../../model/buttons';
 
 import QuickReplyImage from './QuickReplyImage';
-import { useTextRenderer } from '../../settings/RendererSettings';
+import {
+  useButtonRenderer,
+  useTextRenderer,
+} from '../../settings/RendererSettings';
 
 const QuickReplyButtonContainer = styled.li`
   list-style: none;
@@ -46,25 +49,29 @@ const qrButtonCss: Interpolation<Theme> = [
   (theme) => theme.overrides?.quickReply,
 ];
 
-type Props = DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> &
-  QuickReplyData;
+interface Props
+  extends DetailedHTMLProps<
+    HTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
+  buttonData: QuickReplyData;
+}
 
 const QuickReply = React.forwardRef<HTMLButtonElement, Props>(
-  (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { imageUrl, label, payload, nlpText, ...rest }: Props,
-    ref: RefObject<HTMLButtonElement>,
-  ) => {
+  ({ buttonData, ...rest }: Props, ref: RefObject<HTMLButtonElement>) => {
     const TextRenderer = useTextRenderer('default');
+    const ButtonRenderer = useButtonRenderer('quickReply');
     return (
       <QuickReplyButtonContainer>
-        <button ref={ref} css={qrButtonCss} {...rest}>
-          {imageUrl && <QuickReplyImage src={imageUrl} />}
-          <TextRenderer text={label} />
-        </button>
+        <ButtonRenderer
+          buttonData={buttonData}
+          ref={ref}
+          css={qrButtonCss}
+          {...rest}
+        >
+          {buttonData.imageUrl && <QuickReplyImage src={buttonData.imageUrl} />}
+          <TextRenderer text={buttonData.label} />
+        </ButtonRenderer>
       </QuickReplyButtonContainer>
     );
   },

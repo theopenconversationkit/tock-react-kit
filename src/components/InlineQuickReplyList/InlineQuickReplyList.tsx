@@ -156,8 +156,8 @@ const InlineQuickReplyList = ({
         {items.map((child, index) => (
           <QuickReply
             key={`${child.label}-${index}`}
+            buttonData={child}
             onClick={onItemClick.bind(null, child)}
-            {...child}
             ref={ref.items[index]}
           />
         ))}

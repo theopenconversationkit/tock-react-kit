@@ -19,11 +19,17 @@ export { default as MessageUser } from './components/MessageUser';
 export { default as QuickReply } from './components/QuickReply';
 export { default as QuickReplyList } from './components/QuickReplyList';
 export { renderChat } from './renderChat';
-export { default as TockContext } from './TockContext';
+export { default as TockContext, useTockSettings } from './TockContext';
 export { default as useTock } from './useTock';
 export { default as createTheme } from './styles/createTheme';
 export { useMessageMetadata, MessageMetadataContext } from './MessageMetadata';
 export { useImageRenderer, useTextRenderer } from './settings/RendererSettings';
+export type {
+  Button as ButtonData,
+  PostBackButton as PostBackButtonData,
+  UrlButton as UrlButtonData,
+  QuickReply as QuickReplyData,
+} from './model/buttons';
 export type {
   Card as CardData,
   Carousel as CarouselData,
@@ -47,3 +53,10 @@ export type {
   TextRenderers,
   ImageRenderers,
 } from './settings/RendererSettings';
+export type {
+  ButtonRenderers,
+  ButtonRenderer,
+  BaseButtonRendererProps,
+  UrlButtonRenderer,
+  UrlButtonRendererProps,
+} from './settings/ButtonRenderers';

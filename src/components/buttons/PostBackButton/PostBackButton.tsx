@@ -1,9 +1,13 @@
 import { quickReplyStyle } from '../../QuickReply/QuickReply';
 import { Interpolation, Theme } from '@emotion/react';
 import { baseButtonStyle } from '../../QuickReply';
-import { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, HTMLAttributes, JSX } from 'react';
 import QuickReplyImage from '../../QuickReply/QuickReplyImage';
-import { useTextRenderer } from '../../../settings/RendererSettings';
+import {
+  useButtonRenderer,
+  useTextRenderer,
+} from '../../../settings/RendererSettings';
+import { PostBackButtonData } from '../../../index';
 
 const postBackButtonCss: Interpolation<Theme> = [
   baseButtonStyle,
@@ -15,29 +19,29 @@ const postBackButtonCss: Interpolation<Theme> = [
   ],
 ];
 
-type Props = DetailedHTMLProps<
-  HTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> & {
+interface Props
+  extends DetailedHTMLProps<
+    HTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
+  buttonData: PostBackButtonData;
   customStyle?: Interpolation<unknown>;
-  imageUrl?: string;
-  label: string;
   tabIndex?: 0 | -1;
-};
+}
 
 export const PostBackButton = ({
-  imageUrl,
-  label,
+  buttonData,
   customStyle,
   ...rest
 }: Props): JSX.Element => {
   // Allow custom override for the Card's button styling
   const css = customStyle ? [baseButtonStyle, customStyle] : postBackButtonCss;
   const TextRenderer = useTextRenderer('default');
+  const ButtonRenderer = useButtonRenderer('postback');
   return (
-    <button css={css} {...rest}>
-      {imageUrl && <QuickReplyImage src={imageUrl} />}
-      <TextRenderer text={label} />
-    </button>
+    <ButtonRenderer buttonData={buttonData} css={css} {...rest}>
+      {buttonData.imageUrl && <QuickReplyImage src={buttonData.imageUrl} />}
+      <TextRenderer text={buttonData.label} />
+    </ButtonRenderer>
   );
 };

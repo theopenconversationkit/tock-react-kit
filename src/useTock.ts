@@ -118,20 +118,29 @@ function mapImage(image: BotConnectorImage): Image {
 const FINISHED_PROCESSING = -1;
 
 const useTock: (
-  tockEndPoint: string,
+  tockEndPoint?: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
 ) => UseTock = (
-  tockEndPoint: string,
+  tockEndPointArg?: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
 ) => {
   const {
+    endPoint: tockEndPointCtx,
     locale,
     localStorage: { prefix: localStoragePrefix },
   } = useTockSettings();
+  if (tockEndPointCtx == null && tockEndPointArg == null) {
+    throw new Error('TOCK endpoint must be provided in TockContext');
+  } else if (tockEndPointCtx == null) {
+    console.warn(
+      'Passing TOCK endpoint as argument to TockChat or useTock is deprecated; please set it in TockContext instead.',
+    );
+  }
+  const tockEndPoint: string = (tockEndPointArg ?? tockEndPointCtx)!;
   const {
     messages,
     quickReplies,
