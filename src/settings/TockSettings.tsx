@@ -6,6 +6,7 @@ export interface LocalStorageSettings {
 }
 
 export default interface TockSettings {
+  endPoint?: string;
   localStorage: LocalStorageSettings;
   locale?: string;
   renderers: RendererSettings;

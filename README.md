@@ -80,10 +80,11 @@ Your bundler must support ESM modules, which is the case for Webpack, Rollup and
 import { ThemeProvider } from "@emotion/react";
 import { TockContext, Chat, createTheme } from 'tock-react-kit';
 
-<TockContext settings={ /* ... */ }>
+<TockContext settings={{
+    endPoint: "<TOCK_BOT_API_URL>",
+}}>
     <ThemeProvider theme={createTheme({ /* ... */})}>
         <Chat
-            endPoint="<TOCK_BOT_API_URL>"
             /* The following parameters are optional */
             referralParameter="referralParameter"
             // also accepts all properties from TockOptions, like:
@@ -335,6 +336,7 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 | Property name  | Type                    | Description                                          |
 |----------------|-------------------------|------------------------------------------------------|
+| `endPoint`     | `string`                | URL for the bot's web connector endpoint             |
 | `locale`       | `string?`               | Optional user language, as an *RFC 5646* code        |
 | `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
 | `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers    |
