@@ -147,13 +147,17 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
     // having the default index-based key is fine since we do not reorder buttons
     <li key={index}>
       {'url' in button ? (
-        <UrlButton customStyle={urlButtonStyle} {...button} />
+        <UrlButton
+          buttonData={button}
+          customStyle={urlButtonStyle}
+          {...(isHidden && { tabIndex: -1 })}
+        />
       ) : (
         <PostBackButton
+          buttonData={button}
           customStyle={postBackButtonStyle}
           onClick={onAction.bind(null, button)}
           onKeyPress={onAction.bind(null, button)}
-          {...button}
           {...(isHidden && { tabIndex: -1 })}
         />
       )}

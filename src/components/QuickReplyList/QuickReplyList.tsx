@@ -50,8 +50,8 @@ const QuickReplyList: (props: Props) => JSX.Element = ({
     (item: Button, index: number) => (
       <QuickReply
         key={`${item.label}-${index}`}
+        buttonData={item}
         onClick={onItemClick.bind(null, item)}
-        {...item}
       />
     ),
     [onItemClick],

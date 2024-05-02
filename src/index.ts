@@ -25,6 +25,12 @@ export { default as createTheme } from './styles/createTheme';
 export { useMessageMetadata, MessageMetadataContext } from './MessageMetadata';
 export { useImageRenderer, useTextRenderer } from './settings/RendererSettings';
 export type {
+  Button as ButtonData,
+  PostBackButton as PostBackButtonData,
+  UrlButton as UrlButtonData,
+  QuickReply as QuickReplyData,
+} from './model/buttons';
+export type {
   Card as CardData,
   Carousel as CarouselData,
   Image as ImageData,
@@ -47,3 +53,10 @@ export type {
   TextRenderers,
   ImageRenderers,
 } from './settings/RendererSettings';
+export type {
+  ButtonRenderers,
+  ButtonRenderer,
+  BaseButtonRendererProps,
+  UrlButtonRenderer,
+  UrlButtonRendererProps,
+} from './settings/ButtonRenderers';
