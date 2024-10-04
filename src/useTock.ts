@@ -410,7 +410,7 @@ const useTock: (
         .then(handlePostBotResponse)
         .finally(stopLoading);
     },
-    [],
+    [locale],
   );
 
   const sendReferralParameter: (referralParameter: string) => Promise<void> =
