@@ -8,7 +8,7 @@ import TockLocalStorage from 'TockLocalStorage';
 import PostInitContext from '../../PostInitContext';
 
 export interface ChatProps {
-  endPoint: string;
+  endPoint?: string;
   referralParameter?: string;
   timeoutBetweenMessage?: number;
   /** A callback that will be executed once the chat is able to send and receive messages */

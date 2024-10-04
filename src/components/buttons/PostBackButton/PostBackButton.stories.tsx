@@ -12,14 +12,18 @@ type Story = StoryObj<typeof PostBackButton>;
 export const SimplePostback: Story = {
   name: 'PostBack Button',
   args: {
-    label: 'Help',
+    buttonData: {
+      label: 'Help',
+    },
   },
 };
 
 export const WithImage: Story = {
   name: 'PostBack Button with image',
   args: {
-    label: 'Help',
-    imageUrl: 'https://doc.tock.ai/tock/assets/images/logo.svg',
+    buttonData: {
+      label: 'Help',
+      imageUrl: 'https://doc.tock.ai/tock/assets/images/logo.svg',
+    },
   },
 };

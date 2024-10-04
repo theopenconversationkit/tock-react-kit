@@ -1,9 +1,7 @@
 import { AriaAttributes, ComponentType, DOMAttributes } from 'react';
 import { useTockSettings } from '../TockContext';
-
-interface RendererRegistry {
-  default: NonNullable<ComponentType<unknown>>;
-}
+import { ButtonRenderers } from './ButtonRenderers';
+import { RendererRegistry } from './RendererRegistry';
 
 export interface TextRendererProps {
   text: string;
@@ -71,6 +69,7 @@ export interface ImageRenderers extends RendererRegistry {
 }
 
 export interface RendererSettings {
+  buttonRenderers: ButtonRenderers;
   imageRenderers: ImageRenderers;
   textRenderers: TextRenderers;
 }
@@ -80,14 +79,22 @@ export const useImageRenderer = (name: keyof ImageRenderers): ImageRenderer => {
   return getRendererOrDefault('ImageRenderer', imageRenderers, name);
 };
 
+export const useButtonRenderer = <K extends keyof ButtonRenderers>(
+  name: K,
+): undefined extends ButtonRenderers[K]
+  ? NonNullable<ButtonRenderers[K]> | ButtonRenderers['default']
+  : ButtonRenderers[K] => {
+  const buttonRenderers = useTockSettings().renderers.buttonRenderers;
+  return getRendererOrDefault('ButtonRenderer', buttonRenderers, name);
+};
+
 function getRendererOrDefault<
   R extends RendererRegistry,
   K extends keyof R & string,
->(type: string, renderers: R, name: K): NonNullable<R[K]> {
-  return (
-    getRenderer(type, renderers, name) ??
-    (getRenderer(type, renderers, 'default') as NonNullable<R[K]>)
-  );
+  V = undefined extends R[K] ? NonNullable<R[K]> | R['default'] : R[K],
+>(type: string, renderers: R, name: K): V {
+  return (getRenderer(type, renderers, name) ??
+    getRenderer(type, renderers, 'default')) as V;
 }
 
 function getRenderer<R extends RendererRegistry, K extends keyof R & string>(

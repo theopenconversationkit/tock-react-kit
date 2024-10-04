@@ -2,14 +2,15 @@ import { quickReplyStyle } from '../../QuickReply/QuickReply';
 import { css, Interpolation, Theme } from '@emotion/react';
 import { baseButtonStyle } from '../../QuickReply';
 import QuickReplyImage from '../../QuickReply/QuickReplyImage';
-import { useTextRenderer } from '../../../settings/RendererSettings';
+import {
+  useButtonRenderer,
+  useTextRenderer,
+} from '../../../settings/RendererSettings';
+import { UrlButton as UrlButtonData } from '../../../model/buttons';
 
 type Props = {
   customStyle?: Interpolation<unknown>;
-  imageUrl?: string;
-  label: string;
-  target?: string;
-  url: string;
+  buttonData: UrlButtonData;
   tabIndex?: 0 | -1;
 };
 
@@ -29,10 +30,7 @@ const defaultUrlButtonCss: Interpolation<Theme> = [
 ];
 
 export const UrlButton: (props: Props) => JSX.Element = ({
-  url,
-  imageUrl,
-  label,
-  target = '_blank',
+  buttonData,
   customStyle,
   tabIndex,
 }: Props) => {
@@ -40,10 +38,17 @@ export const UrlButton: (props: Props) => JSX.Element = ({
     ? [baseUrlButtonCss, customStyle]
     : defaultUrlButtonCss;
   const TextRenderer = useTextRenderer('default');
+  const ButtonRenderer = useButtonRenderer('url');
   return (
-    <a href={url} target={target} css={css} tabIndex={tabIndex}>
-      {imageUrl && <QuickReplyImage src={imageUrl} />}
-      <TextRenderer text={label} />
-    </a>
+    <ButtonRenderer
+      buttonData={buttonData}
+      href={buttonData.url}
+      target={buttonData.target ?? '_blank'}
+      css={css}
+      tabIndex={tabIndex}
+    >
+      {buttonData.imageUrl && <QuickReplyImage src={buttonData.imageUrl} />}
+      <TextRenderer text={buttonData.label} />
+    </ButtonRenderer>
   );
 };

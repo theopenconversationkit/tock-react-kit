@@ -38,9 +38,12 @@ export const ButtonList: (props: Props) => JSX.Element = ({
     // having the default index-based key is fine since we do not reorder buttons
     <li key={index}>
       {'url' in item ? (
-        <UrlButton {...item}></UrlButton>
+        <UrlButton buttonData={item} />
       ) : (
-        <PostBackButton onClick={onItemClick.bind(null, item)} {...item} />
+        <PostBackButton
+          buttonData={item}
+          onClick={onItemClick.bind(null, item)}
+        />
       )}
     </li>
   );
