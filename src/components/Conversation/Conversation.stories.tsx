@@ -66,14 +66,22 @@ export const useExampleMessages = () => {
         imageUrl:
           'https://www.sncf.com/sites/default/files/styles/media_crop_4_3_paragraphe_50_50/public/2019-07/Train-spe%CC%81cial_Femme-en-or.jpg',
         type: MessageType.card,
-        buttons: [new UrlButton('Website', 'https://sncf.com')],
+        buttons: [
+          new UrlButton('Website', 'https://sncf.com', undefined, 'popup'),
+        ],
       },
       {
-        title: 'OUI.sncf',
-        imageUrl:
-          'https://www.oui.sncf/sites/all/modules/custom/vsct_feature_seo/images/oui-fb.jpg',
+        title: 'Popup',
         type: MessageType.card,
-        buttons: [new UrlButton('Website', 'https://sncf.com')],
+        buttons: [
+          new UrlButton(
+            'Popup',
+            'https://example.com',
+            undefined,
+            'popup',
+            'width=420,height=250',
+          ),
+        ],
       },
     ]);
     addMessage('With one card', 'bot');
