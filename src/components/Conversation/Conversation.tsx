@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 
@@ -33,17 +33,26 @@ const ConversationOuterContainer = styled.div`
   flex-direction: column;
 `;
 
-const ConversationInnerContainer = styled.ul`
+const ConversationInnerContainer = styled.ol`
   padding: 0;
   margin: 0;
   flex-grow: 1;
   flex-shrink: 1;
+  list-style: none;
   overflow-y: scroll;
   scroll-behavior: smooth;
   scrollbar-width: none;
   ::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const ConversationItemLi = styled.li`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0.5em 0;
 `;
 
 interface RenderOptions {
@@ -135,7 +144,9 @@ const Conversation = ({
     );
     const theme: TockTheme = useTheme();
     const displayableMessages = messages.slice(0, displayableMessageCount);
-    const scrollContainer = useScrollBehaviour([displayableMessages]);
+    const scrollContainer: RefObject<HTMLOListElement> = useScrollBehaviour([
+      displayableMessages,
+    ]);
     const renderMessage = (message: Message, index: number) => {
       const render: Renderer = MESSAGE_RENDERER[message.type];
       if (!render) return null;
@@ -144,14 +155,16 @@ const Conversation = ({
           value={message.metadata ?? {}}
           key={`${message.type}-${index}`}
         >
-          {render(
-            message,
-            {
-              widgets,
-              onAction,
-            },
-            accessibility,
-          )}
+          <ConversationItemLi key={`${message.type}-${index}`}>
+            {render(
+              message,
+              {
+                widgets,
+                onAction,
+              },
+              accessibility,
+            )}
+          </ConversationItemLi>
         </MessageMetadataContext>
       );
     };

@@ -9,12 +9,10 @@ import { useTextRenderer } from '../../settings/RendererSettings';
 import { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 export const MessageContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
-> = styled.li`
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   width: 100%;
   max-width: ${theme('sizing.conversation.width')};
-  margin: 0.5em auto;
-  list-style: none;
 
   p {
     margin: 0;

@@ -9,7 +9,6 @@ const LoaderContainer: StyledComponent<
 > = styled.div`
   width: 100%;
   max-width: ${prop('theme.sizing.conversation.width')};
-  margin: 0.5em auto;
 `;
 
 const BulletList = styled.div`
