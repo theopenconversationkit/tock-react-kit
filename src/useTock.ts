@@ -34,6 +34,7 @@ export interface UseTock {
   messages: Message[];
   quickReplies: QuickReply[];
   loading: boolean;
+  error: boolean;
   addMessage: (
     message: string,
     author: 'bot' | 'user',
@@ -147,6 +148,7 @@ const useTock: (
     userId,
     loading,
     sseInitializing,
+    error,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
   const { clearMessages }: UseLocalTools = useLocalTools(
@@ -362,6 +364,20 @@ const useTock: (
     [],
   );
 
+  const handleError: (error: unknown) => void = ({ error }) => {
+    console.error(error);
+    stopLoading();
+    setQuickReplies([]);
+    if (localStorage) {
+      window.localStorage.setItem('tockQuickReplyHistory', '');
+    }
+    dispatch({
+      type: 'SET_ERROR',
+      error: true,
+      loading: false,
+    });
+  };
+
   const getExtraHeaders: () => Promise<Record<string, string>> =
     extraHeadersProvider ?? (async () => ({}));
 
@@ -407,7 +423,7 @@ const useTock: (
         },
       })
         .then((res) => res.json())
-        .then(handlePostBotResponse)
+        .then(handlePostBotResponse, handleError)
         .finally(stopLoading);
     },
     [locale],
@@ -428,7 +444,7 @@ const useTock: (
         },
       })
         .then((res) => res.json())
-        .then(handlePostBotResponse)
+        .then(handlePostBotResponse, handleError)
         .finally(stopLoading);
     }, []);
 
@@ -475,7 +491,7 @@ const useTock: (
       },
     })
       .then((res) => res.json())
-      .then(handlePostBotResponse)
+      .then(handlePostBotResponse, handleError)
       .finally(stopLoading);
   }
 
@@ -636,6 +652,7 @@ const useTock: (
     messages,
     quickReplies,
     loading,
+    error,
     clearMessages,
     addCard,
     addCarousel,
