@@ -1,5 +1,5 @@
 import { AriaAttributes, ComponentType, DOMAttributes } from 'react';
-import { useTockSettings } from '../TockContext';
+import { useTockSettings } from './TockSettingsContext';
 import { ButtonRenderers } from './ButtonRenderers';
 import { RendererRegistry } from './RendererRegistry';
 

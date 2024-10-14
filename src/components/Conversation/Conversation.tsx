@@ -27,7 +27,7 @@ import type {
   Widget,
 } from '../../model/messages';
 import { MessageMetadataContext } from '../../MessageMetadata';
-import { useTockSettings } from '../../TockContext';
+import { useTockSettings } from '../../settings/TockSettingsContext';
 
 const ConversationOuterContainer = styled.div`
   display: flex;

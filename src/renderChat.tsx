@@ -6,21 +6,26 @@ import TockTheme from './styles/theme';
 import defaultTheme from './styles/defaultTheme';
 import TockOptions from './TockOptions';
 import { default as createTheme } from './styles/createTheme';
-import { PartialDeep } from 'type-fest';
-import TockSettings from './settings/TockSettings';
+import { TockOptionalSettings } from './settings/TockSettings';
 
 export const renderChat: (
   container: HTMLElement,
-  endPoint: string,
+  endpoint: string,
   referralParameter: string,
   theme: TockTheme,
   options: TockOptions,
 ) => void = (
   container: HTMLElement,
-  endPoint: string,
+  endpoint: string,
   referralParameter?: string,
   theme: TockTheme = defaultTheme,
-  { localStorage, locale, ...options }: TockOptions = {},
+  {
+    locale,
+    localStorage = {},
+    renderers,
+    network = {},
+    ...options
+  }: TockOptions = {},
 ): void => {
   if (typeof localStorage === 'boolean') {
     throw new Error(
@@ -28,15 +33,29 @@ export const renderChat: (
     );
   }
 
-  const settings: PartialDeep<TockSettings> = {
-    endPoint,
+  if (options.localStorageHistory?.enable) {
+    localStorage.enableMessageHistory = true;
+  }
+  if (options.localStorageHistory?.maxNumberMessages) {
+    localStorage.maxMessageCount =
+      options.localStorageHistory.maxNumberMessages;
+  }
+  if (options.disableSse) {
+    network.disableSse = true;
+  }
+  if (options.extraHeadersProvider) {
+    network.extraHeadersProvider = options.extraHeadersProvider;
+  }
+  const settings: TockOptionalSettings = {
+    locale,
+    localStorage,
+    network,
+    renderers,
   };
-  if (localStorage) settings.localStorage = localStorage;
-  if (locale) settings.locale = locale;
 
   createRoot(container).render(
     <ThemeProvider theme={createTheme(theme)}>
-      <TockContext settings={settings}>
+      <TockContext endpoint={endpoint} settings={settings}>
         <Chat referralParameter={referralParameter} {...options} />
       </TockContext>
     </ThemeProvider>,
