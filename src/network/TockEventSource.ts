@@ -8,6 +8,10 @@ import {
 class RetriableError extends Error {}
 class FatalError extends Error {}
 
+const INITIAL_RETRY_DELAY = 0;
+const RETRY_DELAY_INCREMENT = 1000;
+const MAX_RETRY_DELAY = 15000;
+
 export class TockEventSource {
   private initialized: boolean;
   private abortController: AbortController;
@@ -17,7 +21,7 @@ export class TockEventSource {
 
   constructor() {
     this.initialized = false;
-    this.retryDelay = 1000;
+    this.retryDelay = INITIAL_RETRY_DELAY;
   }
 
   isInitialized(): boolean {
@@ -66,7 +70,12 @@ export class TockEventSource {
           if (err instanceof FatalError) {
             throw err; // rethrow to stop the operation
           } else {
-            return this.retryDelay;
+            const retryDelay = this.retryDelay;
+            this.retryDelay = Math.min(
+              MAX_RETRY_DELAY,
+              retryDelay + RETRY_DELAY_INCREMENT,
+            );
+            return retryDelay;
           }
         },
       }).finally(() => {
