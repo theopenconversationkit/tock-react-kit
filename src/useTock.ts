@@ -605,12 +605,15 @@ export const useTock0: (
   }, [handleSseBotResponse, onSseStateChange]);
 
   useEffect(() => {
-    if (disableSse) {
+    if (disableSse || !tockEndPoint.length) {
       afterInit.current();
     } else {
       // Trigger afterInit regardless of whether the SSE call succeeded or failed
       // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
-      sseSource.current.open(tockEndPoint, userId).finally(afterInit.current);
+      sseSource.current
+        .open(tockEndPoint, userId)
+        .catch((e) => console.error(e))
+        .finally(afterInit.current);
     }
     return () => sseSource.current.close();
   }, [disableSse, tockEndPoint]);

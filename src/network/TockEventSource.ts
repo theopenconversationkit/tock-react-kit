@@ -78,11 +78,13 @@ export class TockEventSource {
             return retryDelay;
           }
         },
-      }).finally(() => {
-        reject();
-        this.onStateChange(EventSource.CLOSED);
-        this.initialized = false;
-      });
+      })
+        .catch((e) => console.error(e))
+        .finally(() => {
+          reject();
+          this.onStateChange(EventSource.CLOSED);
+          this.initialized = false;
+        });
     });
   }
 
