@@ -27,6 +27,7 @@ import type {
   Widget,
 } from '../../model/messages';
 import { MessageMetadataContext } from '../../MessageMetadata';
+import { useTockSettings } from '../../TockContext';
 
 const ConversationOuterContainer = styled.div`
   display: flex;
@@ -119,6 +120,7 @@ type Props = DetailedHTMLProps<
   messageDelay: number;
   widgets?: { [id: string]: (props: unknown) => JSX.Element };
   loading?: boolean;
+  error?: boolean;
   quickReplies: QuickReply[];
   onAction: (button: Button) => void;
   onQuickReplyClick: (button: Button) => void;
@@ -129,6 +131,7 @@ const Conversation = ({
   messages,
   messageDelay,
   loading = false,
+  error = false,
   onAction,
   widgets = {},
   onQuickReplyClick,
@@ -147,6 +150,8 @@ const Conversation = ({
     const scrollContainer: RefObject<HTMLOListElement> = useScrollBehaviour([
       displayableMessages,
     ]);
+    const ErrorMessageRenderer =
+      useTockSettings().renderers.messageRenderers.error;
     const renderMessage = (message: Message, index: number) => {
       const render: Renderer = MESSAGE_RENDERER[message.type];
       if (!render) return null;
@@ -179,6 +184,7 @@ const Conversation = ({
         <ConversationInnerContainer ref={scrollContainer}>
           {displayableMessages.map(renderMessage)}
           {loading && <Loader />}
+          {error && ErrorMessageRenderer && <ErrorMessageRenderer />}
         </ConversationInnerContainer>
         {!loading &&
           displayableMessageCount === messages.length &&

@@ -28,6 +28,7 @@ export const defaultSettings: TockSettings = {
         return <img src={src} alt={alt} {...props} />;
       },
     },
+    messageRenderers: {},
     textRenderers: {
       default({ text }) {
         return text;

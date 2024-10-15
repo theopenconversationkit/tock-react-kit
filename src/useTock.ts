@@ -34,6 +34,7 @@ export interface UseTock {
   messages: Message[];
   quickReplies: QuickReply[];
   loading: boolean;
+  error: boolean;
   addMessage: (
     message: string,
     author: 'bot' | 'user',
@@ -147,6 +148,7 @@ const useTock: (
     userId,
     loading,
     sseInitializing,
+    error,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
   const { clearMessages }: UseLocalTools = useLocalTools(
@@ -224,42 +226,44 @@ const useTock: (
       }
       dispatch({
         type: 'ADD_MESSAGE',
-        messages: responses.map(
-          ({ text, card, carousel, widget, image, buttons }) => {
-            let message: Message;
-            if (widget) {
-              message = {
-                widgetData: widget,
-                type: MessageType.widget,
-              } as Widget;
-            } else if (text) {
-              message = {
-                author: 'bot',
-                message: text,
-                type: MessageType.message,
-                buttons: (buttons || [])
-                  .filter((button) => button.type !== 'quick_reply')
-                  .map(mapButton),
-              } as TextMessage;
-            } else if (card) {
-              message = mapCard(card);
-            } else if (image) {
-              message = mapImage(image);
-            } else {
-              message = {
-                cards: carousel?.cards?.map(mapCard) ?? [],
-                type: MessageType.carousel,
-              } as Carousel;
-            }
+        messages: responses.flatMap((response) => {
+          const { text, card, carousel, widget, image, buttons } = response;
+          let message: Message;
+          if (widget) {
+            message = {
+              widgetData: widget,
+              type: MessageType.widget,
+            } as Widget;
+          } else if (text) {
+            message = {
+              author: 'bot',
+              message: text,
+              type: MessageType.message,
+              buttons: (buttons || [])
+                .filter((button) => button.type !== 'quick_reply')
+                .map(mapButton),
+            } as TextMessage;
+          } else if (card) {
+            message = mapCard(card);
+          } else if (image) {
+            message = mapImage(image);
+          } else if (carousel) {
+            message = {
+              cards: carousel.cards.map(mapCard),
+              type: MessageType.carousel,
+            } as Carousel;
+          } else {
+            console.error('Unsupported bot response', response);
+            return [];
+          }
 
-            message.metadata = metadata;
+          message.metadata = metadata;
 
-            if (localStorageHistory?.enable ?? false) {
-              recordResponseToLocaleSession(message);
-            }
-            return message;
-          },
-        ),
+          if (localStorageHistory?.enable ?? false) {
+            recordResponseToLocaleSession(message);
+          }
+          return [message];
+        }),
       });
     }
   };
@@ -362,6 +366,20 @@ const useTock: (
     [],
   );
 
+  const handleError: (error: unknown) => void = ({ error }) => {
+    console.error(error);
+    stopLoading();
+    setQuickReplies([]);
+    if (localStorage) {
+      window.localStorage.setItem('tockQuickReplyHistory', '');
+    }
+    dispatch({
+      type: 'SET_ERROR',
+      error: true,
+      loading: false,
+    });
+  };
+
   const getExtraHeaders: () => Promise<Record<string, string>> =
     extraHeadersProvider ?? (async () => ({}));
 
@@ -407,7 +425,7 @@ const useTock: (
         },
       })
         .then((res) => res.json())
-        .then(handlePostBotResponse)
+        .then(handlePostBotResponse, handleError)
         .finally(stopLoading);
     },
     [locale],
@@ -428,7 +446,7 @@ const useTock: (
         },
       })
         .then((res) => res.json())
-        .then(handlePostBotResponse)
+        .then(handlePostBotResponse, handleError)
         .finally(stopLoading);
     }, []);
 
@@ -475,7 +493,7 @@ const useTock: (
       },
     })
       .then((res) => res.json())
-      .then(handlePostBotResponse)
+      .then(handlePostBotResponse, handleError)
       .finally(stopLoading);
   }
 
@@ -636,6 +654,7 @@ const useTock: (
     messages,
     quickReplies,
     loading,
+    error,
     clearMessages,
     addCard,
     addCarousel,

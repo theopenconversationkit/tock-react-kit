@@ -68,9 +68,14 @@ export interface ImageRenderers extends RendererRegistry {
   buttonIcon?: ImageRenderer;
 }
 
+export interface MessageRenderers {
+  error?: ComponentType;
+}
+
 export interface RendererSettings {
   buttonRenderers: ButtonRenderers;
   imageRenderers: ImageRenderers;
+  messageRenderers: MessageRenderers;
   textRenderers: TextRenderers;
 }
 
