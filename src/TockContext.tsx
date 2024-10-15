@@ -55,6 +55,7 @@ export interface TockState {
   loading: boolean;
   sseInitializing: boolean;
   metadata: Record<string, string>;
+  error: boolean;
 }
 
 export interface TockAction {
@@ -64,12 +65,14 @@ export interface TockAction {
     | 'SET_METADATA'
     | 'SET_LOADING'
     | 'SET_SSE_INITIALIZING'
-    | 'CLEAR_MESSAGES';
+    | 'CLEAR_MESSAGES'
+    | 'SET_ERROR';
   quickReplies?: QuickReply[];
   messages?: Message[];
   loading?: boolean;
   sseInitializing?: boolean;
   metadata?: Record<string, string>;
+  error?: boolean;
 }
 
 const tockReducer: Reducer<TockState, TockAction> = (
@@ -82,6 +85,7 @@ const tockReducer: Reducer<TockState, TockAction> = (
         return {
           ...state,
           quickReplies: action.quickReplies,
+          error: !!action.error,
         };
       }
       break;
@@ -90,6 +94,7 @@ const tockReducer: Reducer<TockState, TockAction> = (
         return {
           ...state,
           messages: [...state.messages, ...action.messages],
+          error: !!action.error,
         };
       }
       break;
@@ -106,6 +111,7 @@ const tockReducer: Reducer<TockState, TockAction> = (
         return {
           ...state,
           sseInitializing: action.sseInitializing,
+          error: !!action.error,
         };
       }
       break;
@@ -125,6 +131,11 @@ const tockReducer: Reducer<TockState, TockAction> = (
         };
       }
       break;
+    case 'SET_ERROR':
+      return {
+        ...state,
+        error: !!action.error,
+      };
     default:
       break;
   }
@@ -149,6 +160,7 @@ const TockContext: (props: {
     loading: false,
     sseInitializing: false,
     metadata: {},
+    error: false,
   });
   return (
     <TockSettingsContext.Provider value={mergedSettings}>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { JSX, useEffect } from 'react';
 import useTock, { UseTock } from '../../useTock';
 import ChatInput from '../ChatInput';
 import Container from '../Container';
@@ -52,6 +52,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sseInitPromise,
     sseInitializing,
     clearMessages,
+    error,
   }: UseTock = useTock(
     endPoint,
     extraHeadersProvider,
@@ -90,6 +91,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         messageDelay={timeoutBetweenMessage}
         widgets={widgets}
         loading={loading}
+        error={error}
         quickReplies={quickReplies}
         onAction={sendAction}
         onQuickReplyClick={sendQuickReply}

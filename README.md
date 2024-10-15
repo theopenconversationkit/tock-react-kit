@@ -349,13 +349,14 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `RendererSettings`
 
-| Property name     | Type               | Description                                                                   |
-|-------------------|--------------------|-------------------------------------------------------------------------------|
-| `buttonRenderers` | `ButtonRenderers?` | Configuration of renderers for buttons displayed in the chat interface        |
-| `imageRenderers`  | `ImageRenderers?`  | Configuration of renderers for dynamic images displayed in the chat interface |
-| `textRenderers`   | `TextRenderers?`   | Configuration of renderers for dynamic text displayed in the chat interface   |
+| Property name      | Type                | Description                                                                        |
+|--------------------|---------------------|------------------------------------------------------------------------------------|
+| `buttonRenderers`  | `ButtonRenderers?`  | Configuration of renderers for buttons displayed in the chat interface             |
+| `imageRenderers`   | `ImageRenderers?`   | Configuration of renderers for dynamic images displayed in the chat interface      |
+| `messageRenderers` | `MessageRenderers?` | Configuration of renderers for individual message components in the chat interface |
+| `textRenderers`    | `TextRenderers?`    | Configuration of renderers for dynamic text displayed in the chat interface        |
 
-#### `ButtonRendererSettings`
+#### `ButtonRenderers`
 
 Button renderers all implement some specialization of the `ButtonRenderer` interface.
 They are tasked with rendering a graphical component using button-specific data, a class name, and other generic HTML attributes.
@@ -368,7 +369,7 @@ The passed in class name provides the default style for the rendered component, 
 | `postback`    | `PostBackButtonRenderer?`   | Renders a `PostBackButton`                                                                           |
 | `quickReply`  | `QuickReplyButtonRenderer?` | Renders a `QuickReply`                                                                               |
 
-#### `ImageRendererSettings`
+#### `ImageRenderers`
 
 Image renderers all implement the `ImageRenderer` interface.
 They are tasked with rendering a graphical component using a source URL, a description, a class name, and other generic HTML attributes.
@@ -381,7 +382,17 @@ The passed in class name provides the default style for the rendered component, 
 | `card`        | Renders images in the card component (including in carousels)                                     |
 | `buttonIcon`  | Renders icons in quick replies, URL buttons, and postback buttons                                 |
 
-#### `TextRendererSettings`
+#### `MessageRenderers`
+
+Message renderers are tasked with rendering individual messages exchanged between the bot and the user.
+Currently, the only message renderer that can be defined here is for the `error` message - a special message that only
+appears after a network error (and disappears after a successful request).
+
+| Property name | Description                                                                          |
+|---------------|--------------------------------------------------------------------------------------|
+| `error`       | The error message renderer. If left unspecified, no error message is ever displayed. |
+
+#### `TextRenderers`
 
 Text renderers all implement the `TextRenderer` interface.
 They are tasked with rendering a string into a text component.

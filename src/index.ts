@@ -50,8 +50,9 @@ export type {
   ImageRenderer,
   TextRenderer,
   RendererSettings,
-  TextRenderers,
   ImageRenderers,
+  MessageRenderers,
+  TextRenderers,
 } from './settings/RendererSettings';
 export type {
   ButtonRenderers,
