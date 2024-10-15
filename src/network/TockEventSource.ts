@@ -45,7 +45,9 @@ export class TockEventSource {
         onopen: async (response) => {
           if (
             response.ok &&
-            response.headers.get('content-type') === EventStreamContentType
+            response.headers
+              .get('content-type')
+              ?.includes(EventStreamContentType)
           ) {
             this.onStateChange(EventSource.OPEN);
             this.initialized = true;

@@ -8,9 +8,12 @@ type Props = PropsWithChildren<{
 }>;
 
 export const TockNetworkContext = ({
+  children,
   endpoint,
   settings,
 }: Props): JSX.Element => {
   const tock = useTock0(endpoint, settings);
-  return <UseTockContext.Provider value={tock} />;
+  return (
+    <UseTockContext.Provider value={tock}>{children}</UseTockContext.Provider>
+  );
 };
