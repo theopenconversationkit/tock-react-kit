@@ -32,12 +32,12 @@ export type {
   UrlButton as UrlButtonData,
   QuickReply as QuickReplyData,
 } from './model/buttons';
+export { MessageType } from './model/messages';
 export type {
   Card as CardData,
   Carousel as CarouselData,
   Image as ImageData,
   Message as MessageData,
-  MessageType,
   TextMessage as TextMessageData,
   Widget as WidgetData,
   WidgetPayload,
