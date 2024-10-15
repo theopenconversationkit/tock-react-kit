@@ -36,7 +36,6 @@ const Input: StyledComponent<
   color: ${theme('palette.text.input')};
 
   border: none;
-  outline: none;
 
   font-family: inherit;
   font-size: inherit;

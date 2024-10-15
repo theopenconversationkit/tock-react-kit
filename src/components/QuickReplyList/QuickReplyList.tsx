@@ -10,7 +10,7 @@ export const baseButtonListStyle: (props: {
   theme: Theme;
 }) => SerializedStyles = ({ theme }) => css`
   max-width: ${theme.sizing.conversation.width};
-  margin: 0.5em auto;
+  margin: 0 auto;
   text-align: left;
 
   overflow: auto;
@@ -20,7 +20,7 @@ export const baseButtonListStyle: (props: {
   &::-webkit-scrollbar {
     display: none;
   }
-  padding: 0 1em;
+  padding: 0.5em 1em;
 `;
 
 const QuickReplyListContainer: StyledComponent<
