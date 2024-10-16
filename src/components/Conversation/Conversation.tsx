@@ -34,7 +34,7 @@ const ConversationOuterContainer = styled.div`
   flex-direction: column;
 `;
 
-const ConversationInnerContainer = styled.ol`
+const ConversationInnerContainer = styled.ul`
   padding: 0;
   margin: 0;
   flex-grow: 1;
