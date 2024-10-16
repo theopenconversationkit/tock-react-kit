@@ -70,14 +70,7 @@ export interface UseTock {
 }
 
 function mapButton(button: BotConnectorButton): Button {
-  if (button.type === 'web_url') {
-    return new UrlButton(
-      button.title,
-      button.url,
-      button.imageUrl,
-      button.target,
-    );
-  } else if (button.type === 'postback') {
+  if (button.type === 'postback') {
     return new PostBackButton(button.title, button.payload, button.imageUrl);
   } else if (button.type === 'quick_reply') {
     return new QuickReply(
@@ -92,6 +85,7 @@ function mapButton(button: BotConnectorButton): Button {
       button.url,
       button.imageUrl,
       button.target,
+      button.windowFeatures,
     );
   }
 }

@@ -7,6 +7,7 @@ import {
   useTextRenderer,
 } from '../../../settings/RendererSettings';
 import { UrlButton as UrlButtonData } from '../../../model/buttons';
+import { MouseEventHandler } from 'react';
 
 type Props = {
   customStyle?: Interpolation<unknown>;
@@ -39,6 +40,16 @@ export const UrlButton: (props: Props) => JSX.Element = ({
     : defaultUrlButtonCss;
   const TextRenderer = useTextRenderer('default');
   const ButtonRenderer = useButtonRenderer('url');
+  const onClick: MouseEventHandler | undefined = buttonData.windowFeatures
+    ? (e) => {
+        e.preventDefault();
+        window.open(
+          buttonData.url,
+          buttonData.target,
+          buttonData.windowFeatures,
+        );
+      }
+    : undefined;
   return (
     <ButtonRenderer
       buttonData={buttonData}
@@ -46,6 +57,7 @@ export const UrlButton: (props: Props) => JSX.Element = ({
       target={buttonData.target ?? '_blank'}
       css={css}
       tabIndex={tabIndex}
+      onClick={onClick}
     >
       {buttonData.imageUrl && <QuickReplyImage src={buttonData.imageUrl} />}
       <TextRenderer text={buttonData.label} />

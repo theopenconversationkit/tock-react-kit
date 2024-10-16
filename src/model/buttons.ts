@@ -34,12 +34,20 @@ export class UrlButton {
   url: string;
   imageUrl?: string;
   target?: string;
+  windowFeatures?: string;
 
-  constructor(label: string, url: string, imageUrl?: string, target?: string) {
+  constructor(
+    label: string,
+    url: string,
+    imageUrl?: string,
+    target?: string,
+    windowFeatures?: string,
+  ) {
     this.label = label;
     this.url = url;
     this.imageUrl = imageUrl;
     this.target = target;
+    this.windowFeatures = windowFeatures;
   }
 }
 
