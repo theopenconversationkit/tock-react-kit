@@ -11,7 +11,7 @@ import useRefs from './useRefs';
 import useMeasures, { Measure } from './useMeasures';
 
 type CarouselItem = {
-  refObject: RefObject<HTMLElement>;
+  refObject: RefObject<HTMLLIElement>;
   isHidden: boolean;
   setIsHidden: Dispatch<SetStateAction<boolean>>;
 };

@@ -5,12 +5,11 @@ import '../../styles/theme';
 import { css, Interpolation, Theme } from '@emotion/react';
 import { useImageRenderer } from '../../settings/RendererSettings';
 
-export const ImageOuter: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
-> = styled.li`
+const ImageOuter: StyledComponent<
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   max-width: ${prop('theme.sizing.conversation.width')};
-  margin: 0.5em auto;
-  list-style: none;
+  width: 100%;
 `;
 
 export const ImageContainer: StyledComponent<
@@ -40,7 +39,7 @@ export interface ImageProps {
   alternative?: string;
 }
 
-const Image = forwardRef<HTMLLIElement, ImageProps>(function imageRender(
+const Image = forwardRef<HTMLDivElement, ImageProps>(function imageRender(
   { url: src, alternative: alt }: ImageProps,
   ref,
 ) {

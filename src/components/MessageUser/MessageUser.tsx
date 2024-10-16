@@ -6,7 +6,7 @@ import { MessageContainer as BotMessageContainer } from '../MessageBot';
 import { useTextRenderer } from '../../settings/RendererSettings';
 
 const MessageContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 > = styled(BotMessageContainer)`
   text-align: right;
 `;

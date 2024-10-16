@@ -1,10 +1,5 @@
 import styled, { StyledComponent } from '@emotion/styled';
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  MutableRefObject,
-} from 'react';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import { theme } from 'styled-tools';
 
 import { Button as ButtonData } from '../../model/buttons';
@@ -18,11 +13,10 @@ import {
 } from '../../settings/RendererSettings';
 
 export const CardOuter: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
-> = styled.li`
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
   max-width: ${theme('sizing.conversation.width')};
-  margin: 0.5em auto;
-  list-style: none;
+  width: 100%;
 `;
 
 export const CardContainer: StyledComponent<
@@ -125,22 +119,15 @@ export interface CardProps {
   onAction: (button: ButtonData) => void;
 }
 
-const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
-  {
-    title,
-    subTitle,
-    imageUrl,
-    imageAlternative,
-    buttons,
-    roleDescription,
-    isHidden = false,
-    onAction,
-  }: CardProps,
-  ref:
-    | ((instance: HTMLLIElement | null) => void)
-    | MutableRefObject<HTMLLIElement | null>
-    | null,
-) {
+const Card = ({
+  title,
+  subTitle,
+  imageUrl,
+  imageAlternative,
+  buttons,
+  isHidden = false,
+  onAction,
+}: CardProps) => {
   const ImageRenderer = useImageRenderer('card');
   const HtmlRenderer = useTextRenderer('htmlPhrase');
   const renderButton = (button: ButtonData, index: number) => (
@@ -164,17 +151,7 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
     </li>
   );
   return (
-    <CardOuter
-      ref={ref}
-      role={ref == undefined ? undefined : 'group'}
-      aria-roledescription={
-        ref == undefined
-          ? undefined
-          : roleDescription
-            ? roleDescription
-            : 'Slide'
-      }
-    >
+    <CardOuter>
       <CardContainer aria-hidden={isHidden}>
         {imageUrl && (
           <ImageRenderer
@@ -197,6 +174,6 @@ const Card = forwardRef<HTMLLIElement, CardProps>(function cardRender(
       </CardContainer>
     </CardOuter>
   );
-});
+};
 
 export default Card;

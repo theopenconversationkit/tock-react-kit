@@ -14,11 +14,11 @@ import TockAccessibility from 'TockAccessibility';
 import TockTheme from '../../styles/theme';
 
 const ButtonContainer: StyledComponent<
-  DetailedHTMLProps<HTMLAttributes<HTMLLIElement>, HTMLLIElement>
-> = styled.li`
-  margin: 0.4em 0;
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = styled.div`
+  width: 100%;
   position: relative;
-  list-style: none;
+  overflow-x: auto;
 `;
 
 const ItemContainer: StyledComponent<
@@ -32,6 +32,7 @@ const ItemContainer: StyledComponent<
   touch-action: pan-x pan-y;
   position: relative;
   padding: 0;
+  list-style: none;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -166,17 +167,29 @@ const Carousel: (props: {
         }
         tabIndex={-1}
       >
-        {children?.map((child, i) =>
-          cloneElement(
-            child,
-            {
-              ref: ref.items[i].refObject,
-              roleDescription: accessibility?.carousel?.slideRoleDescription,
-              isHidden: ref.items[i].isHidden,
-            },
-            undefined,
-          ),
-        )}
+        {children?.map((child, i) => {
+          const cardRef = ref.items[i].refObject;
+          return (
+            <li
+              key={`carousel-card-${i}`}
+              ref={cardRef}
+              role={cardRef == undefined ? undefined : 'group'}
+              aria-roledescription={
+                cardRef === undefined
+                  ? undefined
+                  : accessibility?.carousel?.slideRoleDescription ?? 'Slide'
+              }
+            >
+              {cloneElement(
+                child,
+                {
+                  isHidden: ref.items[i].isHidden,
+                },
+                undefined,
+              )}
+            </li>
+          );
+        })}
       </ItemContainer>
       {rightVisible && (
         <Next onClick={next}>
