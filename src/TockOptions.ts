@@ -1,10 +1,9 @@
-import { PartialDeep } from 'type-fest';
 import TockAccessibility from './TockAccessibility';
 import TockLocalStorage from './TockLocalStorage';
-import TockSettings from './settings/TockSettings';
+import { TockOptionalSettings } from './settings/TockSettings';
 import PostInitContext from './PostInitContext';
 
-export interface TockOptions extends PartialDeep<TockSettings> {
+export interface TockOptions extends TockOptionalSettings {
   // a callback that will be executed once the chat is able to send and receive messages
   afterInit?: (context: PostInitContext) => Promise<void>;
   // An initial message to send to the backend to trigger a welcome sequence

@@ -38,37 +38,48 @@ const meta: Meta<typeof Chat> = {
   component: Chat,
   tags: ['autodocs'],
   title: 'Chat app',
+  args: {
+    widgets: {
+      ProductWidget,
+    },
+  },
 };
 
 export default meta;
 export type Story = StoryObj<typeof Chat>;
 
+export const Empty: Story = {
+  decorators: [
+    (Story) => (
+      <FullscreenContainer>
+        <Story />
+      </FullscreenContainer>
+    ),
+  ],
+};
+
 export const DefaultFullScreen: Story = {
   name: 'Default full screen',
-  // eslint-disable-next-line react/display-name
-  render: () => (
-    <Wrapper>
-      <FullscreenContainer>
-        <Chat
-          endPoint=""
-          referralParameter=""
-          widgets={{
-            ProductWidget,
-          }}
-        />
-      </FullscreenContainer>
-    </Wrapper>
-  ),
+  decorators: [
+    (Story) => (
+      <Wrapper>
+        <FullscreenContainer>
+          <Story />
+        </FullscreenContainer>
+      </Wrapper>
+    ),
+  ],
 };
 
 export const DefaultModal: Story = {
   name: 'Default modal',
-  // eslint-disable-next-line react/display-name
-  render: () => (
-    <Wrapper>
-      <ModalContainer>
-        <Chat endPoint="" referralParameter="" />
-      </ModalContainer>
-    </Wrapper>
-  ),
+  decorators: [
+    (Story) => (
+      <Wrapper>
+        <ModalContainer>
+          <Story />
+        </ModalContainer>
+      </Wrapper>
+    ),
+  ],
 };

@@ -1,11 +1,10 @@
-import React from 'react';
-
-import TockProvider from '../../src/TockContext';
+import { JSX } from 'react';
+import TockContext from '../../src/TockContext';
 
 const TockContextDecorator = (Story: () => JSX.Element) => (
-    <TockProvider>
+    <TockContext endpoint="">
         <Story/>
-    </TockProvider>
+    </TockContext>
 );
 
 export default TockContextDecorator;

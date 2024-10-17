@@ -80,16 +80,20 @@ Your bundler must support ESM modules, which is the case for Webpack, Rollup and
 import { ThemeProvider } from "@emotion/react";
 import { TockContext, Chat, createTheme } from 'tock-react-kit';
 
-<TockContext settings={{
-    endPoint: "<TOCK_BOT_API_URL>",
+<TockContext endpoint="<TOCK_BOT_API_URL>" settings={{
+    // all properties from TockSettings can be configured here, like:
+    locale: navigator.language,
+    network: {
+      disableSse: true,
+    },
 }}>
     <ThemeProvider theme={createTheme({ /* ... */})}>
         <Chat
-            /* The following parameters are optional */
-            referralParameter="referralParameter"
-            // also accepts all properties from TockOptions, like:
-            disableSse
+            /* All parameters are optional */
+            afterInit={() => {}}
             openingMessage="Hi"
+            referralParameter="referralParameter"
+            widgets={{...}}
         />
     </ThemeProvider>
 </TockContext>
@@ -217,9 +221,11 @@ Renders an entire chat in a target element.
 | `theme`             | `TockTheme`                                                           | Optional theme object                          |
 | `options`           | `TockOptions`                                                         | Optional options object                        |
 
-### `useTock(tockBotApiUrl, extraHeadersProvider, disableSse, localStorageHistory)`
+### `useTock()`
 
 Hook that provides chat history and methods to communicate with the Tock Bot. It must be used alongside with `TockContext`. Returns a useTock interface.
+
+Until version 24.9.0 of the tock-react-kit, this function took the following arguments, which are now moved to [`TockSettings`](#TockSettings):
 
 | Argument name          | Type                                    | Description                                                   |
 |------------------------|-----------------------------------------|---------------------------------------------------------------|
@@ -334,18 +340,30 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 ### `TockSettings`
 
+The main source of configuration for the chatbot interface.
+Objects implementing this interface can be passed to `renderChat` or to `TockContext`.
+
 | Property name  | Type                    | Description                                          |
 |----------------|-------------------------|------------------------------------------------------|
-| `endPoint`     | `string`                | URL for the bot's web connector endpoint             |
 | `locale`       | `string?`               | Optional user language, as an *RFC 5646* code        |
 | `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
+| `network`      | `NetworkSettings?`      | If `true`, disables any SSE connection attempt       |
 | `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers    |
 
 #### `LocalStorageSettings`
 
-| Property name   | Type      | Description                                                                                   |
-|-----------------|-----------|-----------------------------------------------------------------------------------------------|
-| `storagePrefix` | `string?` | Prefix for local storage keys allowing communication with different bots from the same domain |
+| Property name          | Type       | Description                                                                                                                                 |
+|------------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `enableMessageHistory` | `boolean?` | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                   |
+| `maxMessageCount`      | `number?`  | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                  |
+| `prefix`               | `string?`  | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history). |
+
+#### `NetworkSettings`
+
+| Property name          | type                                     | Description                                       |
+|------------------------|------------------------------------------|---------------------------------------------------|
+| `disableSse`           | `boolean?`                               | If `true`, disables any SSE connection attempt    |
+| `extraHeadersProvider` | `() => Promise<Record<string, string>>?` | Provides extra HTTP headers for outgoing requests |
 
 #### `RendererSettings`
 
@@ -489,10 +507,9 @@ renderChat(
 
 #### Local storage history
 
-The optional `localStorageHistory` makes it possible to provide a history session of messages.
+The optional `localStorage.enableMessageHistory` setting (disabled by default) makes it possible to provide a history session of messages.
 This history loads at the creation of the chat and is stored in the local storage of the browser.
-
-The `localStorageHistory` parameter is an object, by default not set (enable then to false).
+The number of persisted messages can be configured with the `localStorage.maxMessageCount` setting.
 
 Example:
 
@@ -502,9 +519,9 @@ renderChat(
     '<TOCK_BOT_API_URL>',
     undefined,
     {},
-    { localStorageHistory: {
-        enable: true,
-        maxNumberMessages: 15, // by default 10 messages max
+    { localStorage: {
+        enableMessageHistory: true,
+        maxMessageCount: 15, // default is 10 messages max
       }
     },
 );

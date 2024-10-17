@@ -1,15 +1,21 @@
-import { Dispatch, useCallback, useRef } from 'react';
+import {
+  createContext,
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   TockAction,
   TockState,
   useTockDispatch,
   useTockState,
-  useTockSettings,
-} from './TockContext';
-import * as Sse from './Sse';
+} from './TockState';
+import { useTockSettings } from './settings/TockSettingsContext';
 import useLocalTools, { UseLocalTools } from './useLocalTools';
-import TockLocalStorage from 'TockLocalStorage';
-import { storageAvailable } from './utils';
+import type TockLocalStorage from 'TockLocalStorage';
+import { retrievePrefixedLocalStorageKey, storageAvailable } from './utils';
 import { TockHistoryData } from './PostInitContext';
 import { Button, PostBackButton, QuickReply, UrlButton } from './model/buttons';
 import {
@@ -23,12 +29,13 @@ import {
   WidgetPayload,
 } from './model/messages';
 import {
-  BotConnectorResponse,
   BotConnectorButton,
   BotConnectorCard,
   BotConnectorImage,
+  BotConnectorResponse,
 } from './model/responses';
-import { retrievePrefixedLocalStorageKey } from './utils';
+import TockSettings from './settings/TockSettings';
+import { TockEventSource } from './network/TockEventSource';
 
 export interface UseTock {
   messages: Message[];
@@ -112,30 +119,19 @@ function mapImage(image: BotConnectorImage): Image {
 
 const FINISHED_PROCESSING = -1;
 
-const useTock: (
-  tockEndPoint?: string,
+export const useTock0: (
+  tockEndPoint: string,
+  settings: TockSettings,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
 ) => UseTock = (
-  tockEndPointArg?: string,
+  tockEndPoint: string,
+  { locale, localStorage: localStorageSettings, network: networkSettings },
   extraHeadersProvider?: () => Promise<Record<string, string>>,
-  disableSse?: boolean,
-  localStorageHistory?: TockLocalStorage,
+  disableSseArg?: boolean,
+  localStorageHistoryArg?: TockLocalStorage,
 ) => {
-  const {
-    endPoint: tockEndPointCtx,
-    locale,
-    localStorage: { prefix: localStoragePrefix },
-  } = useTockSettings();
-  if (tockEndPointCtx == null && tockEndPointArg == null) {
-    throw new Error('TOCK endpoint must be provided in TockContext');
-  } else if (tockEndPointCtx == null) {
-    console.warn(
-      'Passing TOCK endpoint as argument to TockChat or useTock is deprecated; please set it in TockContext instead.',
-    );
-  }
-  const tockEndPoint: string = (tockEndPointArg ?? tockEndPointCtx)!;
   const {
     messages,
     quickReplies,
@@ -145,166 +141,187 @@ const useTock: (
     error,
   }: TockState = useTockState();
   const dispatch: Dispatch<TockAction> = useTockDispatch();
-  const { clearMessages }: UseLocalTools = useLocalTools(
-    localStorageHistory?.enable ?? false,
-  );
+  const localStorageEnabled =
+    localStorageHistoryArg?.enable ?? localStorageSettings.enableMessageHistory;
+  const localStorageMaxMessages =
+    localStorageHistoryArg?.maxNumberMessages ??
+    localStorageSettings.maxMessageCount;
+  const localStoragePrefix = localStorageSettings.prefix;
+  const disableSse = disableSseArg ?? networkSettings.disableSse;
+  const { clearMessages }: UseLocalTools = useLocalTools(localStorageEnabled);
   const handledResponses = useRef<Record<string, number>>({});
+  const afterInit = useRef(() => {});
+  const afterInitPromise = useRef(
+    new Promise<void>((resolve) => {
+      afterInit.current = resolve;
+    }),
+  );
+  const sseSource = useRef(new TockEventSource());
 
-  const startLoading: () => void = () => {
+  const startLoading: () => void = useCallback(() => {
     dispatch({
       type: 'SET_LOADING',
       loading: true,
     });
-  };
+  }, [dispatch]);
 
-  const stopLoading: () => void = () => {
+  const stopLoading: () => void = useCallback(() => {
     dispatch({
       type: 'SET_LOADING',
       loading: false,
     });
-  };
+  }, [dispatch]);
 
-  const recordResponseToLocaleSession: (message: Message) => void = (
-    message: Message,
-  ) => {
-    const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
-      localStoragePrefix,
-      'tockMessageHistory',
-    );
+  const recordResponseToLocalSession: (message: Message) => void = useCallback(
+    (message: Message) => {
+      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
+        localStoragePrefix,
+        'tockMessageHistory',
+      );
 
-    const savedHistory = window.localStorage.getItem(messageHistoryLSKeyName);
-    const maxNumberMessages = localStorageHistory?.maxNumberMessages ?? 10;
-    let history: Message[];
-    if (!savedHistory) {
-      history = [];
-    } else {
-      history = JSON.parse(savedHistory);
-    }
-    if (history.length >= maxNumberMessages) {
-      history.splice(0, history.length - maxNumberMessages + 1);
-    }
-    history.push(message);
-    window.localStorage.setItem(
-      messageHistoryLSKeyName,
-      JSON.stringify(history),
-    );
-  };
-
-  const handleBotResponse: (botResponse: BotConnectorResponse) => void = ({
-    responses,
-    metadata,
-  }) => {
-    dispatch({
-      type: 'SET_METADATA',
-      metadata: metadata || {},
-    });
-
-    if (Array.isArray(responses) && responses.length > 0) {
-      const lastMessage = responses[responses.length - 1];
-      const quickReplies = (lastMessage.buttons || [])
-        .filter((button) => button.type === 'quick_reply')
-        .map(mapButton);
-      dispatch({
-        type: 'SET_QUICKREPLIES',
-        quickReplies,
-      });
-      if (localStorageHistory?.enable ?? false) {
-        const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
-          localStoragePrefix,
-          'tockQuickReplyHistory',
-        );
-        window.localStorage.setItem(
-          quickReplyHistoryLSKeyName,
-          JSON.stringify(quickReplies),
-        );
-      }
-      dispatch({
-        type: 'ADD_MESSAGE',
-        messages: responses.flatMap((response) => {
-          const { text, card, carousel, widget, image, buttons } = response;
-          let message: Message;
-          if (widget) {
-            message = {
-              widgetData: widget,
-              type: MessageType.widget,
-            } as Widget;
-          } else if (text) {
-            message = {
-              author: 'bot',
-              message: text,
-              type: MessageType.message,
-              buttons: (buttons || [])
-                .filter((button) => button.type !== 'quick_reply')
-                .map(mapButton),
-            } as TextMessage;
-          } else if (card) {
-            message = mapCard(card);
-          } else if (image) {
-            message = mapImage(image);
-          } else if (carousel) {
-            message = {
-              cards: carousel.cards.map(mapCard),
-              type: MessageType.carousel,
-            } as Carousel;
-          } else {
-            console.error('Unsupported bot response', response);
-            return [];
-          }
-
-          message.metadata = metadata;
-
-          if (localStorageHistory?.enable ?? false) {
-            recordResponseToLocaleSession(message);
-          }
-          return [message];
-        }),
-      });
-    }
-  };
-
-  const setProcessedMessageCount = (responseId: string, newCount: number) => {
-    handledResponses.current[responseId] = newCount;
-    const handledResponsesLSKeyName = retrievePrefixedLocalStorageKey(
-      localStoragePrefix,
-      'tockHandledResponses',
-    );
-
-    window.localStorage.setItem(
-      handledResponsesLSKeyName,
-      JSON.stringify(handledResponses.current),
-    );
-  };
-
-  const handlePostBotResponse: (botResponse: BotConnectorResponse) => void = (
-    botResponse,
-  ) => {
-    const responseId = botResponse.metadata?.['RESPONSE_ID'];
-    if (!responseId && !Sse.isEnable()) {
-      // no identifier and SSE enabled -> always discard POST response, handle with SSE
-      // no identifier and SSE disabled -> always handle here
-      handleBotResponse(botResponse);
-    } else {
-      const processedMessageCount = handledResponses.current[responseId] ?? 0;
-      if (processedMessageCount >= 0) {
-        handleBotResponse(
-          processedMessageCount > 0 // did we already receive messages for this response through SSE?
-            ? {
-                ...botResponse,
-                // only add messages that have not been processed from SSE
-                responses: botResponse.responses.slice(processedMessageCount),
-              }
-            : botResponse,
-        );
-        // mark as processed through POST - no further messages should be handled for this response
-        setProcessedMessageCount(responseId, FINISHED_PROCESSING);
+      const savedHistory = window.localStorage.getItem(messageHistoryLSKeyName);
+      let history: Message[];
+      if (!savedHistory) {
+        history = [];
       } else {
-        console.warn(
-          'Bot POST request yielded the same response twice, discarding',
-          botResponse,
-        );
+        history = JSON.parse(savedHistory);
       }
-    }
-  };
+      if (history.length >= localStorageMaxMessages) {
+        history.splice(0, history.length - localStorageMaxMessages + 1);
+      }
+      history.push(message);
+      window.localStorage.setItem(
+        messageHistoryLSKeyName,
+        JSON.stringify(history),
+      );
+    },
+    [localStoragePrefix, localStorageMaxMessages],
+  );
+
+  const handleBotResponse: (botResponse: BotConnectorResponse) => void =
+    useCallback(
+      ({ responses, metadata }) => {
+        dispatch({
+          type: 'SET_METADATA',
+          metadata: metadata || {},
+        });
+
+        if (Array.isArray(responses) && responses.length > 0) {
+          const lastMessage = responses[responses.length - 1];
+          const quickReplies = (lastMessage.buttons || [])
+            .filter((button) => button.type === 'quick_reply')
+            .map(mapButton);
+          dispatch({
+            type: 'SET_QUICKREPLIES',
+            quickReplies,
+          });
+          if (localStorageEnabled) {
+            const quickReplyHistoryLSKeyName = retrievePrefixedLocalStorageKey(
+              localStoragePrefix,
+              'tockQuickReplyHistory',
+            );
+            window.localStorage.setItem(
+              quickReplyHistoryLSKeyName,
+              JSON.stringify(quickReplies),
+            );
+          }
+          dispatch({
+            type: 'ADD_MESSAGE',
+            messages: responses.flatMap((response) => {
+              const { text, card, carousel, widget, image, buttons } = response;
+              let message: Message;
+              if (widget) {
+                message = {
+                  widgetData: widget,
+                  type: MessageType.widget,
+                } as Widget;
+              } else if (text) {
+                message = {
+                  author: 'bot',
+                  message: text,
+                  type: MessageType.message,
+                  buttons: (buttons || [])
+                    .filter((button) => button.type !== 'quick_reply')
+                    .map(mapButton),
+                } as TextMessage;
+              } else if (card) {
+                message = mapCard(card);
+              } else if (image) {
+                message = mapImage(image);
+              } else if (carousel) {
+                message = {
+                  cards: carousel.cards.map(mapCard),
+                  type: MessageType.carousel,
+                } as Carousel;
+              } else {
+                console.error('Unsupported bot response', response);
+                return [];
+              }
+
+              message.metadata = metadata;
+
+              if (localStorageEnabled) {
+                recordResponseToLocalSession(message);
+              }
+              return [message];
+            }),
+          });
+        }
+      },
+      [dispatch],
+    );
+
+  const setProcessedMessageCount = useCallback(
+    (responseId: string, newCount: number) => {
+      handledResponses.current[responseId] = newCount;
+      const handledResponsesLSKeyName = retrievePrefixedLocalStorageKey(
+        localStoragePrefix,
+        'tockHandledResponses',
+      );
+
+      window.localStorage.setItem(
+        handledResponsesLSKeyName,
+        JSON.stringify(handledResponses.current),
+      );
+    },
+    [localStoragePrefix],
+  );
+
+  const handlePostBotResponse: (botResponse: BotConnectorResponse) => void =
+    useCallback(
+      (botResponse) => {
+        const responseId = botResponse.metadata?.['RESPONSE_ID'];
+        if (!responseId && !sseSource.current.isInitialized()) {
+          // no identifier and SSE enabled -> always discard POST response, handle with SSE
+          // no identifier and SSE disabled -> always handle here
+          handleBotResponse(botResponse);
+        } else {
+          const processedMessageCount =
+            handledResponses.current[responseId] ?? 0;
+          if (processedMessageCount >= 0) {
+            handleBotResponse(
+              processedMessageCount > 0 // did we already receive messages for this response through SSE?
+                ? {
+                    ...botResponse,
+                    // only add messages that have not been processed from SSE
+                    responses: botResponse.responses.slice(
+                      processedMessageCount,
+                    ),
+                  }
+                : botResponse,
+            );
+            // mark as processed through POST - no further messages should be handled for this response
+            setProcessedMessageCount(responseId, FINISHED_PROCESSING);
+          } else {
+            console.warn(
+              'Bot POST request yielded the same response twice, discarding',
+              botResponse,
+            );
+          }
+        }
+      },
+      [setProcessedMessageCount, handleBotResponse],
+    );
 
   const handleSseBotResponse: (botResponse: BotConnectorResponse) => void = (
     botResponse,
@@ -389,8 +406,8 @@ const useTock: (
           message,
           type: MessageType.message,
         } as TextMessage;
-        if (localStorageHistory?.enable ?? false) {
-          recordResponseToLocaleSession(messageToDispatch);
+        if (localStorageEnabled) {
+          recordResponseToLocalSession(messageToDispatch);
         }
         dispatch({
           type: 'ADD_MESSAGE',
@@ -456,8 +473,8 @@ const useTock: (
       return Promise.resolve();
     } else if (button.payload) {
       setQuickReplies([]);
-      if (localStorageHistory?.enable ?? false) {
-        recordResponseToLocaleSession({
+      if (localStorageEnabled) {
+        recordResponseToLocalSession({
           author: 'user',
           message: button.label,
           type: MessageType.message,
@@ -576,10 +593,24 @@ const useTock: (
     [],
   );
 
-  const sseInitPromise =
-    disableSse == true
-      ? Sse.disable()
-      : Sse.init(tockEndPoint, userId, handleSseBotResponse, onSseStateChange);
+  useEffect(() => {
+    sseSource.current.onStateChange = onSseStateChange;
+    sseSource.current.onResponse = handleSseBotResponse;
+  }, [handleSseBotResponse, onSseStateChange]);
+
+  useEffect(() => {
+    if (disableSse || !tockEndPoint.length) {
+      afterInit.current();
+    } else {
+      // Trigger afterInit regardless of whether the SSE call succeeded or failed
+      // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
+      sseSource.current
+        .open(tockEndPoint, userId)
+        .catch((e) => console.error(e))
+        .finally(afterInit.current);
+    }
+    return () => sseSource.current.close();
+  }, [disableSse, tockEndPoint]);
 
   const addHistory: (
     messageHistory: Array<Message>,
@@ -622,7 +653,7 @@ const useTock: (
     );
 
     const serializedHistory =
-      storageAvailable('localStorage') && localStorageHistory?.enable === true
+      storageAvailable('localStorage') && localStorageEnabled
         ? window.localStorage.getItem(messageHistoryLSKey)
         : undefined;
 
@@ -664,9 +695,38 @@ const useTock: (
     sendPayload,
     addHistory,
     loadHistory,
-    sseInitPromise,
+    sseInitPromise: afterInitPromise.current,
     sseInitializing,
   };
 };
 
-export default useTock;
+export const UseTockContext = createContext<UseTock | undefined>(undefined);
+
+export default (
+  tockEndPoint?: string,
+  extraHeadersProvider?: () => Promise<Record<string, string>>,
+  disableSse?: boolean,
+  localStorageHistory?: TockLocalStorage,
+) => {
+  const contextTock = useContext(UseTockContext);
+  const settings = useTockSettings();
+  if (contextTock != null) {
+    return contextTock;
+  }
+  if (settings.endpoint == null && tockEndPoint == null) {
+    throw new Error('TOCK endpoint must be provided in TockContext');
+  } else if (settings.endpoint == null) {
+    console.warn(
+      'Passing TOCK endpoint as argument to TockChat or useTock is deprecated; please set it in TockContext instead.',
+    );
+  }
+  return contextTock
+    ? contextTock
+    : useTock0(
+        (tockEndPoint ?? settings.endpoint)!,
+        settings,
+        extraHeadersProvider,
+        disableSse,
+        localStorageHistory,
+      );
+};
