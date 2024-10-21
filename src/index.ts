@@ -15,9 +15,11 @@ export {
   MessageContainer,
   Message,
 } from './components/MessageBot';
+export { default as PostbackButton } from './components/buttons/PostBackButton';
 export { default as MessageUser } from './components/MessageUser';
 export { default as QuickReply } from './components/QuickReply';
 export { default as QuickReplyList } from './components/QuickReplyList';
+export { default as InlineQuickReplyList } from './components/InlineQuickReplyList';
 export { renderChat } from './renderChat';
 export { default as TockContext, useTockSettings } from './TockContext';
 export { default as useTock } from './useTock';
@@ -30,6 +32,7 @@ export type {
   UrlButton as UrlButtonData,
   QuickReply as QuickReplyData,
 } from './model/buttons';
+export { MessageType } from './model/messages';
 export type {
   Card as CardData,
   Carousel as CarouselData,
@@ -45,7 +48,10 @@ export type {
 } from './PostInitContext';
 export type { default as TockTheme } from './styles/theme';
 export type { default as TockOptions } from './TockOptions';
-export type { default as TockSettings } from './settings/TockSettings';
+export type {
+  default as TockSettings,
+  LocalStorageSettings,
+} from './settings/TockSettings';
 export type {
   ImageRenderer,
   TextRenderer,

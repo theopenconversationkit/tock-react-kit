@@ -1,9 +1,9 @@
 import { useRef, RefObject, useEffect, DependencyList } from 'react';
 
-export default function useScrollBehaviour(
+export default function useScrollBehaviour<E extends HTMLElement>(
   deps: DependencyList,
-): RefObject<HTMLUListElement> {
-  const container: RefObject<HTMLUListElement> = useRef<HTMLUListElement>(null);
+): RefObject<E> {
+  const container: RefObject<E> = useRef<E>(null);
   useEffect(() => {
     const { current } = container;
     if (!current) return;
