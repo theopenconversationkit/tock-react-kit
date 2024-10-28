@@ -31,7 +31,6 @@ export const quickReplyStyle: (theme: Theme) => SerializedStyles = (
   border: 2px solid ${theme.palette.background.bot};
   border-radius: ${theme.sizing.borderRadius};
 
-  outline: none;
   color: ${theme.palette.background.bot};
 
   &:hover,
