@@ -4,10 +4,11 @@ import ChatInput from '../ChatInput';
 import Container from '../Container';
 import Conversation from '../Conversation';
 import TockAccessibility from '../../TockAccessibility';
-import TockLocalStorage from 'TockLocalStorage';
+import type TockLocalStorage from 'TockLocalStorage';
 import PostInitContext from '../../PostInitContext';
 
 export interface ChatProps {
+  /** @deprecated endpoint should be configured in {@link TockSettings} */
   endPoint?: string;
   referralParameter?: string;
   timeoutBetweenMessage?: number;
@@ -18,11 +19,12 @@ export interface ChatProps {
   openingMessage?: string;
   /** A registry of custom widget factories */
   widgets?: { [id: string]: (props: unknown) => JSX.Element };
-  /** An optional function supplying extra HTTP headers for chat requests.
-  Extra headers must be explicitly allowed by the server's CORS settings. */
+  /** @deprecated configure extra headers through {@link NetworkSettings} instead */
   extraHeadersProvider?: () => Promise<Record<string, string>>;
+  /** @deprecated configure SSE through {@link NetworkSettings} instead */
   disableSse?: boolean;
   accessibility?: TockAccessibility;
+  /** @deprecated configure local message history through {@link LocalStorageSettings} instead */
   localStorageHistory?: TockLocalStorage;
 }
 

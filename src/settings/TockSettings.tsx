@@ -1,19 +1,37 @@
 import { RendererSettings } from './RendererSettings';
 import linkifyHtml from 'linkify-html';
+import { PartialDeep } from 'type-fest';
 
 export interface LocalStorageSettings {
-  prefix?: string;
+  prefix: string;
+  enableMessageHistory: boolean;
+  maxMessageCount: number;
+}
+
+export interface NetworkSettings {
+  disableSse: boolean;
+  extraHeadersProvider?: () => Promise<Record<string, string>>;
 }
 
 export default interface TockSettings {
-  endPoint?: string;
-  localStorage: LocalStorageSettings;
+  endpoint?: string; // will be required in a future release
   locale?: string;
+  localStorage: LocalStorageSettings;
+  network: NetworkSettings;
   renderers: RendererSettings;
 }
 
+export type TockOptionalSettings = Omit<PartialDeep<TockSettings>, 'endpoint'>;
+
 export const defaultSettings: TockSettings = {
-  localStorage: {},
+  localStorage: {
+    prefix: '',
+    enableMessageHistory: false,
+    maxMessageCount: 10,
+  },
+  network: {
+    disableSse: false,
+  },
   renderers: {
     buttonRenderers: {
       default({ buttonData, children, ...rest }) {

@@ -1,6 +1,7 @@
 import { Dispatch, useCallback } from 'react';
-import { TockAction, useTockSettings, useTockDispatch } from './TockContext';
 import { retrievePrefixedLocalStorageKey } from './utils';
+import { useTockSettings } from './settings/TockSettingsContext';
+import { TockAction, useTockDispatch } from './TockState';
 
 export interface UseLocalTools {
   clearMessages: () => void;
@@ -9,13 +10,15 @@ export interface UseLocalTools {
 const useLocalTools: (localStorage?: boolean) => UseLocalTools = (
   localStorage,
 ) => {
+  const { localStorage: localStorageSettings } = useTockSettings();
+  const localStorageEnabled =
+    localStorage ?? localStorageSettings.enableMessageHistory;
+  const localStoragePrefix = localStorageSettings.prefix;
+
   const dispatch: Dispatch<TockAction> = useTockDispatch();
-  const {
-    localStorage: { prefix: localStoragePrefix },
-  } = useTockSettings();
 
   const clearMessages: () => void = useCallback(() => {
-    if (localStorage === true) {
+    if (localStorageEnabled) {
       const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
         localStoragePrefix,
         'tockMessageHistory',
@@ -30,7 +33,7 @@ const useLocalTools: (localStorage?: boolean) => UseLocalTools = (
     dispatch({
       type: 'CLEAR_MESSAGES',
     });
-  }, [localStorage, localStoragePrefix]);
+  }, [localStorageEnabled, localStoragePrefix]);
   return {
     clearMessages,
   };

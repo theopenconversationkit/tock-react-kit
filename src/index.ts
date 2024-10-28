@@ -21,11 +21,12 @@ export { default as QuickReply } from './components/QuickReply';
 export { default as QuickReplyList } from './components/QuickReplyList';
 export { default as InlineQuickReplyList } from './components/InlineQuickReplyList';
 export { renderChat } from './renderChat';
-export { default as TockContext, useTockSettings } from './TockContext';
+export { default as TockContext } from './TockContext';
 export { default as useTock } from './useTock';
 export { default as createTheme } from './styles/createTheme';
 export { useMessageMetadata, MessageMetadataContext } from './MessageMetadata';
 export { useImageRenderer, useTextRenderer } from './settings/RendererSettings';
+export { useTockSettings } from './settings/TockSettingsContext';
 export type {
   Button as ButtonData,
   PostBackButton as PostBackButtonData,
