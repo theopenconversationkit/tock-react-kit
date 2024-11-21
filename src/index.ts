@@ -16,6 +16,7 @@ export {
   Message,
 } from './components/MessageBot';
 export { default as PostbackButton } from './components/buttons/PostBackButton';
+export { default as UrlButton } from './components/buttons/UrlButton';
 export { default as MessageUser } from './components/MessageUser';
 export { default as QuickReply } from './components/QuickReply';
 export { default as QuickReplyList } from './components/QuickReplyList';
