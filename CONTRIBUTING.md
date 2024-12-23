@@ -17,26 +17,27 @@
     * [@vsct-jburet](https://github.com/vsct-jburet)
     * [@MaximeLeFrancois](https://github.com/MaximeLeFrancois)
     * [@delphes99](https://github.com/delphes99)
+    * [@Fabilin](https://github.com/Fabilin)
     
 # GITHUB ACTION FOR PUBLISHING
 
 ## Build, tag and publish new version
 
-Warning: "Require signed commits" on master branch must be unchecked (https://github.com/theopenconversationkit/tock-react-kit/settings/branch_protection_rules/11667069)
+1. Ensure a milestone exists for the new version (https://github.com/theopenconversationkit/tock-react-kit/milestones)
+   and that all relevant issues are assigned to it
+2. Run the [manual release workflow](https://github.com/theopenconversationkit/tock-react-kit/actions/workflows/manual.yaml)
+   with the new version number
+3. Create a [GitHub release](https://github.com/theopenconversationkit/tock-react-kit/releases) using the tag created by the workflow
 
-    curl \
-      -H "Accept: application/vnd.github.everest-preview+json" \
-      -H "Authorization: token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" \
-      --request POST \
-      --data '{"event_type": "publish", "client_payload": {"version": "X.Y.Z"} }'
-      https://api.github.com/repos/theopenconversationkit/tock-react-kit/dispatches
+### Versioning
 
-You can also build a beta version using "prerelease" keyword
+Our versioning is based on [Semantic Versioning](https://semver.org), with some tweaks to tie the version to our release schedule:
+- The major and minor components are repurposed to denote respectively the release year and month of the current major version.
+  We release two major versions per year, one in March and one in September.
+- The patch version component keeps the same meaning as in semver. We release patch versions at any time.
+- The additional labels for pre-release and build metadata keep the same meaning as in semver
 
-    curl \
-      -H "Accept: application/vnd.github.everest-preview+json" \
-      -H "Authorization: token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" \
-      --request POST \
-      --data '{"event_type": "publish", "client_payload": {"version": "prerelease"} }'
-      https://api.github.com/repos/theopenconversationkit/tock-react-kit/dispatches
-      
+For example:
+- 23.3.0 is the major version released in March 2023. The next major version is 23.9.0, released in September of the same year.
+- 23.9.2 is the second patch version for the 23.9 major, and may be released any time between September 2023 and March 2024.
+- 24.9.0-beta.1 is the first beta for the upcoming 24.9.0 major version.
