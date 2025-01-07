@@ -31,7 +31,6 @@
     "release": "np"
   },
   "dependencies": {
-    "@microsoft/fetch-event-source": "^2.0.1",
     "deepmerge": "^4.2.2",
     "linkify-html": "^3.0.5",
     "linkifyjs": "^3.0.5",
