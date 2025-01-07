@@ -72,16 +72,19 @@ export class TockEventSource {
 
   private tryOpen(url: string, resolve: () => void, reject: () => void) {
     this.eventSource = new EventSource(url);
-    this.eventSource.onopen = () => {
+    this.eventSource.addEventListener('open', () => {
       this.onStateChange(EventSource.OPEN);
       this.initialized = true;
       this.retryDelay = INITIAL_RETRY_DELAY;
       resolve();
-    };
-    this.eventSource.onerror = async () => {
+    });
+    this.eventSource.addEventListener('error', () => {
       this.eventSource?.close();
       this.retry(url, reject, resolve);
-    };
+    });
+    this.eventSource.addEventListener('message', (e) => {
+      this.onResponse(JSON.parse(e.data));
+    });
   }
 
   private retry(url: string, reject: () => void, resolve: () => void) {
