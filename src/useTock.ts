@@ -93,6 +93,7 @@ function mapButton(button: BotConnectorButton): Button {
       button.imageUrl,
       button.target,
       button.windowFeatures,
+      button.style,
     );
   }
 }
