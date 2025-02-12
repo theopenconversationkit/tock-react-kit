@@ -57,6 +57,7 @@ interface BotConnectorUrlButton {
   imageUrl?: string;
   target?: string;
   windowFeatures?: string;
+  style?: string;
 }
 
 interface BotConnectorPostbackButton {
