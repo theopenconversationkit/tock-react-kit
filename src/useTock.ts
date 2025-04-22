@@ -76,6 +76,20 @@ export interface UseTock {
   sseInitializing: boolean;
 }
 
+/**
+ * Internal extensions for {@link UseTock}
+ */
+interface UseTock0 extends UseTock {
+  /**
+   * Hook that initializes the SSE connection and returns {@link #sseInitPromise}
+   *
+   * If SSE is disabled by the settings, this method simply resolves the sseInitPromise.
+   *
+   * This method is idempotent.
+   */
+  useSseInit: () => void;
+}
+
 function mapButton(button: BotConnectorButton): Button {
   if (button.type === 'postback') {
     return new PostBackButton(button.title, button.payload, button.imageUrl);
@@ -126,7 +140,7 @@ export const useTock0: (
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
-) => UseTock = (
+) => UseTock0 = (
   tockEndPoint: string,
   { locale, localStorage: localStorageSettings, network: networkSettings },
   extraHeadersProvider?: () => Promise<Record<string, string>>,
@@ -599,19 +613,20 @@ export const useTock0: (
     sseSource.current.onResponse = handleSseBotResponse;
   }, [handleSseBotResponse, onSseStateChange]);
 
-  useEffect(() => {
-    if (disableSse || !tockEndPoint.length) {
-      afterInit.current();
-    } else {
-      // Trigger afterInit regardless of whether the SSE call succeeded or failed
-      // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
-      sseSource.current
-        .open(tockEndPoint, userId)
-        .catch((e) => console.error(e))
-        .finally(afterInit.current);
-    }
-    return () => sseSource.current.close();
-  }, [disableSse, tockEndPoint]);
+  const useSseInit = () =>
+    useEffect(() => {
+      if (disableSse || !tockEndPoint.length) {
+        afterInit.current();
+      } else {
+        // Trigger afterInit regardless of whether the SSE call succeeded or failed
+        // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
+        sseSource.current
+          .open(tockEndPoint, userId)
+          .catch((e) => console.error(e))
+          .finally(afterInit.current);
+      }
+      return () => sseSource.current.close();
+    }, [disableSse, tockEndPoint]);
 
   const addHistory: (
     messageHistory: Array<Message>,
@@ -698,22 +713,21 @@ export const useTock0: (
     loadHistory,
     sseInitPromise: afterInitPromise.current,
     sseInitializing,
+    useSseInit,
   };
 };
 
-export const UseTockContext = createContext<UseTock | undefined>(undefined);
+export const UseTockContext = createContext<UseTock0 | undefined>(undefined);
 
 export default (
   tockEndPoint?: string,
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
-) => {
+): UseTock => {
   const contextTock = useContext(UseTockContext);
   const settings = useTockSettings();
-  if (contextTock != null) {
-    return contextTock;
-  }
+
   if (settings.endpoint == null && tockEndPoint == null) {
     throw new Error('TOCK endpoint must be provided in TockContext');
   } else if (settings.endpoint == null) {
@@ -721,13 +735,20 @@ export default (
       'Passing TOCK endpoint as argument to TockChat or useTock is deprecated; please set it in TockContext instead.',
     );
   }
-  return contextTock
-    ? contextTock
-    : useTock0(
-        (tockEndPoint ?? settings.endpoint)!,
-        settings,
-        extraHeadersProvider,
-        disableSse,
-        localStorageHistory,
-      );
+
+  // the following conditional does not follow the rules of hooks,
+  // but in practice the endpoint setting should not appear or disappear in a live app
+  const ret =
+    contextTock ??
+    useTock0(
+      (tockEndPoint ?? settings.endpoint)!,
+      settings,
+      extraHeadersProvider,
+      disableSse,
+      localStorageHistory,
+    );
+
+  ret.useSseInit();
+
+  return ret;
 };
