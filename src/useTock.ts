@@ -79,7 +79,7 @@ export interface UseTock {
 /**
  * Internal extensions for {@link UseTock}
  */
-interface UseTock0 extends UseTock {
+interface UseTockInternal extends UseTock {
   /**
    * Hook that initializes the SSE connection
    *
@@ -140,7 +140,7 @@ export const useTock0: (
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSse?: boolean,
   localStorageHistory?: TockLocalStorage,
-) => UseTock0 = (
+) => UseTockInternal = (
   tockEndPoint: string,
   { locale, localStorage: localStorageSettings, network: networkSettings },
   extraHeadersProvider?: () => Promise<Record<string, string>>,
@@ -718,7 +718,9 @@ export const useTock0: (
   };
 };
 
-export const UseTockContext = createContext<UseTock0 | undefined>(undefined);
+export const UseTockContext = createContext<UseTockInternal | undefined>(
+  undefined,
+);
 
 export default (
   tockEndPoint?: string,
