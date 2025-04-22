@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useRef,
 } from 'react';
 import {
@@ -609,13 +608,12 @@ export const useTock0: (
     [],
   );
 
-  // This effect must run before useSseInit, but React runs effects bottom-to-top
-  useLayoutEffect(() => {
-    sseSource.current.onStateChange = onSseStateChange;
-    sseSource.current.onResponse = handleSseBotResponse;
-  }, [handleSseBotResponse, onSseStateChange]);
+  const useSseInit = () => {
+    useEffect(() => {
+      sseSource.current.onStateChange = onSseStateChange;
+      sseSource.current.onResponse = handleSseBotResponse;
+    }, [handleSseBotResponse, onSseStateChange]);
 
-  const useSseInit = () =>
     useEffect(() => {
       if (disableSse || !tockEndPoint.length) {
         afterInit.current();
@@ -629,6 +627,7 @@ export const useTock0: (
       }
       return () => sseSource.current.close();
     }, [disableSse, tockEndPoint]);
+  };
 
   const addHistory: (
     messageHistory: Array<Message>,
