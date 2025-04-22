@@ -81,9 +81,9 @@ export interface UseTock {
  */
 interface UseTock0 extends UseTock {
   /**
-   * Hook that initializes the SSE connection and returns {@link #sseInitPromise}
+   * Hook that initializes the SSE connection
    *
-   * If SSE is disabled by the settings, this method simply resolves the sseInitPromise.
+   * If SSE is disabled by the settings, the hook simply resolves the sseInitPromise.
    *
    * This method is idempotent.
    */
