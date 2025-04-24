@@ -42,6 +42,7 @@ export class TockEventSource {
   private initialized: boolean;
   private eventSource: EventSource | null;
   private retryDelay: number;
+  private retryTimeoutId: number;
   onResponse: (botResponse: BotConnectorResponse) => void;
   onStateChange: (state: number) => void;
 
@@ -93,7 +94,7 @@ export class TockEventSource {
       MAX_RETRY_DELAY,
       retryDelay + RETRY_DELAY_INCREMENT,
     );
-    setTimeout(async () => {
+    this.retryTimeoutId = window.setTimeout(async () => {
       switch (await getSseStatus(url)) {
         case SseStatus.UNSUPPORTED:
           reject();
@@ -110,6 +111,7 @@ export class TockEventSource {
   }
 
   close() {
+    window.clearTimeout(this.retryTimeoutId);
     this.eventSource?.close();
     this.eventSource = null;
     this.initialized = false;
