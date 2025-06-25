@@ -670,9 +670,10 @@ export const useTock0: (
     if (serializedHistory) {
       const historyMaxAge = localStorageSettings.historyMaxAge;
       if (historyMaxAge > 0) {
-        const lastMessageTime =
-          window.localStorage.getItem(messageHistoryLastTimeKey) ?? 0;
-        if (historyMaxAge > (Date.now() - +lastMessageTime) / 1000) {
+        const lastMessageTime = +(
+          window.localStorage.getItem(messageHistoryLastTimeKey) ?? 0
+        );
+        if (historyMaxAge > (Date.now() - lastMessageTime) / 1000) {
           window.localStorage.removeItem(messageHistoryLSKey);
           window.localStorage.removeItem(quickReplyHistoryLSKey);
           window.localStorage.removeItem(messageHistoryLastTimeKey);
