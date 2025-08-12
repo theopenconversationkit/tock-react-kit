@@ -352,11 +352,12 @@ Objects implementing this interface can be passed to `renderChat` or to `TockCon
 
 #### `LocalStorageSettings`
 
-| Property name          | Type       | Description                                                                                                                                 |
-|------------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `enableMessageHistory` | `boolean?` | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                   |
-| `maxMessageCount`      | `number?`  | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                  |
-| `prefix`               | `string?`  | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history). |
+| Property name          | Type       | Description                                                                                                                                                |
+|------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `enableMessageHistory` | `boolean?` | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                                  |
+| `historyMaxAge`        | `number?`  | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received).     |
+| `maxMessageCount`      | `number?`  | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                                 |
+| `prefix`               | `string?`  | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).                |
 
 #### `NetworkSettings`
 

@@ -6,6 +6,7 @@ export interface LocalStorageSettings {
   prefix: string;
   enableMessageHistory: boolean;
   maxMessageCount: number;
+  historyMaxAge: number;
 }
 
 export interface NetworkSettings {
@@ -28,6 +29,7 @@ export const defaultSettings: TockSettings = {
     prefix: '',
     enableMessageHistory: false,
     maxMessageCount: 10,
+    historyMaxAge: -1,
   },
   network: {
     disableSse: false,
