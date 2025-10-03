@@ -193,6 +193,10 @@ export const useTock0: (
         localStoragePrefix,
         'tockMessageHistory',
       );
+      const messageHistoryLastTime = retrievePrefixedLocalStorageKey(
+        localStoragePrefix,
+        'tockLastMessageTimestamp',
+      );
 
       const savedHistory = window.localStorage.getItem(messageHistoryLSKeyName);
       let history: Message[];
@@ -209,6 +213,7 @@ export const useTock0: (
         messageHistoryLSKeyName,
         JSON.stringify(history),
       );
+      window.localStorage.setItem(messageHistoryLastTime, '' + Date.now());
     },
     [localStoragePrefix, localStorageMaxMessages],
   );
@@ -668,6 +673,10 @@ export const useTock0: (
       localStoragePrefix,
       'tockHandledResponses',
     );
+    const messageHistoryLastTimeKey = retrievePrefixedLocalStorageKey(
+      localStoragePrefix,
+      'tockLastMessageTimestamp',
+    );
 
     const serializedHistory =
       storageAvailable('localStorage') && localStorageEnabled
@@ -675,6 +684,19 @@ export const useTock0: (
         : undefined;
 
     if (serializedHistory) {
+      const historyMaxAge = localStorageSettings.historyMaxAge;
+      if (historyMaxAge > 0) {
+        const lastMessageTime = +(
+          window.localStorage.getItem(messageHistoryLastTimeKey) ?? 0
+        );
+        if ((Date.now() - lastMessageTime) / 1000 > historyMaxAge) {
+          window.localStorage.removeItem(messageHistoryLSKey);
+          window.localStorage.removeItem(quickReplyHistoryLSKey);
+          window.localStorage.removeItem(messageHistoryLastTimeKey);
+          return null;
+        }
+      }
+
       const messages = JSON.parse(serializedHistory);
       const quickReplies = JSON.parse(
         window.localStorage.getItem(quickReplyHistoryLSKey) || '[]',
