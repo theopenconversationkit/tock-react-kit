@@ -39,6 +39,7 @@ export interface TockAction {
   type:
     | 'SET_QUICKREPLIES'
     | 'ADD_MESSAGE'
+    | 'UPDATE_MESSAGE'
     | 'SET_METADATA'
     | 'SET_LOADING'
     | 'SET_SSE_INITIALIZING'
@@ -71,6 +72,47 @@ export const tockReducer: Reducer<TockState, TockAction> = (
         return {
           ...state,
           messages: [...state.messages, ...action.messages],
+          error: !!action.error,
+        };
+      }
+      break;
+
+    case 'UPDATE_MESSAGE':
+      if (action.messages) {
+        let messageAlreadyExists = false;
+
+        const newMessages = state.messages.map((message) => {
+          // Search if a streamed message with the same responseId already exists
+          const messageExists = action.messages?.find((m) => {
+            const isMessageExists =
+              m.metadata?.RESPONSE_ID === message.metadata?.RESPONSE_ID &&
+              m.metadata?.TOCK_STREAM_RESPONSE === 'true' &&
+              message.metadata?.TOCK_STREAM_RESPONSE === 'true';
+
+            if (isMessageExists) {
+              messageAlreadyExists = true;
+            }
+
+            return isMessageExists;
+          });
+
+          // If the message already exists, replace with the new message
+          if (messageExists) {
+            return messageExists;
+          }
+
+          // Else return the original message
+          return message;
+        });
+
+        // If the message is new, add it to the messages
+        if (!messageAlreadyExists) {
+          newMessages.push(...action.messages);
+        }
+
+        return {
+          ...state,
+          messages: newMessages,
           error: !!action.error,
         };
       }
