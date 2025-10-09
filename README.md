@@ -165,6 +165,13 @@ You can use createTheme function to init a valid theme.
 renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParameter', createTheme({}));
 ```
 
+### Default classes
+
+If the MetadataEvent `TOCK_STREAM_RESPONSE` is set to true, the tock-react-kit will add the css class `tock-streamed-response` to the message element.
+
+It allows the client to customize the appearance of streamed responses.
+
+
 ## Customize interface
 
 If the chat does not suit your needs, there are two main ways to customize the interface rendering.
@@ -206,6 +213,11 @@ The metadata from each response is also attached to the corresponding messages.
 This metadata is persisted with the messages, including through page reloads if [local storage history](#local-storage-history) is enabled.
 It is available to [custom renderers](#configure-custom-renderers) through the use of the `useMessageMetadata` hook,
 as well as to custom React-based frontends that handle message rendering themselves.
+
+### Streamed responses
+
+In order to support the streaming of responses, when the MetadataEvent `TOCK_STREAM_RESPONSE` is set to true, a message with the same responseId will be replaced with the new version of the message.
+
 
 ## API Reference
 

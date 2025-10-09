@@ -1,7 +1,6 @@
-import { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
+import { DetailedHTMLProps, HTMLAttributes, RefObject, useMemo } from 'react';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
-
 import DefaultWidget from '../widgets/DefaultWidget';
 import MessageBot from '../MessageBot';
 import MessageUser from '../MessageUser';
@@ -14,10 +13,9 @@ import InlineQuickReplyList from '../InlineQuickReplyList';
 import useMessageCounter from './hooks/useMessageCounter';
 import useScrollBehaviour from './hooks/useScrollBehaviour';
 import TockTheme from '../../styles/theme';
-
 import TockAccessibility from '../../TockAccessibility';
 import { Button, QuickReply } from '../../model/buttons';
-import type {
+import {
   Card as ICard,
   Carousel as ICarousel,
   Image as IImage,
@@ -152,15 +150,25 @@ const Conversation = ({
     ]);
     const ErrorMessageRenderer =
       useTockSettings().renderers.messageRenderers.error;
+
     const renderMessage = (message: Message, index: number) => {
       const render: Renderer = MESSAGE_RENDERER[message.type];
       if (!render) return null;
+
+      const isLLmResponse =
+        message.type === MessageType.message &&
+        message.message.length > 0 &&
+        message.metadata?.TOCK_STREAM_RESPONSE;
+
       return (
         <MessageMetadataContext
           value={message.metadata ?? {}}
           key={`${message.type}-${index}`}
         >
-          <ConversationItemLi key={`${message.type}-${index}`}>
+          <ConversationItemLi
+            key={`${message.type}-${index}`}
+            className={isLLmResponse ? 'tock-streamed-response' : ''}
+          >
             {render(
               message,
               {
@@ -174,6 +182,18 @@ const Conversation = ({
       );
     };
 
+    // Show loading box if the last text message is waiting
+    const isLoading = useMemo(() => {
+      const currentMessage =
+        displayableMessages[displayableMessages.length - 1];
+
+      const currentMessageIsStreamResponse =
+        currentMessage?.type === MessageType.message &&
+        currentMessage.message.length > 0;
+
+      return loading && !!currentMessageIsStreamResponse;
+    }, [loading, displayableMessages]);
+
     return (
       <ConversationOuterContainer
         aria-live="polite"
@@ -183,7 +203,12 @@ const Conversation = ({
       >
         <ConversationInnerContainer ref={scrollContainer}>
           {displayableMessages.map(renderMessage)}
-          {loading && <Loader />}
+          {isLoading && (
+            <ConversationItemLi>
+              <Loader />
+            </ConversationItemLi>
+          )}
+
           {error && ErrorMessageRenderer && <ErrorMessageRenderer />}
         </ConversationInnerContainer>
         {!loading &&
