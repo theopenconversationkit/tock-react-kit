@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes, RefObject, useMemo } from 'react';
+import { DetailedHTMLProps, HTMLAttributes, RefObject } from 'react';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 import DefaultWidget from '../widgets/DefaultWidget';
@@ -44,7 +44,7 @@ const ConversationInnerContainer = styled.ul`
   ::-webkit-scrollbar {
     display: none;
   }
-`;
+`;  
 
 const ConversationItemLi = styled.li`
   width: 100%;
@@ -182,18 +182,6 @@ const Conversation = ({
       );
     };
 
-    // Show loading box if the last text message is waiting
-    const isLoading = useMemo(() => {
-      const currentMessage =
-        displayableMessages[displayableMessages.length - 1];
-
-      const currentMessageIsStreamResponse =
-        currentMessage?.type === MessageType.message &&
-        currentMessage.message.length > 0;
-
-      return loading && !!currentMessageIsStreamResponse;
-    }, [loading, displayableMessages]);
-
     return (
       <ConversationOuterContainer
         aria-live="polite"
@@ -203,7 +191,7 @@ const Conversation = ({
       >
         <ConversationInnerContainer ref={scrollContainer}>
           {displayableMessages.map(renderMessage)}
-          {isLoading && (
+          {loading && (
             <ConversationItemLi>
               <Loader />
             </ConversationItemLi>
