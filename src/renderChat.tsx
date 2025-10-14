@@ -21,8 +21,9 @@ export const renderChat: (
   theme: TockTheme = defaultTheme,
   {
     locale,
+    // Default empty values are required for the merge with default settings
     localStorage = {},
-    renderers,
+    renderers = {},
     network = {},
     ...options
   }: TockOptions = {},
