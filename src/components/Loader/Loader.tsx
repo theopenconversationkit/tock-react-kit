@@ -7,19 +7,19 @@ import { prop } from 'styled-tools';
 const LoaderContainer: StyledComponent<
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 > = styled.div`
+  position: relative;
+  display: flex;
   width: 100%;
   max-width: ${prop('theme.sizing.conversation.width')};
 `;
 
 const BulletList = styled.div`
-  display: inline-block;
+  display: flex;
   color: ${prop('theme.palette.text.bot')};
   padding: 0.5em 1.5em;
   margin-left: 1em;
-  white-space: pre-line;
   border-radius: ${prop('theme.sizing.borderRadius')};
   border-bottom-left-radius: 0;
-
   ${prop('theme.overrides.messageBot', '')}
 `;
 
