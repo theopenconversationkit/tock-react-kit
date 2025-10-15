@@ -2,7 +2,21 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v25.9.0-rc.1](https://github.com/theopenconversationkit/tock-react-kit/compare/v25.3.0...v25.9.0-rc.1)
+
+- resolves #192 Add support for streaming LLM responses with message up… [`#194`](https://github.com/theopenconversationkit/tock-react-kit/pull/194)
+- fixes #196: update main entrypoint in package.json [`#197`](https://github.com/theopenconversationkit/tock-react-kit/pull/197)
+- fixes #193: fix default renderers settings assignment [`#195`](https://github.com/theopenconversationkit/tock-react-kit/pull/195)
+- resolves #190: add `historyMaxAge` parameter [`#191`](https://github.com/theopenconversationkit/tock-react-kit/pull/191)
+- resolves #192 Add support for streaming LLM responses with message up… (#194) [`#192`](https://github.com/theopenconversationkit/tock-react-kit/issues/192) [`#192`](https://github.com/theopenconversationkit/tock-react-kit/issues/192)
+- fixes #196: update main entrypoint in package.json (#197) [`#196`](https://github.com/theopenconversationkit/tock-react-kit/issues/196)
+- fixes #193: fix default renderers settings assignment (#195) [`#193`](https://github.com/theopenconversationkit/tock-react-kit/issues/193)
+- resolves #190: add `historyMaxAge` parameter (#191) [`#190`](https://github.com/theopenconversationkit/tock-react-kit/issues/190) [`#190`](https://github.com/theopenconversationkit/tock-react-kit/issues/190)
+- fix: branch not pushed by release action [`8422a3a`](https://github.com/theopenconversationkit/tock-react-kit/commit/8422a3a1426ade1fe6fdabf23a8a00e84cc22424)
+
 #### [v25.3.0](https://github.com/theopenconversationkit/tock-react-kit/compare/v24.9.0-rc.2...v25.3.0)
+
+> 19 August 2025
 
 - fixes #188: make SSE connection deferred to first useTock call [`#189`](https://github.com/theopenconversationkit/tock-react-kit/pull/189)
 - resolves #186 add and forward style to Postback and url buttons [`#187`](https://github.com/theopenconversationkit/tock-react-kit/pull/187)
