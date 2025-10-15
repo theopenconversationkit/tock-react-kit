@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v25.9.0-rc.2](https://github.com/theopenconversationkit/tock-react-kit/compare/v25.9.0-rc.1...v25.9.0-rc.2)
+
+- resolves #198 Align vertically dots in Loader [`#199`](https://github.com/theopenconversationkit/tock-react-kit/pull/199)
+- resolves #198 Align vertically dots in Loader (#199) [`#198`](https://github.com/theopenconversationkit/tock-react-kit/issues/198)
+
 #### [v25.9.0-rc.1](https://github.com/theopenconversationkit/tock-react-kit/compare/v25.3.0...v25.9.0-rc.1)
+
+> 15 October 2025
 
 - resolves #192 Add support for streaming LLM responses with message up… [`#194`](https://github.com/theopenconversationkit/tock-react-kit/pull/194)
 - fixes #196: update main entrypoint in package.json [`#197`](https://github.com/theopenconversationkit/tock-react-kit/pull/197)

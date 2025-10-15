@@ -1,6 +1,6 @@
 {
   "name": "tock-react-kit",
-  "version": "25.9.0-rc.1",
+  "version": "25.9.0-rc.2",
   "description": "React UI library for Tock Node chatbots",
   "type": "module",
   "main": "build/tock-react-kit.esm.js",
