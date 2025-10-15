@@ -231,6 +231,7 @@ export const useTock0: (
           const quickReplies = (lastMessage.buttons || [])
             .filter((button) => button.type === 'quick_reply')
             .map(mapButton);
+
           dispatch({
             type: 'SET_QUICKREPLIES',
             quickReplies,
@@ -245,8 +246,11 @@ export const useTock0: (
               JSON.stringify(quickReplies),
             );
           }
+
           dispatch({
-            type: 'ADD_MESSAGE',
+            type: metadata?.TOCK_STREAM_RESPONSE
+              ? 'UPDATE_MESSAGE'
+              : 'ADD_MESSAGE',
             messages: responses.flatMap((response) => {
               const { text, card, carousel, widget, image, buttons } = response;
               let message: Message;
@@ -255,7 +259,7 @@ export const useTock0: (
                   widgetData: widget,
                   type: MessageType.widget,
                 } as Widget;
-              } else if (text) {
+              } else if (text !== undefined) {
                 message = {
                   author: 'bot',
                   message: text,
@@ -397,7 +401,7 @@ export const useTock0: (
     [],
   );
 
-  const handleError: (error: unknown) => void = ({ error }) => {
+  const handleError: (error: unknown) => void = (error) => {
     console.error(error);
     stopLoading();
     setQuickReplies([]);
