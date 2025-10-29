@@ -37,7 +37,7 @@ The toolkit is currently used in production by various conversational assistants
 
 ## Prerequisites
 
-- Run a [Tock Bot in API mode](https://doc.tock.ai/tock/en/dev/bot-api/) ([NodeJS alternative](https://github.com/theopenconversationkit/tock-node))
+- Run a [Tock Bot in API mode](https://doc.tock.ai/tock/master/dev/bot-api) ([NodeJS alternative](https://github.com/theopenconversationkit/tock-node))
 
 ## Quick Start
 
