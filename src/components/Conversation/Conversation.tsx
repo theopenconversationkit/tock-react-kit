@@ -158,7 +158,7 @@ const Conversation = ({
       const isLLmResponse =
         message.type === MessageType.message &&
         message.message.length > 0 &&
-        message.metadata?.TOCK_STREAM_RESPONSE;
+        message.metadata?.TOCK_STREAM_RESPONSE === 'true';
 
       return (
         <MessageMetadataContext
