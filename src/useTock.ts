@@ -248,7 +248,7 @@ export const useTock0: (
           }
 
           dispatch({
-            type: metadata?.TOCK_STREAM_RESPONSE
+            type: metadata?.TOCK_STREAM_RESPONSE === 'true'
               ? 'UPDATE_MESSAGE'
               : 'ADD_MESSAGE',
             messages: responses.flatMap((response) => {
