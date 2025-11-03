@@ -2,7 +2,16 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v25.9.0-rc.3](https://github.com/theopenconversationkit/tock-react-kit/compare/v25.9.0-rc.2...v25.9.0-rc.3)
+
+- resolves #203 Issue on type of TOCK_STREAM_RESPONSE [`#204`](https://github.com/theopenconversationkit/tock-react-kit/pull/204)
+- fixes #201: Update link to Bot API documentation [`#200`](https://github.com/theopenconversationkit/tock-react-kit/pull/200)
+- resolves #203 Issue on type of TOCK_STREAM_RESPONSE (#204) [`#203`](https://github.com/theopenconversationkit/tock-react-kit/issues/203)
+- fixes #201: Update link to Bot API documentation (#200) [`#201`](https://github.com/theopenconversationkit/tock-react-kit/issues/201)
+
 #### [v25.9.0-rc.2](https://github.com/theopenconversationkit/tock-react-kit/compare/v25.9.0-rc.1...v25.9.0-rc.2)
+
+> 15 October 2025
 
 - resolves #198 Align vertically dots in Loader [`#199`](https://github.com/theopenconversationkit/tock-react-kit/pull/199)
 - resolves #198 Align vertically dots in Loader (#199) [`#198`](https://github.com/theopenconversationkit/tock-react-kit/issues/198)
