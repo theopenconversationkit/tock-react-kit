@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v25.9.0](https://github.com/theopenconversationkit/tock-react-kit/compare/v25.9.0-rc.3...v25.9.0)
+
 #### [v25.9.0-rc.3](https://github.com/theopenconversationkit/tock-react-kit/compare/v25.9.0-rc.2...v25.9.0-rc.3)
+
+> 3 November 2025
 
 - resolves #203 Issue on type of TOCK_STREAM_RESPONSE [`#204`](https://github.com/theopenconversationkit/tock-react-kit/pull/204)
 - fixes #201: Update link to Bot API documentation [`#200`](https://github.com/theopenconversationkit/tock-react-kit/pull/200)
