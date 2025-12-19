@@ -40,15 +40,20 @@ async function getSseStatus(url: string) {
 
 export class TockEventSource {
   private initialized: boolean;
+  private currentUrl: string | null;
   private eventSource: EventSource | null;
   private retryDelay: number;
   private retryTimeoutId: number;
+  private retryOnPingTimeoutId?: number 
+  private retryOnPingTimeoutMs: number;
   onResponse: (botResponse: BotConnectorResponse) => void;
   onStateChange: (state: number) => void;
+  
 
-  constructor() {
+  constructor({retryOnPingTimeoutMs}: {retryOnPingTimeoutMs: number}) {
     this.initialized = false;
     this.retryDelay = INITIAL_RETRY_DELAY;
+    this.retryOnPingTimeoutMs = retryOnPingTimeoutMs;
   }
 
   isInitialized(): boolean {
@@ -65,53 +70,85 @@ export class TockEventSource {
    */
   open(endpoint: string, userId: string): Promise<void> {
     this.onStateChange(EventSource.CONNECTING);
-    const url = `${endpoint}/sse?userid=${userId}`;
+    this.currentUrl = `${endpoint}/sse?userid=${userId}`;
     return new Promise<void>((resolve, reject): void => {
-      this.tryOpen(url, resolve, reject);
+      this.tryOpen( resolve, reject);
     });
   }
 
-  private tryOpen(url: string, resolve: () => void, reject: () => void) {
-    this.eventSource = new EventSource(url);
+  private tryOpen( resolve?: () => void, reject?: () => void) {
+    if (!this.currentUrl) {
+      reject?.();
+      return;
+    }
+    this.eventSource = new EventSource(this.currentUrl);
     this.eventSource.addEventListener('open', () => {
       this.onStateChange(EventSource.OPEN);
       this.initialized = true;
       this.retryDelay = INITIAL_RETRY_DELAY;
-      resolve();
+      this.scheduleRetryWatchdog({reason: "open"});
+      resolve?.();
     });
     this.eventSource.addEventListener('error', () => {
       this.eventSource?.close();
-      this.retry(url, reject, resolve);
+      this.retry( reject, resolve);
     });
     this.eventSource.addEventListener('message', (e) => {
+      this.scheduleRetryWatchdog({reason: "message"});
       this.onResponse(JSON.parse(e.data));
+    });
+    this.eventSource.addEventListener('ping', () => {
+      this.scheduleRetryWatchdog({reason: "ping"});
     });
   }
 
-  private retry(url: string, reject: () => void, resolve: () => void) {
+  private retry(reject?: () => void, resolve?: () => void) {
+    if (!this.currentUrl) {
+      reject?.();
+      return;
+    }
     const retryDelay = this.retryDelay;
     this.retryDelay = Math.min(
       MAX_RETRY_DELAY,
       retryDelay + RETRY_DELAY_INCREMENT,
     );
+
+    this.onStateChange(EventSource.CONNECTING);
+
     this.retryTimeoutId = window.setTimeout(async () => {
-      switch (await getSseStatus(url)) {
+      switch (await getSseStatus(this.currentUrl as string)) {
         case SseStatus.UNSUPPORTED:
-          reject();
+          reject?.();
           this.close();
           break;
         case SseStatus.SUPPORTED:
-          this.tryOpen(url, resolve, reject);
+          this.tryOpen( resolve, reject);
           break;
         case SseStatus.SERVER_UNAVAILABLE:
-          this.retry(url, reject, resolve);
+          this.retry( reject, resolve);
           break;
       }
     }, retryDelay);
   }
 
+  // Set a watchdog timeout to trigger a retry if the server is not responding
+  private scheduleRetryWatchdog({reason}: {reason: string}) {
+    window.clearTimeout(this.retryOnPingTimeoutId);
+    this.retryOnPingTimeoutId = window.setTimeout(() => {
+      this.triggerRetryWatchdog({reason});
+    }, this.retryOnPingTimeoutMs);
+  }
+
+  // Trigger a retry if the watchdog timeout is reached
+  public triggerRetryWatchdog({reason}: {reason: string}) {
+    console.log(`TockEventSource::triggerRetryWatchdog (timeout: ${this.retryOnPingTimeoutMs}ms, reason: ${reason})`);
+    this.close();
+    this.retry();
+  }
+
   close() {
     window.clearTimeout(this.retryTimeoutId);
+    window.clearTimeout(this.retryOnPingTimeoutId);
     this.eventSource?.close();
     this.eventSource = null;
     this.initialized = false;

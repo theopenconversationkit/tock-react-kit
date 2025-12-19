@@ -163,6 +163,7 @@ export const useTock0: (
     localStorageSettings.maxMessageCount;
   const localStoragePrefix = localStorageSettings.prefix;
   const disableSse = disableSseArg ?? networkSettings.disableSse;
+  const retryOnPingTimeoutMs = networkSettings.retryOnPingTimeoutMs;
   const { clearMessages }: UseLocalTools = useLocalTools(localStorageEnabled);
   const handledResponses = useRef<Record<string, number>>({});
   const afterInit = useRef(() => {});
@@ -171,7 +172,7 @@ export const useTock0: (
       afterInit.current = resolve;
     }),
   );
-  const sseSource = useRef(new TockEventSource());
+  const sseSource = useRef(new TockEventSource({retryOnPingTimeoutMs}));
 
   const startLoading: () => void = useCallback(() => {
     dispatch({
@@ -408,6 +409,7 @@ export const useTock0: (
     if (localStorage) {
       window.localStorage.setItem('tockQuickReplyHistory', '');
     }
+    sseSource.current.triggerRetryWatchdog({reason: "handleError"});
     dispatch({
       type: 'SET_ERROR',
       error: true,
