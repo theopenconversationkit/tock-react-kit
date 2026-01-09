@@ -172,7 +172,7 @@ export const useTock0: (
       afterInit.current = resolve;
     }),
   );
-  const sseSource = useRef(new TockEventSource({retryOnPingTimeoutMs}));
+  const sseSource = useRef(new TockEventSource({ retryOnPingTimeoutMs }));
 
   const startLoading: () => void = useCallback(() => {
     dispatch({
@@ -249,9 +249,10 @@ export const useTock0: (
           }
 
           dispatch({
-            type: metadata?.TOCK_STREAM_RESPONSE === 'true'
-              ? 'UPDATE_MESSAGE'
-              : 'ADD_MESSAGE',
+            type:
+              metadata?.TOCK_STREAM_RESPONSE === 'true'
+                ? 'UPDATE_MESSAGE'
+                : 'ADD_MESSAGE',
             messages: responses.flatMap((response) => {
               const { text, card, carousel, widget, image, buttons } = response;
               let message: Message;
@@ -409,7 +410,7 @@ export const useTock0: (
     if (localStorage) {
       window.localStorage.setItem('tockQuickReplyHistory', '');
     }
-    sseSource.current.triggerRetryWatchdog({reason: "handleError"});
+    sseSource.current.triggerRetryWatchdog('handleError');
     dispatch({
       type: 'SET_ERROR',
       error: true,
