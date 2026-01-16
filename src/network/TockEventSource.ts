@@ -123,7 +123,9 @@ export class TockEventSource {
     }, retryDelay);
   }
 
-  // Set a watchdog timeout to trigger a retry if the server is not responding
+  /**
+   * Set a watchdog timeout to trigger a retry if the server is not responding
+   */
   private scheduleRetryWatchdog(reason: string) {
     window.clearTimeout(this.retryOnPingTimeoutId);
     this.retryOnPingTimeoutId = window.setTimeout(() => {
@@ -131,19 +133,29 @@ export class TockEventSource {
     }, this.retryOnPingTimeoutMs);
   }
 
-  // Trigger a retry if the watchdog timeout is reached
-  public triggerRetryWatchdog(reason: string): Promise<void> {
+  /**
+   * Trigger a retry if the watchdog timeout is reached
+   */
+  public triggerRetryWatchdog(reason: string): void {
     const url = this.currentUrl;
     if (!url) {
-      return Promise.reject();
+      console.warn(
+        'TockEventSource::triggerRetryWatchdog called without an active SSE connection',
+      );
+      return;
     }
     console.log(
       `TockEventSource::triggerRetryWatchdog (timeout: ${this.retryOnPingTimeoutMs}ms, reason: ${reason})`,
     );
     this.close();
-    return new Promise((resolve, reject) => {
+    new Promise((resolve: (value?: unknown) => void, reject) => {
       this.retry(url, resolve, reject);
-    });
+    }).catch((e) =>
+      console.warn(
+        'TockEventSource::triggerRetryWatchdog failed to restart SSE connection',
+        e,
+      ),
+    );
   }
 
   close() {

@@ -403,7 +403,7 @@ export const useTock0: (
     [],
   );
 
-  const handleError: (error: unknown) => Promise<void> = async (error) => {
+  const handleError: (error: unknown) => void = (error) => {
     console.error(error);
     stopLoading();
     setQuickReplies([]);
@@ -416,7 +416,7 @@ export const useTock0: (
       loading: false,
     });
     if (sseSource.current?.isInitialized()) {
-      await sseSource.current.triggerRetryWatchdog('handleError');
+      sseSource.current.triggerRetryWatchdog('handleError');
     }
   };
 
