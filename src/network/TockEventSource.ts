@@ -75,9 +75,9 @@ export class TockEventSource {
     });
   }
 
-  private tryOpen(resolve?: () => void, reject?: () => void) {
+  private tryOpen(resolve: () => void, reject: () => void) {
     if (!this.currentUrl) {
-      reject?.();
+      reject();
       return;
     }
     this.eventSource = new EventSource(this.currentUrl);
@@ -86,7 +86,7 @@ export class TockEventSource {
       this.initialized = true;
       this.retryDelay = INITIAL_RETRY_DELAY;
       this.scheduleRetryWatchdog('open');
-      resolve?.();
+      resolve();
     });
     this.eventSource.addEventListener('error', () => {
       this.eventSource?.close();
@@ -101,9 +101,9 @@ export class TockEventSource {
     });
   }
 
-  private retry(reject?: () => void, resolve?: () => void) {
+  private retry(reject: () => void, resolve: () => void) {
     if (!this.currentUrl) {
-      reject?.();
+      reject();
       return;
     }
     const retryDelay = this.retryDelay;
@@ -117,7 +117,7 @@ export class TockEventSource {
     this.retryTimeoutId = window.setTimeout(async () => {
       switch (await getSseStatus(this.currentUrl as string)) {
         case SseStatus.UNSUPPORTED:
-          reject?.();
+          reject();
           this.close();
           break;
         case SseStatus.SUPPORTED:
@@ -139,12 +139,14 @@ export class TockEventSource {
   }
 
   // Trigger a retry if the watchdog timeout is reached
-  public triggerRetryWatchdog(reason: string) {
+  public triggerRetryWatchdog(reason: string): Promise<void> {
     console.log(
       `TockEventSource::triggerRetryWatchdog (timeout: ${this.retryOnPingTimeoutMs}ms, reason: ${reason})`,
     );
     this.close();
-    this.retry();
+    return new Promise((resolve, reject) => {
+      this.retry(reject, resolve);
+    });
   }
 
   close() {
