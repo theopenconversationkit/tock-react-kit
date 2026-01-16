@@ -87,7 +87,7 @@ export class TockEventSource {
     });
     this.eventSource.addEventListener('error', () => {
       this.eventSource?.close();
-      this.retry(url, reject, resolve);
+      this.retry(url, resolve, reject);
     });
     this.eventSource.addEventListener('message', (e) => {
       this.scheduleRetryWatchdog('message');
@@ -98,7 +98,7 @@ export class TockEventSource {
     });
   }
 
-  private retry(url: string, reject: () => void, resolve: () => void) {
+  private retry(url: string, resolve: () => void, reject: () => void) {
     const retryDelay = this.retryDelay;
     this.retryDelay = Math.min(
       MAX_RETRY_DELAY,
@@ -117,7 +117,7 @@ export class TockEventSource {
           this.tryOpen(url, resolve, reject);
           break;
         case SseStatus.SERVER_UNAVAILABLE:
-          this.retry(url, reject, resolve);
+          this.retry(url, resolve, reject);
           break;
       }
     }, retryDelay);
@@ -142,7 +142,7 @@ export class TockEventSource {
     );
     this.close();
     return new Promise((resolve, reject) => {
-      this.retry(url, reject, resolve);
+      this.retry(url, resolve, reject);
     });
   }
 
