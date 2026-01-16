@@ -68,19 +68,16 @@ export class TockEventSource {
    * and gets rejected if the connection fails or this event source is closed
    */
   open(endpoint: string, userId: string): Promise<void> {
+    const url = `${endpoint}/sse?userid=${userId}`;
     this.onStateChange(EventSource.CONNECTING);
-    this.currentUrl = `${endpoint}/sse?userid=${userId}`;
+    this.currentUrl = url;
     return new Promise<void>((resolve, reject): void => {
-      this.tryOpen(resolve, reject);
+      this.tryOpen(url, resolve, reject);
     });
   }
 
-  private tryOpen(resolve: () => void, reject: () => void) {
-    if (!this.currentUrl) {
-      reject();
-      return;
-    }
-    this.eventSource = new EventSource(this.currentUrl);
+  private tryOpen(url: string, resolve: () => void, reject: () => void) {
+    this.eventSource = new EventSource(url);
     this.eventSource.addEventListener('open', () => {
       this.onStateChange(EventSource.OPEN);
       this.initialized = true;
@@ -90,7 +87,7 @@ export class TockEventSource {
     });
     this.eventSource.addEventListener('error', () => {
       this.eventSource?.close();
-      this.retry(reject, resolve);
+      this.retry(url, reject, resolve);
     });
     this.eventSource.addEventListener('message', (e) => {
       this.scheduleRetryWatchdog('message');
@@ -101,11 +98,7 @@ export class TockEventSource {
     });
   }
 
-  private retry(reject: () => void, resolve: () => void) {
-    if (!this.currentUrl) {
-      reject();
-      return;
-    }
+  private retry(url: string, reject: () => void, resolve: () => void) {
     const retryDelay = this.retryDelay;
     this.retryDelay = Math.min(
       MAX_RETRY_DELAY,
@@ -115,16 +108,16 @@ export class TockEventSource {
     this.onStateChange(EventSource.CONNECTING);
 
     this.retryTimeoutId = window.setTimeout(async () => {
-      switch (await getSseStatus(this.currentUrl as string)) {
+      switch (await getSseStatus(url)) {
         case SseStatus.UNSUPPORTED:
           reject();
           this.close();
           break;
         case SseStatus.SUPPORTED:
-          this.tryOpen(resolve, reject);
+          this.tryOpen(url, resolve, reject);
           break;
         case SseStatus.SERVER_UNAVAILABLE:
-          this.retry(reject, resolve);
+          this.retry(url, reject, resolve);
           break;
       }
     }, retryDelay);
@@ -140,12 +133,16 @@ export class TockEventSource {
 
   // Trigger a retry if the watchdog timeout is reached
   public triggerRetryWatchdog(reason: string): Promise<void> {
+    const url = this.currentUrl;
+    if (!url) {
+      return Promise.reject();
+    }
     console.log(
       `TockEventSource::triggerRetryWatchdog (timeout: ${this.retryOnPingTimeoutMs}ms, reason: ${reason})`,
     );
     this.close();
     return new Promise((resolve, reject) => {
-      this.retry(reject, resolve);
+      this.retry(url, reject, resolve);
     });
   }
 
