@@ -403,19 +403,21 @@ export const useTock0: (
     [],
   );
 
-  const handleError: (error: unknown) => void = (error) => {
+  const handleError: (error: unknown) => Promise<void> = async (error) => {
     console.error(error);
     stopLoading();
     setQuickReplies([]);
     if (localStorage) {
       window.localStorage.setItem('tockQuickReplyHistory', '');
     }
-    sseSource.current.triggerRetryWatchdog('handleError');
     dispatch({
       type: 'SET_ERROR',
       error: true,
       loading: false,
     });
+    if (sseSource.current?.isInitialized()) {
+      await sseSource.current.triggerRetryWatchdog('handleError');
+    }
   };
 
   const getExtraHeaders: () => Promise<Record<string, string>> =
