@@ -106,8 +106,29 @@ export const tockReducer: Reducer<TockState, TockAction> = (
         });
 
         // If the message is new, add it to the messages
+        // We can have multiple messages with the same responseId, but we only want to add the last one (chunks when streaming is disabled)
         if (!messageAlreadyExists) {
-          newMessages.push(...action.messages);
+          const messagesToAdd: Message[] = [];
+          const seenResponseIds = new Set<string>();
+
+          for (let i = action.messages.length - 1; i >= 0; i--) {
+            const message = action.messages[i];
+            const responseId = message.metadata?.RESPONSE_ID;
+            const isStreamedResponse = message.metadata?.TOCK_STREAM_RESPONSE;
+
+            if (responseId && isStreamedResponse === 'true') {
+              if (!seenResponseIds.has(responseId)) {
+                seenResponseIds.add(responseId);
+                messagesToAdd.push(message);
+              }
+            } else {
+              messagesToAdd.push(message);
+            }
+          }
+
+          messagesToAdd.reverse();
+
+          newMessages.push(...messagesToAdd);
         }
 
         return {

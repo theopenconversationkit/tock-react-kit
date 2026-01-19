@@ -11,6 +11,7 @@ export interface LocalStorageSettings {
 
 export interface NetworkSettings {
   disableSse: boolean;
+  retryOnPingTimeoutMs: number;
   extraHeadersProvider?: () => Promise<Record<string, string>>;
 }
 
@@ -33,6 +34,7 @@ export const defaultSettings: TockSettings = {
   },
   network: {
     disableSse: false,
+    retryOnPingTimeoutMs: 15000, // 15 seconds
   },
   renderers: {
     buttonRenderers: {

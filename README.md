@@ -373,10 +373,11 @@ Objects implementing this interface can be passed to `renderChat` or to `TockCon
 
 #### `NetworkSettings`
 
-| Property name          | type                                     | Description                                       |
-|------------------------|------------------------------------------|---------------------------------------------------|
-| `disableSse`           | `boolean?`                               | If `true`, disables any SSE connection attempt    |
-| `extraHeadersProvider` | `() => Promise<Record<string, string>>?` | Provides extra HTTP headers for outgoing requests |
+| Property name          | type                                     | Description                                                                                                                                                                                 |
+|------------------------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `disableSse`           | `boolean?`                               | If `true`, disables any SSE connection attempt                                                                                                                                              |
+| `extraHeadersProvider` | `() => Promise<Record<string, string>>?` | Provides extra HTTP headers for outgoing requests                                                                                                                                           |
+| `retryOnPingTimeoutMs` | `number?`                                | If SSE is enabled, when this duration in milliseconds elapses without receiving ping events from the backend, the SSE connection is considered to be in an error state and gets restarted  |
 
 #### `RendererSettings`
 

@@ -163,6 +163,7 @@ export const useTock0: (
     localStorageSettings.maxMessageCount;
   const localStoragePrefix = localStorageSettings.prefix;
   const disableSse = disableSseArg ?? networkSettings.disableSse;
+  const retryOnPingTimeoutMs = networkSettings.retryOnPingTimeoutMs;
   const { clearMessages }: UseLocalTools = useLocalTools(localStorageEnabled);
   const handledResponses = useRef<Record<string, number>>({});
   const afterInit = useRef(() => {});
@@ -171,7 +172,7 @@ export const useTock0: (
       afterInit.current = resolve;
     }),
   );
-  const sseSource = useRef(new TockEventSource());
+  const sseSource = useRef(new TockEventSource({ retryOnPingTimeoutMs }));
 
   const startLoading: () => void = useCallback(() => {
     dispatch({
@@ -248,9 +249,10 @@ export const useTock0: (
           }
 
           dispatch({
-            type: metadata?.TOCK_STREAM_RESPONSE === 'true'
-              ? 'UPDATE_MESSAGE'
-              : 'ADD_MESSAGE',
+            type:
+              metadata?.TOCK_STREAM_RESPONSE === 'true'
+                ? 'UPDATE_MESSAGE'
+                : 'ADD_MESSAGE',
             messages: responses.flatMap((response) => {
               const { text, card, carousel, widget, image, buttons } = response;
               let message: Message;
@@ -413,6 +415,9 @@ export const useTock0: (
       error: true,
       loading: false,
     });
+    if (sseSource.current?.isInitialized()) {
+      sseSource.current.triggerRetryWatchdog('handleError');
+    }
   };
 
   const getExtraHeaders: () => Promise<Record<string, string>> =
