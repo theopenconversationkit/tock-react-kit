@@ -7,20 +7,25 @@ on:
         description: 'Version to release: "X.Y.Z", or "X.Y.Z-beta" for beta'
         required: true
 
+permissions: {}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 # zizmor: ignore[artipacked]
         with:
           fetch-depth: 0
           filter: 'blob:none'
-      - uses: actions/setup-node@v4
+          persist-credentials: true
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         env:
           cache-name: cache-node-modules
         with:
@@ -35,11 +40,12 @@ jobs:
       - run: git config --local user.name "GitHub Action"
       #- run: yarn config set version-sign-git-tag true
       - run: |
-              if [[ ${{ github.event.inputs.version }} == *"-"* ]]; then
-                  yarn publish --new-version ${{ github.event.inputs.version }} --tag=beta
+              if [[ "$VERSION" == *"-"* ]]; then
+                  yarn publish --new-version "$VERSION" --tag=beta
               else
-                  yarn publish --new-version ${{ github.event.inputs.version }}
+                  yarn publish --new-version "$VERSION"
               fi
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          VERSION: ${{ github.event.inputs.version }}
       - run: git push --follow-tags
