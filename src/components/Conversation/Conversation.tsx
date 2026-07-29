@@ -44,7 +44,7 @@ const ConversationInnerContainer = styled.ul`
   ::-webkit-scrollbar {
     display: none;
   }
-`;  
+`;
 
 const ConversationItemLi = styled.li`
   width: 100%;

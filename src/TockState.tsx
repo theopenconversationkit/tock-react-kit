@@ -28,7 +28,7 @@ export const useTockDispatch: () => Dispatch<TockAction> = () => {
 export interface TockState {
   quickReplies: QuickReply[];
   messages: Message[];
-  userId: string;
+  userId: string | null;
   loading: boolean;
   sseInitializing: boolean;
   metadata: Record<string, string>;

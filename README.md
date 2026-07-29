@@ -355,12 +355,17 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 The main source of configuration for the chatbot interface.
 Objects implementing this interface can be passed to `renderChat` or to `TockContext`.
 
-| Property name  | Type                    | Description                                          |
-|----------------|-------------------------|------------------------------------------------------|
-| `locale`       | `string?`               | Optional user language, as an *RFC 5646* code        |
-| `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library |
-| `network`      | `NetworkSettings?`      | If `true`, disables any SSE connection attempt       |
-| `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers    |
+| Property name  | Type                    | Description                                                                                                           |
+|----------------|-------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `endpoint`     | `string`                | The URL of the web connector endpoint                                                                                 |
+| `userId`       | `(string\|null)?`       | Unique user ID. `null` means no clientside ID. `undefined` (default) generates and stores a UUID in the localStorage. |
+| `locale`       | `string?`               | Optional user language, as an *RFC 5646* code                                                                         |
+| `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library                                                                  |
+| `network`      | `NetworkSettings?`      | If `true`, disables any SSE connection attempt                                                                        |
+| `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers                                                                     |
+
+> Note: disabling clientside ID is more secure, but requires setting a different [Web Security Mode](https://github.com/theopenconversationkit/tock/tree/master/bot/connector-web#web-security-modes)
+> in TOCK Studio.
 
 #### `LocalStorageSettings`
 

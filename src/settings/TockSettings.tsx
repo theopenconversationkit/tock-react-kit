@@ -17,6 +17,7 @@ export interface NetworkSettings {
 
 export default interface TockSettings {
   endpoint?: string; // will be required in a future release
+  userId?: string | null;
   locale?: string;
   localStorage: LocalStorageSettings;
   network: NetworkSettings;
