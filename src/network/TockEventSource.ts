@@ -1,8 +1,18 @@
+import { EventSourceParserStream } from 'eventsource-parser/stream';
 import { BotConnectorResponse } from '../model/responses';
 
 const INITIAL_RETRY_DELAY = 0;
 const RETRY_DELAY_INCREMENT = 1000;
 const MAX_RETRY_DELAY = 15000;
+
+/**
+ * Connection state codes, mirroring the DOM `EventSource.CONNECTING/OPEN/CLOSED`
+ */
+export const TockSseState = {
+  CONNECTING: 0,
+  OPEN: 1,
+  CLOSED: 2,
+} as const;
 
 enum SseStatus {
   /**
@@ -19,21 +29,20 @@ enum SseStatus {
   SUPPORTED = 1,
 }
 
-async function getSseStatus(url: string) {
-  try {
-    const response = await fetch(url);
-    if (response.ok) {
-      return SseStatus.SUPPORTED;
-    } else if (
-      response.status >= 400 &&
-      response.status < 500 &&
-      response.status !== 429
-    ) {
-      return SseStatus.UNSUPPORTED;
-    } else {
-      return SseStatus.SERVER_UNAVAILABLE;
-    }
-  } catch (_) {
+interface GlobalSseCounter {
+  tockReactKitActiveSseConnections?: number;
+}
+
+function getSseStatus(response: Response) {
+  if (response.ok) {
+    return SseStatus.SUPPORTED;
+  } else if (
+    response.status >= 400 &&
+    response.status < 500 &&
+    response.status !== 429
+  ) {
+    return SseStatus.UNSUPPORTED;
+  } else {
     return SseStatus.SERVER_UNAVAILABLE;
   }
 }
@@ -41,11 +50,11 @@ async function getSseStatus(url: string) {
 export class TockEventSource {
   private initialized: boolean;
   private currentUrl: string | null;
-  private eventSource: EventSource | null;
+  private abortController: AbortController | null;
   private retryDelay: number;
   private retryTimeoutId: number;
   private retryOnPingTimeoutId?: number;
-  private retryOnPingTimeoutMs: number;
+  private readonly retryOnPingTimeoutMs: number;
   onResponse: (botResponse: BotConnectorResponse) => void;
   onStateChange: (state: number) => void;
 
@@ -53,6 +62,9 @@ export class TockEventSource {
     this.initialized = false;
     this.retryDelay = INITIAL_RETRY_DELAY;
     this.retryOnPingTimeoutMs = retryOnPingTimeoutMs;
+    this.currentUrl = null;
+    this.abortController = null;
+    this.retryTimeoutId = -1;
   }
 
   isInitialized(): boolean {
@@ -69,33 +81,89 @@ export class TockEventSource {
    */
   open(endpoint: string, userId: string | null): Promise<void> {
     const url = `${endpoint}/sse${userId == null ? '' : `?userid=${userId}`}`;
-    this.onStateChange(EventSource.CONNECTING);
+    this.onStateChange(TockSseState.CONNECTING);
     this.currentUrl = url;
     return new Promise<void>((resolve, reject): void => {
       this.tryOpen(url, resolve, reject);
     });
   }
 
+  /**
+   * Opens a single fetch-based SSE connection attempt and streams messages from it.
+   */
   private tryOpen(url: string, resolve: () => void, reject: () => void) {
-    this.eventSource = new EventSource(url);
-    this.eventSource.addEventListener('open', () => {
-      this.onStateChange(EventSource.OPEN);
-      this.initialized = true;
-      this.retryDelay = INITIAL_RETRY_DELAY;
-      this.scheduleRetryWatchdog('open');
-      resolve();
-    });
-    this.eventSource.addEventListener('error', () => {
-      this.eventSource?.close();
-      this.retry(url, resolve, reject);
-    });
-    this.eventSource.addEventListener('message', (e) => {
-      this.scheduleRetryWatchdog('message');
-      this.onResponse(JSON.parse(e.data));
-    });
-    this.eventSource.addEventListener('ping', () => {
-      this.scheduleRetryWatchdog('ping');
-    });
+    const abortController = new AbortController();
+    this.abortController = abortController;
+
+    fetch(url, { signal: abortController.signal })
+      .then((response) => {
+        const sseStatus = getSseStatus(response);
+
+        if (sseStatus == SseStatus.SUPPORTED && response.body) {
+          this.onStateChange(TockSseState.OPEN);
+          this.initialized = true;
+          this.retryDelay = INITIAL_RETRY_DELAY;
+          this.scheduleRetryWatchdog('open');
+          resolve();
+
+          (globalThis as GlobalSseCounter).tockReactKitActiveSseConnections =
+            +(
+              (globalThis as GlobalSseCounter)
+                .tockReactKitActiveSseConnections ?? 0
+            ) + 1;
+
+          this.readEventStream(response.body)
+            .catch((e) => {
+              if (!abortController.signal.aborted) {
+                console.error(
+                  'TockEventSource error while reading SSE stream',
+                  e,
+                );
+              }
+            })
+            .then(() => {
+              (
+                globalThis as GlobalSseCounter
+              ).tockReactKitActiveSseConnections =
+                +(
+                  (globalThis as GlobalSseCounter)
+                    .tockReactKitActiveSseConnections ?? 0
+                ) - 1;
+              if (!abortController.signal.aborted) {
+                this.retry(url, resolve, reject);
+              }
+            });
+        } else if (sseStatus === SseStatus.UNSUPPORTED) {
+          reject();
+          this.close();
+        } else {
+          this.retry(url, resolve, reject);
+        }
+      })
+      .catch(() => {
+        // The server is not answering (network error), unless we aborted this attempt ourselves
+        if (!abortController.signal.aborted) {
+          this.retry(url, resolve, reject);
+        }
+      });
+  }
+
+  private async readEventStream(body: ReadableStream<Uint8Array>) {
+    const reader = body
+      .pipeThrough(new TextDecoderStream())
+      .pipeThrough(new EventSourceParserStream())
+      .getReader();
+
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (value.event === 'ping') {
+        this.scheduleRetryWatchdog('ping');
+      } else {
+        this.scheduleRetryWatchdog('message');
+        this.onResponse(JSON.parse(value.data));
+      }
+    }
   }
 
   private retry(url: string, resolve: () => void, reject: () => void) {
@@ -105,21 +173,10 @@ export class TockEventSource {
       retryDelay + RETRY_DELAY_INCREMENT,
     );
 
-    this.onStateChange(EventSource.CONNECTING);
+    this.onStateChange(TockSseState.CONNECTING);
 
-    this.retryTimeoutId = window.setTimeout(async () => {
-      switch (await getSseStatus(url)) {
-        case SseStatus.UNSUPPORTED:
-          reject();
-          this.close();
-          break;
-        case SseStatus.SUPPORTED:
-          this.tryOpen(url, resolve, reject);
-          break;
-        case SseStatus.SERVER_UNAVAILABLE:
-          this.retry(url, resolve, reject);
-          break;
-      }
+    this.retryTimeoutId = window.setTimeout(() => {
+      this.tryOpen(url, resolve, reject);
     }, retryDelay);
   }
 
@@ -161,9 +218,9 @@ export class TockEventSource {
   close() {
     window.clearTimeout(this.retryTimeoutId);
     window.clearTimeout(this.retryOnPingTimeoutId);
-    this.eventSource?.close();
-    this.eventSource = null;
+    this.abortController?.abort();
+    this.abortController = null;
     this.initialized = false;
-    this.onStateChange(EventSource.CLOSED);
+    this.onStateChange(TockSseState.CLOSED);
   }
 }
