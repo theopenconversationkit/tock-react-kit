@@ -177,7 +177,7 @@ const Carousel: (props: {
               aria-roledescription={
                 cardRef === undefined
                   ? undefined
-                  : accessibility?.carousel?.slideRoleDescription ?? 'Slide'
+                  : (accessibility?.carousel?.slideRoleDescription ?? 'Slide')
               }
             >
               {cloneElement(
