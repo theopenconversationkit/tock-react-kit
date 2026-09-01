@@ -5,10 +5,10 @@ export class QuickReply {
   imageUrl?: string;
 
   constructor(
-      label: string,
-      payload: string,
-      nlpText?: string,
-      imageUrl?: string,
+    label: string,
+    payload: string,
+    nlpText?: string,
+    imageUrl?: string,
   ) {
     this.label = label;
     this.payload = payload;
@@ -24,10 +24,10 @@ export class PostBackButton {
   style?: string;
 
   constructor(
-      label: string,
-      payload: string,
-      imageUrl?: string,
-      style?: string,
+    label: string,
+    payload: string,
+    imageUrl?: string,
+    style?: string,
   ) {
     this.label = label;
     this.payload = payload;
@@ -45,12 +45,12 @@ export class UrlButton {
   style?: string;
 
   constructor(
-      label: string,
-      url: string,
-      imageUrl?: string,
-      target?: string,
-      windowFeatures?: string,
-      style?: string,
+    label: string,
+    url: string,
+    imageUrl?: string,
+    target?: string,
+    windowFeatures?: string,
+    style?: string,
   ) {
     this.label = label;
     this.url = url;
