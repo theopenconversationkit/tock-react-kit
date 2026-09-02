@@ -29,7 +29,10 @@ const TockContext: (props: {
   const [state, dispatch] = useReducer(tockReducer, {
     quickReplies: [],
     messages: [],
-    userId: retrieveUserId(mergedSettings.localStorage.prefix),
+    userId:
+      mergedSettings.userId === undefined
+        ? retrieveUserId(mergedSettings.localStorage.prefix)
+        : mergedSettings.userId,
     loading: false,
     sseInitializing: false,
     metadata: {},

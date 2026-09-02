@@ -67,8 +67,8 @@ export class TockEventSource {
    * @returns a promise that gets resolved when the connection is open
    * and gets rejected if the connection fails or this event source is closed
    */
-  open(endpoint: string, userId: string): Promise<void> {
-    const url = `${endpoint}/sse?userid=${userId}`;
+  open(endpoint: string, userId: string | null): Promise<void> {
+    const url = `${endpoint}/sse${userId == null ? '' : `?userid=${userId}`}`;
     this.onStateChange(EventSource.CONNECTING);
     this.currentUrl = url;
     return new Promise<void>((resolve, reject): void => {
