@@ -365,7 +365,7 @@ Objects implementing this interface can be passed to `renderChat` or to `TockCon
 | `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers                                                                     |
 
 > Note: disabling clientside ID is more secure, but requires setting a different [Web Security Mode](https://github.com/theopenconversationkit/tock/tree/master/bot/connector-web#web-security-modes)
-> in TOCK Studio.
+> in the matching bot configuration.
 
 #### `LocalStorageSettings`
 
