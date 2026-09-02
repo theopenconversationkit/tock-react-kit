@@ -29,7 +29,14 @@ enum SseStatus {
   SUPPORTED = 1,
 }
 
-interface GlobalSseCounter {
+/**
+ * Additional debug fields for globalThis
+ */
+export interface GlobalSseCounter {
+  /**
+   * Global variable storing the current number of active SSE connections,
+   * for debugging purposes.
+   */
   tockReactKitActiveSseConnections?: number;
 }
 

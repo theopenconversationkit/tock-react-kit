@@ -8,7 +8,11 @@ import {
   type Mock,
 } from 'vitest';
 import { BotConnectorResponse } from '../model/responses';
-import { TockEventSource, TockSseState } from './TockEventSource';
+import {
+  GlobalSseCounter,
+  TockEventSource,
+  TockSseState,
+} from './TockEventSource';
 
 /**
  * Builds a fake SSE `Response` whose body is a controllable `ReadableStream`.
@@ -55,8 +59,13 @@ describe('TockEventSource', () => {
     vi.stubGlobal('fetch', fetchMock);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     source?.close();
+    await vi.waitFor(() =>
+      expect(
+        (globalThis as GlobalSseCounter).tockReactKitActiveSseConnections ?? 0,
+      ).toBe(0),
+    );
     vi.useRealTimers();
     vi.unstubAllGlobals();
   });
@@ -78,6 +87,9 @@ describe('TockEventSource', () => {
     source.onStateChange = onStateChange;
     source.onResponse = onResponse;
 
+    const initialActiveConnections =
+      (globalThis as GlobalSseCounter).tockReactKitActiveSseConnections ?? 0;
+
     const openPromise = source.open('https://example.com', 'user-1');
     await vi.waitFor(() => expect(source.isInitialized()).toBe(true));
     await openPromise;
@@ -91,6 +103,11 @@ describe('TockEventSource', () => {
     await vi.waitFor(() =>
       expect(onResponse).toHaveBeenCalledWith(botResponse),
     );
+
+    // Verify active connections counter is incremented
+    expect(
+      (globalThis as GlobalSseCounter).tockReactKitActiveSseConnections,
+    ).toBe(initialActiveConnections + 1);
   });
 
   it('resets the retry watchdog when a named "ping" event is received', async () => {
