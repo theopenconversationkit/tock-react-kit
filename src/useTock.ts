@@ -35,7 +35,7 @@ import {
   BotConnectorResponse,
 } from './model/responses';
 import TockSettings from './settings/TockSettings';
-import { TockEventSource } from './network/TockEventSource';
+import { TockEventSource, TockSseState } from './network/TockEventSource';
 
 export interface UseTock {
   messages: Message[];
@@ -617,7 +617,7 @@ export const useTock0: (
     (state: number) =>
       dispatch({
         type: 'SET_SSE_INITIALIZING',
-        sseInitializing: state === EventSource.CONNECTING,
+        sseInitializing: state === TockSseState.CONNECTING,
       }),
     [],
   );
