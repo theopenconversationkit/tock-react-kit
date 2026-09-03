@@ -1,3 +1,4 @@
+import { HistorySerialization } from '../historySerialization';
 import { RendererSettings } from './RendererSettings';
 import linkifyHtml from 'linkify-html';
 import { PartialDeep } from 'type-fest';
@@ -7,6 +8,8 @@ export interface LocalStorageSettings {
   enableMessageHistory: boolean;
   maxMessageCount: number;
   historyMaxAge: number;
+  encryptionKey?: () => string;
+  historyEncryption?: HistorySerialization;
 }
 
 export interface NetworkSettings {

@@ -369,12 +369,14 @@ Objects implementing this interface can be passed to `renderChat` or to `TockCon
 
 #### `LocalStorageSettings`
 
-| Property name          | Type       | Description                                                                                                                                                |
-|------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `enableMessageHistory` | `boolean?` | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                                  |
-| `historyMaxAge`        | `number?`  | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received).     |
-| `maxMessageCount`      | `number?`  | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                                 |
-| `prefix`               | `string?`  | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).                |
+| Property name          | Type                 | Description                                                                                                                                                                                                                                |
+|------------------------|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `enableMessageHistory` | `boolean?`           | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                                                                                                                  |
+| `historyMaxAge`        | `number?`            | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received).                                                                                     |
+| `maxMessageCount`      | `number?`            | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                                                                                                                 |
+| `prefix`               | `string?`            | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).                                                                                                |
+| `encryptionKey`        | `(() => string)?`       | A function returning the raw key used to AES-GCM-encrypt the persisted message history. If omitted, the default JSON serialization is used. Ignored if `historyEncryption` is provided. |
+| `historyEncryption`    | `HistorySerialization?` | Replaces the default serialization or AES-GCM encryption of the persisted message history entirely with a custom `{ encrypt, decrypt }` implementation, taking precedence over `encryptionKey`. |
 
 #### `NetworkSettings`
 
@@ -530,6 +532,14 @@ The optional `localStorage.enableMessageHistory` setting (disabled by default) m
 This history loads at the creation of the chat and is stored in the local storage of the browser.
 The number of persisted messages can be configured with the `localStorage.maxMessageCount` setting.
 
+By default, the persisted history is serialized as plain JSON by
+`createDefaultHistorySerialization()`. Setting `localStorage.encryptionKey` to a function returning a raw key
+string instead selects `createEncryptedHistorySerialization(encryptionKey)`, which encrypts the stored history
+with AES-GCM. Its decrypt operation remains compatible with existing plain-JSON and `v1`-encrypted histories.
+Both factories are publicly exported. If neither built-in serialization meets your needs,
+`localStorage.historyEncryption` lets you fully replace it with a custom `{ encrypt, decrypt }` implementation
+(in which case `encryptionKey` is ignored).
+
 Example:
 
 ```js
@@ -541,6 +551,12 @@ renderChat(
     { localStorage: {
         enableMessageHistory: true,
         maxMessageCount: 15, // default is 10 messages max
+        encryptionKey: () => 'my-secret-key', // enables the default AES-GCM encryption
+        // or, to fully replace the default encryption:
+        // historyEncryption: {
+        //   encrypt: async (history) => /* custom serialization/encryption */,
+        //   decrypt: async (history) => /* custom deserialization/decryption */,
+        // }
       }
     },
 );
