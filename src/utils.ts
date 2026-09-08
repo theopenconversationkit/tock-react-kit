@@ -88,3 +88,18 @@ export const retrievePrefixedLocalStorageKey: (
   }
   return key;
 };
+
+/**
+ * Encodes an ArrayBuffer/Uint8Array to a base64 string.
+ * @param buffer - bytes to encode
+ */
+export const arrayBufferToBase64: (
+  buffer: ArrayBuffer | Uint8Array,
+) => string = (buffer) => btoa(String.fromCharCode(...new Uint8Array(buffer)));
+
+/**
+ * Decodes a base64 string to a Uint8Array.
+ * @param value - base64-encoded string
+ */
+export const base64ToUint8Array: (value: string) => Uint8Array = (value) =>
+  Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
