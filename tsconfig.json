@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "build/lib",
+    "outDir": "build",
     "module": "ES2020",
     "target": "es6",
     "lib": ["es6", "es7", "es2017", "dom"],

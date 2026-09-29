@@ -17,7 +17,9 @@
     "build/tock-react-kit.esm.js",
     "build/tock-react-kit.esm.js.map",
     "build/tock-react-kit-standalone.umd.js",
-    "build/tock-react-kit-standalone.esm.js"
+    "build/tock-react-kit-standalone.umd.js.map",
+    "build/tock-react-kit-standalone.esm.js",
+    "build/tock-react-kit-standalone.esm.js.map"
   ],
   "scripts": {
     "storybook": "storybook dev -p 6006",
