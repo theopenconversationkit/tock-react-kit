@@ -102,7 +102,9 @@ export class TockEventSource {
     const abortController = new AbortController();
     this.abortController = abortController;
 
-    fetch(url, { signal: abortController.signal })
+    // Caching an SSE stream, besides the waste of resources,
+    // can cause stalling under specific circumstances due to browser locks
+    fetch(url, { signal: abortController.signal, cache: 'no-store' })
       .then((response) => {
         const sseStatus = getSseStatus(response);
 
