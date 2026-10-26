@@ -84,10 +84,12 @@ export class TockEventSource {
    * @param endpoint the base endpoint URL, to which '/sse' will be added to form the full SSE endpoint URL
    * @param userId the locally-generated userId (will be ignored if the backend relies on cookies instead)
    * @returns a promise that gets resolved when the connection is open
-   * and gets rejected if the connection fails or this event source is closed
+   * and gets rejected if the connection fails or this event source is closed.
+   * Any connection previously opened by this event source is aborted first.
    */
   open(endpoint: string, userId: string | null): Promise<void> {
     const url = `${endpoint}/sse${userId == null ? '' : `?userid=${userId}`}`;
+    this.abortCurrentConnection();
     this.onStateChange(TockSseState.CONNECTING);
     this.currentUrl = url;
     return new Promise<void>((resolve, reject): void => {
@@ -184,6 +186,7 @@ export class TockEventSource {
 
     this.onStateChange(TockSseState.CONNECTING);
 
+    window.clearTimeout(this.retryTimeoutId);
     this.retryTimeoutId = window.setTimeout(() => {
       this.tryOpen(url, resolve, reject);
     }, retryDelay);
@@ -225,11 +228,15 @@ export class TockEventSource {
   }
 
   close() {
+    this.abortCurrentConnection();
+    this.onStateChange(TockSseState.CLOSED);
+  }
+
+  private abortCurrentConnection() {
     window.clearTimeout(this.retryTimeoutId);
     window.clearTimeout(this.retryOnPingTimeoutId);
     this.abortController?.abort();
     this.abortController = null;
     this.initialized = false;
-    this.onStateChange(TockSseState.CLOSED);
   }
 }

@@ -212,4 +212,55 @@ describe('TockEventSource', () => {
     await vi.advanceTimersByTimeAsync(20000);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+  it('aborts the previous connection when open() is called again', async () => {
+    const signals: AbortSignal[] = [];
+    fetchMock.mockImplementation((_url, init) => {
+      signals.push(init?.signal);
+      return Promise.resolve(
+        sseResponse([], { keepOpen: true, signal: init?.signal }),
+      );
+    });
+
+    source = new TockEventSource({ retryOnPingTimeoutMs: 30000 });
+    source.onStateChange = vi.fn();
+    source.onResponse = vi.fn();
+
+    source.open('https://example.com', 'user-1').catch(() => {});
+    source.open('https://example.com', 'user-1').catch(() => {});
+    await vi.waitFor(() => expect(signals).toHaveLength(2));
+
+    expect(signals[0].aborted).toBe(true);
+    expect(signals[1].aborted).toBe(false);
+
+    source.close();
+    expect(signals[1].aborted).toBe(true);
+    await vi.advanceTimersByTimeAsync(20000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not stack retry loops when open() is called during a retry backoff', async () => {
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(sseResponse([], { status: 503 })),
+    );
+
+    source = new TockEventSource({ retryOnPingTimeoutMs: 30000 });
+    source.onStateChange = vi.fn();
+    source.onResponse = vi.fn();
+
+    // 1st attempt fails, then the immediate 1st retry fails: a 2nd retry is scheduled in 1000ms
+    source.open('https://example.com', 'user-1').catch(() => {});
+    await vi.advanceTimersByTimeAsync(0);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    // new attempt fails immediately, its retry is scheduled in 2000ms
+    source.open('https://example.com', 'user-1').catch(() => {});
+    await vi.advanceTimersByTimeAsync(0);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+
+    // the retry scheduled before the second open() must have been cancelled
+    await vi.advanceTimersByTimeAsync(1500);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+  });
 });

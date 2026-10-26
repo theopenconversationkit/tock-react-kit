@@ -173,6 +173,8 @@ export const useTock0: (
     }),
   );
   const sseSource = useRef(new TockEventSource({ retryOnPingTimeoutMs }));
+  // Number of mounted components sharing sseSource through useSseInit
+  const sseConsumerCount = useRef(0);
 
   const startLoading: () => void = useCallback(() => {
     dispatch({
@@ -631,7 +633,11 @@ export const useTock0: (
     useEffect(() => {
       if (disableSse || !tockEndPoint.length) {
         afterInit.current();
-      } else {
+        return;
+      }
+      // The connection is shared by every component calling useTock within the same context:
+      // the first one to mount opens it, the last one to unmount closes it
+      if (sseConsumerCount.current++ === 0) {
         // Trigger afterInit regardless of whether the SSE call succeeded or failed
         // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
         sseSource.current
@@ -639,7 +645,11 @@ export const useTock0: (
           .catch((e) => console.error(e))
           .finally(afterInit.current);
       }
-      return () => sseSource.current.close();
+      return () => {
+        if (--sseConsumerCount.current === 0) {
+          sseSource.current.close();
+        }
+      };
     }, [disableSse, tockEndPoint]);
   };
 
