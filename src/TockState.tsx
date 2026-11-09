@@ -1,6 +1,6 @@
 import { Context, createContext, Dispatch, Reducer, useContext } from 'react';
 import { QuickReply } from './model/buttons';
-import { Message } from './model/messages';
+import { Message, MessageType } from './model/messages';
 
 export const TockStateContext: Context<TockState | undefined> = createContext<
   TockState | undefined
@@ -96,8 +96,23 @@ export const tockReducer: Reducer<TockState, TockAction> = (
             return isMessageExists;
           });
 
-          // If the message already exists, replace with the new message
+          // If the message already exists, replace with the new message,
+          // or append the fragment to it when the server streams deltas
           if (messageExists) {
+            if (
+              messageExists.metadata?.TOCK_STREAM_MODE === 'delta' &&
+              message.type === MessageType.message &&
+              messageExists.type === MessageType.message
+            ) {
+              const keep = Number(
+                messageExists.metadata?.TOCK_STREAM_KEEP ??
+                  message.message.length,
+              );
+              return {
+                ...messageExists,
+                message: message.message.slice(0, keep) + messageExists.message,
+              };
+            }
             return messageExists;
           }
 

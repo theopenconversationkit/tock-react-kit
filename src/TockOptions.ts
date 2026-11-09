@@ -15,6 +15,7 @@ export interface TockOptions extends TockOptionalSettings {
   timeoutBetweenMessage?: number;
   widgets?: { [id: string]: (props: unknown) => JSX.Element };
   disableSse?: boolean;
+  streamMode?: 'delta';
   accessibility?: TockAccessibility;
   localStorageHistory?: TockLocalStorage;
 }

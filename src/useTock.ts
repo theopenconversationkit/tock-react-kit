@@ -164,6 +164,7 @@ export const useTock0: (
   const localStoragePrefix = localStorageSettings.prefix;
   const disableSse = disableSseArg ?? networkSettings.disableSse;
   const retryOnPingTimeoutMs = networkSettings.retryOnPingTimeoutMs;
+  const streamMode = networkSettings.streamMode;
   const { clearMessages }: UseLocalTools = useLocalTools(localStorageEnabled);
   const handledResponses = useRef<Record<string, number>>({});
   const afterInit = useRef(() => {});
@@ -286,7 +287,11 @@ export const useTock0: (
 
               message.metadata = metadata;
 
-              if (localStorageEnabled) {
+              // Delta fragments are partial: only the final response is worth recording
+              if (
+                localStorageEnabled &&
+                metadata?.TOCK_STREAM_MODE !== 'delta'
+              ) {
                 recordResponseToLocalSession(message);
               }
               return [message];
@@ -356,6 +361,12 @@ export const useTock0: (
     if (!responseId) {
       // no identifier -> always handle with SSE
       handleBotResponse(botResponse);
+    } else if (botResponse.metadata?.['TOCK_STREAM_RESPONSE'] === 'true') {
+      // A streamed frame is a new version of the same message, replaced by the next one:
+      // it must not count as a message consumed from the POST response
+      if ((handledResponses.current[responseId] ?? 0) >= 0) {
+        handleBotResponse(botResponse);
+      }
     } else {
       const processedMessageCount = handledResponses.current[responseId] ?? 0;
       if (processedMessageCount >= 0) {
@@ -444,17 +455,12 @@ export const useTock0: (
         });
       }
       startLoading();
-      const body = payload
-        ? {
-            payload,
-            userId,
-            locale,
-          }
-        : {
-            query: message,
-            userId,
-            locale,
-          };
+      const body = {
+        ...(payload ? { payload } : { query: message }),
+        userId,
+        locale,
+        ...(streamMode ? { streamMode } : {}),
+      };
 
       return fetch(tockEndPoint, {
         body: JSON.stringify(body),
@@ -468,7 +474,7 @@ export const useTock0: (
         .then(handlePostBotResponse, handleError)
         .finally(stopLoading);
     },
-    [locale],
+    [locale, streamMode],
   );
 
   const sendReferralParameter: (referralParameter: string) => Promise<void> =
