@@ -36,6 +36,14 @@ import {
 } from './model/responses';
 import TockSettings from './settings/TockSettings';
 import { TockEventSource } from './network/TockEventSource';
+import {
+  isDiscardFrame,
+  isFrameOfOtherRequest,
+  isPartialFrame,
+  newRequestId,
+  usesStreamContract,
+  withoutStreamFlags,
+} from './streaming';
 
 export interface UseTock {
   messages: Message[];
@@ -167,6 +175,7 @@ export const useTock0: (
   const streamMode = networkSettings.streamMode;
   const { clearMessages }: UseLocalTools = useLocalTools(localStorageEnabled);
   const handledResponses = useRef<Record<string, number>>({});
+  const inFlightRequestIds = useRef<Set<string>>(new Set());
   const afterInit = useRef(() => {});
   const afterInitPromise = useRef(
     new Promise<void>((resolve) => {
@@ -207,10 +216,31 @@ export const useTock0: (
       } else {
         history = JSON.parse(savedHistory);
       }
-      if (history.length >= localStorageMaxMessages) {
-        history.splice(0, history.length - localStorageMaxMessages + 1);
+      let streamedIndex = -1;
+      if (
+        message.metadata?.TOCK_STREAM_RESPONSE === 'true' &&
+        message.metadata?.RESPONSE_ID
+      ) {
+        for (let i = history.length - 1; i >= 0; i--) {
+          const m = history[i].metadata;
+          if (
+            m?.TOCK_STREAM_RESPONSE === 'true' &&
+            m?.RESPONSE_ID === message.metadata.RESPONSE_ID
+          ) {
+            streamedIndex = i;
+            break;
+          }
+        }
       }
-      history.push(message);
+      if (streamedIndex >= 0) {
+        // A new version of an already recorded streamed message replaces it
+        history[streamedIndex] = message;
+      } else {
+        history.push(message);
+      }
+      if (history.length > localStorageMaxMessages) {
+        history.splice(0, history.length - localStorageMaxMessages);
+      }
       window.localStorage.setItem(
         messageHistoryLSKeyName,
         JSON.stringify(history),
@@ -227,6 +257,13 @@ export const useTock0: (
           type: 'SET_METADATA',
           metadata: metadata || {},
         });
+
+        if (isDiscardFrame(metadata)) {
+          dispatch({
+            type: 'DISCARD_STREAMED_MESSAGE',
+            responseId: metadata?.RESPONSE_ID,
+          });
+        }
 
         if (Array.isArray(responses) && responses.length > 0) {
           const lastMessage = responses[responses.length - 1];
@@ -249,54 +286,73 @@ export const useTock0: (
             );
           }
 
-          dispatch({
-            type:
-              metadata?.TOCK_STREAM_RESPONSE === 'true'
-                ? 'UPDATE_MESSAGE'
-                : 'ADD_MESSAGE',
-            messages: responses.flatMap((response) => {
-              const { text, card, carousel, widget, image, buttons } = response;
-              let message: Message;
-              if (widget) {
-                message = {
-                  widgetData: widget,
-                  type: MessageType.widget,
-                } as Widget;
-              } else if (text !== undefined) {
-                message = {
-                  author: 'bot',
-                  message: text,
-                  type: MessageType.message,
-                  buttons: (buttons || [])
-                    .filter((button) => button.type !== 'quick_reply')
-                    .map(mapButton),
-                } as TextMessage;
-              } else if (card) {
-                message = mapCard(card);
-              } else if (image) {
-                message = mapImage(image);
-              } else if (carousel) {
-                message = {
-                  cards: carousel.cards.map(mapCard),
-                  type: MessageType.carousel,
-                } as Carousel;
-              } else {
-                console.error('Unsupported bot response', response);
-                return [];
-              }
+          const contract = usesStreamContract(metadata);
+          const partial = isPartialFrame(metadata);
+          const replaceId = metadata?.TOCK_STREAM_REPLACE;
+          const legacyStreamed =
+            !contract && metadata?.TOCK_STREAM_RESPONSE === 'true';
+          const updates: Message[] = [];
+          const additions: Message[] = [];
 
-              message.metadata = metadata;
+          responses.forEach((response) => {
+            const { text, card, carousel, widget, image, buttons } = response;
+            let message: Message;
+            if (widget) {
+              message = {
+                widgetData: widget,
+                type: MessageType.widget,
+              } as Widget;
+            } else if (text !== undefined) {
+              message = {
+                author: 'bot',
+                message: text,
+                type: MessageType.message,
+                buttons: (buttons || [])
+                  .filter((button) => button.type !== 'quick_reply')
+                  .map(mapButton),
+              } as TextMessage;
+            } else if (card) {
+              message = mapCard(card);
+            } else if (image) {
+              message = mapImage(image);
+            } else if (carousel) {
+              message = {
+                cards: carousel.cards.map(mapCard),
+                type: MessageType.carousel,
+              } as Carousel;
+            } else {
+              console.error('Unsupported bot response', response);
+              return;
+            }
 
-              // Delta fragments are partial: only the final response is worth recording
-              if (
-                localStorageEnabled &&
-                metadata?.TOCK_STREAM_MODE !== 'delta'
-              ) {
-                recordResponseToLocalSession(message);
-              }
-              return [message];
-            }),
+            // Only the designated entry replaces the streamed bubble: the other
+            // messages of the response are ordinary messages
+            const replacesBubble =
+              partial ||
+              legacyStreamed ||
+              (replaceId !== undefined && response.actionId === replaceId);
+            message.metadata =
+              contract && !replacesBubble
+                ? withoutStreamFlags(metadata)
+                : metadata;
+
+            // Partial frames are transient: only the final response is recorded
+            if (
+              localStorageEnabled &&
+              !partial &&
+              metadata?.TOCK_STREAM_MODE !== 'delta'
+            ) {
+              recordResponseToLocalSession(message);
+            }
+            (replacesBubble ? updates : additions).push(message);
           });
+
+          if (updates.length > 0) {
+            dispatch({ type: 'UPDATE_MESSAGE', messages: updates });
+          }
+          if (additions.length > 0) {
+            dispatch({ type: 'ADD_MESSAGE', messages: additions });
+          }
         }
       },
       [dispatch],
@@ -357,13 +413,16 @@ export const useTock0: (
   const handleSseBotResponse: (botResponse: BotConnectorResponse) => void = (
     botResponse,
   ) => {
+    if (isFrameOfOtherRequest(botResponse, inFlightRequestIds.current)) {
+      return;
+    }
     const responseId = botResponse.metadata?.['RESPONSE_ID'];
     if (!responseId) {
       // no identifier -> always handle with SSE
       handleBotResponse(botResponse);
-    } else if (botResponse.metadata?.['TOCK_STREAM_RESPONSE'] === 'true') {
-      // A streamed frame is a new version of the same message, replaced by the next one:
-      // it must not count as a message consumed from the POST response
+    } else if (isPartialFrame(botResponse.metadata)) {
+      // A partial frame is a transient version of the answer, replaced by the next frame:
+      // it does not count as a message consumed from the POST response
       if ((handledResponses.current[responseId] ?? 0) >= 0) {
         handleBotResponse(botResponse);
       }
@@ -455,10 +514,13 @@ export const useTock0: (
         });
       }
       startLoading();
+      const requestId = newRequestId();
+      inFlightRequestIds.current.add(requestId);
       const body = {
         ...(payload ? { payload } : { query: message }),
         userId,
         locale,
+        requestId,
         ...(streamMode ? { streamMode } : {}),
       };
 
@@ -472,7 +534,10 @@ export const useTock0: (
       })
         .then((res) => res.json())
         .then(handlePostBotResponse, handleError)
-        .finally(stopLoading);
+        .finally(() => {
+          inFlightRequestIds.current.delete(requestId);
+          stopLoading();
+        });
     },
     [locale, streamMode],
   );
