@@ -218,9 +218,20 @@ as well as to custom React-based frontends that handle message rendering themsel
 
 In order to support the streaming of responses, when the MetadataEvent `TOCK_STREAM_RESPONSE` is set to true, a message with the same responseId will be replaced with the new version of the message.
 
+The streaming contract (metadata of a response envelope):
+
+| Metadata | Meaning |
+|---|---|
+| `TOCK_STREAM_PARTIAL=true` | Transient frame of an answer being generated. Not counted as a consumed message and not stored in the local history. |
+| `TOCK_STREAM_REPLACE=<actionId>` | Final response: only the message whose `actionId` matches replaces the streamed bubble, the other messages are added in order. |
+| `TOCK_STREAM_DISCARD=true` | The final response has no text: the streamed bubble is removed. |
+| `TOCK_REQUEST_ID` | Identifier sent by the kit as `requestId` with each question and echoed on every frame. Frames of another in-flight request are ignored. |
+
 By default, each streamed frame carries the whole text received so far. With the `streamMode: 'delta'` option, the kit adds `"streamMode": "delta"` to its requests; the server then sends frames flagged with the MetadataEvent `TOCK_STREAM_MODE` set to `delta`, whose text is only the end of the (already rendered) text. `TOCK_STREAM_KEEP` gives the number of characters of the current message to keep before appending it, so that the displayed text is the same as in the default mode. The final response always carries the complete text and replaces the message. Servers that do not support this option ignore it.
 
-Frames flagged `TOCK_STREAM_RESPONSE` do not count as messages consumed from the POST response, so that the POST response (or the final SSE frame) is never dropped when the stream was interrupted.
+Frames flagged `TOCK_STREAM_PARTIAL` do not count as messages consumed from the POST response; every other SSE frame does, so that the POST response only adds the messages not already received over SSE. A `TOCK_STREAM_DISCARD` frame carries no message and counts for none.
+
+Note: a delta frame received while no streamed bubble exists yet displays only its fragment until the final response replaces it. An invalid `TOCK_STREAM_KEEP` is ignored and the message waits for the final response.
 
 
 ## API Reference
