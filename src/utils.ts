@@ -95,7 +95,18 @@ export const retrievePrefixedLocalStorageKey: (
  */
 export const arrayBufferToBase64: (
   buffer: ArrayBuffer | Uint8Array,
-) => string = (buffer) => btoa(String.fromCharCode(...new Uint8Array(buffer)));
+) => string = (buffer) => {
+  const bytes = new Uint8Array(buffer);
+  // Use 32KiB chunks to avoid throwing on very large buffers
+  const chunks: string[] = [];
+  const chunkSize = 0x8000;
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    chunks.push(String.fromCharCode(...bytes.subarray(i, i + chunkSize)));
+  }
+
+  return btoa(chunks.join(''));
+};
 
 /**
  * Decodes a base64 string to a Uint8Array.
