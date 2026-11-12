@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
 } from 'react';
 import {
@@ -37,7 +36,6 @@ import {
 } from './model/responses';
 import TockSettings from './settings/TockSettings';
 import { TockEventSource } from './network/TockEventSource';
-import { createDefaultHistorySerialization } from './historySerialization';
 
 export interface UseTock {
   messages: Message[];
@@ -175,12 +173,7 @@ export const useTock0: (
     }),
   );
   const sseSource = useRef(new TockEventSource({ retryOnPingTimeoutMs }));
-  const historySerialization = useMemo(
-    () =>
-      localStorageSettings.historySerialization ??
-      createDefaultHistorySerialization(),
-    [localStorageSettings.historySerialization],
-  );
+  const historySerialization = localStorageSettings.historySerialization;
   const historySavePromise = useRef(Promise.resolve());
 
   const startLoading: () => void = useCallback(() => {
@@ -219,14 +212,14 @@ export const useTock0: (
               messageHistoryLSKeyName,
             );
             const history = savedHistory
-              ? ((await historySerialization.decrypt(savedHistory)) ?? [])
+              ? ((await historySerialization.decode(savedHistory)) ?? [])
               : [];
 
             history.push(...messages);
             if (history.length > localStorageMaxMessages) {
               history.splice(0, history.length - localStorageMaxMessages);
             }
-            const payload = await historySerialization.encrypt(history);
+            const payload = await historySerialization.encode(history);
             window.localStorage.setItem(messageHistoryLSKeyName, payload);
             window.localStorage.setItem(
               messageHistoryLastTime,
@@ -726,7 +719,7 @@ export const useTock0: (
     const storedMessages =
       storageAvailable('localStorage') && localStorageEnabled
         ? await historySerialization
-            .decrypt(window.localStorage.getItem(messageHistoryLSKey))
+            .decode(window.localStorage.getItem(messageHistoryLSKey))
             .catch((error) => {
               console.error('Failed to load message history', error);
               return null;

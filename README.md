@@ -375,7 +375,7 @@ Objects implementing this interface can be passed to `renderChat` or to `TockCon
 | `historyMaxAge`        | `number?`               | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received).                                                                              |
 | `maxMessageCount`      | `number?`               | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                                                                                                          |
 | `prefix`               | `string?`               | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).                                                                                         |
-| `historySerialization` | `HistorySerialization?` | Replaces the default JSON serialization of the persisted message history with a custom `{ encrypt, decrypt }` implementation. Use `createEncryptedHistorySerialization(encryptionKey)` to opt into the built-in AES-GCM encryption. |
+| `historySerialization` | `HistorySerialization?` | Replaces the default JSON serialization of the persisted message history with a custom `{ decode, encode }` implementation. Use `createEncryptedHistorySerialization(encryptionKey)` to opt into the built-in AES-GCM encryption. |
 
 #### `NetworkSettings`
 
@@ -531,12 +531,10 @@ The optional `localStorage.enableMessageHistory` setting (disabled by default) m
 This history loads at the creation of the chat and is stored in the local storage of the browser.
 The number of persisted messages can be configured with the `localStorage.maxMessageCount` setting.
 
-By default, the persisted history is serialized as plain JSON by
-`createDefaultHistorySerialization()`. To use the built-in AES-GCM encryption, explicitly configure
-`localStorage.historySerialization` with
-`createEncryptedHistorySerialization(encryptionKey)`. Its decrypt operation remains compatible with existing
-plain-JSON and `v1`-encrypted histories. Both factories are publicly exported. You may also provide a custom
-`{ encrypt, decrypt }` implementation.
+The default serialization strategy uses plain JSON. It can however be overridden by setting `localStorage.historySerialization`.
+This package ships an alternative AES-GCM encrypted implementation, which can be instantiated using `createEncryptedHistorySerialization(encryptionKey)`
+For backward compatibility, this alternative strategy can still decrypt existing plain-JSON and `v1`-encrypted histories.
+You may also opt for your own implementation of the `HistorySerialization` interface.
 
 Example:
 

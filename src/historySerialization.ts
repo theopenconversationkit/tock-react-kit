@@ -6,14 +6,14 @@ import { Message } from './model/messages';
  * persisted to `localStorage`, and for reversing that operation when
  * reloading the history.
  *
- * `useTock` uses {@link createDefaultHistorySerialization} by default. A
+ * {@link createDefaultHistorySerialization} is used by default. A
  * consumer can provide a fully custom implementation via
  * `LocalStorageSettings.historySerialization` to replace it (e.g. to use
  * encryption, a different cipher, or delegate to a server-side/native API).
  */
 export interface HistorySerialization {
-  encrypt: (history: Message[]) => Promise<string>;
-  decrypt: (history: string | null) => Promise<Message[] | null>;
+  encode: (history: Message[]) => Promise<string>;
+  decode: (history: string | null) => Promise<Message[] | null>;
 }
 
 /**
@@ -148,8 +148,8 @@ export async function decrypt(
  */
 export function createDefaultHistorySerialization(): HistorySerialization {
   return {
-    encrypt: async (history) => JSON.stringify(history),
-    decrypt: async (history) => (history == null ? null : JSON.parse(history)),
+    encode: async (history) => JSON.stringify(history),
+    decode: async (history) => (history == null ? null : JSON.parse(history)),
   };
 }
 
@@ -164,7 +164,7 @@ export function createEncryptedHistorySerialization(
   encryptionKey: () => string,
 ): HistorySerialization {
   return {
-    encrypt: (history) => encrypt(history, encryptionKey),
-    decrypt: (history) => decrypt(history, encryptionKey),
+    encode: (history) => encrypt(history, encryptionKey),
+    decode: (history) => decrypt(history, encryptionKey),
   };
 }
