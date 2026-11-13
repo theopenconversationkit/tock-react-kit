@@ -174,6 +174,9 @@ export const useTock0: (
   );
   const sseSource = useRef(new TockEventSource({ retryOnPingTimeoutMs }));
   const historySerialization = localStorageSettings.historySerialization;
+  const historyLoadPromise = useRef<Promise<TockHistoryData | null> | null>(
+    null,
+  );
   const historySavePromise = useRef(Promise.resolve());
 
   const startLoading: () => void = useCallback(() => {
@@ -658,17 +661,29 @@ export const useTock0: (
     }, [handleSseBotResponse, onSseStateChange]);
 
     useEffect(() => {
+      let cancelled = false;
+      // Restore local history first, so that messages pushed by the backend as soon as
+      // the SSE connection opens are appended after it and are not handled twice
+      const historyLoaded = loadHistory().catch((e) => console.error(e));
       if (disableSse || !tockEndPoint.length) {
-        afterInit.current();
+        historyLoaded.finally(afterInit.current);
       } else {
-        // Trigger afterInit regardless of whether the SSE call succeeded or failed
-        // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
-        sseSource.current
-          .open(tockEndPoint, userId)
-          .catch((e) => console.error(e))
-          .finally(afterInit.current);
+        historyLoaded.then(() => {
+          if (cancelled) {
+            return;
+          }
+          // Trigger afterInit regardless of whether the SSE call succeeded or failed
+          // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
+          sseSource.current
+            .open(tockEndPoint, userId)
+            .catch((e) => console.error(e))
+            .finally(afterInit.current);
+        });
       }
-      return () => sseSource.current.close();
+      return () => {
+        cancelled = true;
+        sseSource.current.close();
+      };
     }, [disableSse, tockEndPoint]);
   };
 
@@ -690,15 +705,21 @@ export const useTock0: (
     [],
   );
 
-  const loadHistory: () => Promise<TockHistoryData | null> = async () => {
+  const loadHistory: () => Promise<TockHistoryData | null> = () => {
     // If not first time, return existing messages
     if (messages.length) {
-      return {
+      return Promise.resolve({
         messages,
         quickReplies,
-      };
+      });
     }
+    // Restoring from local storage must happen only once, even though both
+    // useSseInit and the chat component request it
+    historyLoadPromise.current ??= loadStoredHistory();
+    return historyLoadPromise.current;
+  };
 
+  const loadStoredHistory: () => Promise<TockHistoryData | null> = async () => {
     const messageHistoryLSKey = retrievePrefixedLocalStorageKey(
       localStoragePrefix,
       'tockMessageHistory',
