@@ -44,6 +44,9 @@ export const renderChat: (
   if (options.disableSse) {
     network.disableSse = true;
   }
+  if (options.streamMode) {
+    network.streamMode = options.streamMode;
+  }
   if (options.extraHeadersProvider) {
     network.extraHeadersProvider = options.extraHeadersProvider;
   }
