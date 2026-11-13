@@ -44,19 +44,26 @@ export const parseKeep = (value: string | undefined): number | undefined =>
   value !== undefined && /^\d+$/.test(value) ? Number(value) : undefined;
 
 /**
- * A frame belongs to another request than the ones in flight in this client
- * (frames without request identifier, e.g. notifications, always pass).
+ * A frame is correlated to a request (`TOCK_REQUEST_ID`) that this client is not
+ * handling, so it must be ignored. The rule is stable for the whole lifetime of a
+ * stream: a correlated frame is accepted only while its request is in flight here.
+ *
+ * It is deliberately NOT gated on `inFlightRequestIds.size > 0`: otherwise an idle
+ * tab (no request in flight) would accept a foreign tab's partial frames, then start
+ * rejecting the rest the moment it sends its own question — leaving an orphan
+ * provisional bubble that is never finalized nor recorded. For the same reason, a late
+ * frame arriving after the local request completed (success or error — the id is then
+ * removed from the in-flight set) is treated as foreign and dropped, so it cannot
+ * revive a closed/errored request.
+ *
+ * Frames without a request identifier (e.g. notifications) always pass.
  */
 export const isFrameOfOtherRequest = (
   botResponse: BotConnectorResponse,
   inFlightRequestIds: ReadonlySet<string>,
 ): boolean => {
   const requestId = botResponse.metadata?.TOCK_REQUEST_ID;
-  return (
-    !!requestId &&
-    inFlightRequestIds.size > 0 &&
-    !inFlightRequestIds.has(requestId)
-  );
+  return !!requestId && !inFlightRequestIds.has(requestId);
 };
 
 export const newRequestId = (): string =>
