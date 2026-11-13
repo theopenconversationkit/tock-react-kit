@@ -65,7 +65,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
   useEffect(() => {
     // When the chat gets initialized for the first time, process optional referral|opening message
     sseInitPromise.then(async () => {
-      const history = loadHistory();
+      const history = await loadHistory();
 
       if (afterInit) {
         await afterInit({

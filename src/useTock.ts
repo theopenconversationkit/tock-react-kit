@@ -64,7 +64,7 @@ export interface UseTock {
   sendReferralParameter: (referralParameter: string) => Promise<void>;
   sendOpeningMessage: (msg: string) => Promise<void>;
   sendPayload: (payload: string) => Promise<void>;
-  loadHistory: () => TockHistoryData | null;
+  loadHistory: () => Promise<TockHistoryData | null>;
   /**
    * @deprecated use {@link loadHistory} instead of reimplementing history parsing
    */
@@ -173,6 +173,11 @@ export const useTock0: (
     }),
   );
   const sseSource = useRef(new TockEventSource({ retryOnPingTimeoutMs }));
+  const historySerialization = localStorageSettings.historySerialization;
+  const historyLoadPromise = useRef<Promise<TockHistoryData | null> | null>(
+    null,
+  );
+  const historySavePromise = useRef(Promise.resolve());
 
   const startLoading: () => void = useCallback(() => {
     dispatch({
@@ -188,36 +193,48 @@ export const useTock0: (
     });
   }, [dispatch]);
 
-  const recordResponseToLocalSession: (message: Message) => void = useCallback(
-    (message: Message) => {
-      const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
-        localStoragePrefix,
-        'tockMessageHistory',
-      );
-      const messageHistoryLastTime = retrievePrefixedLocalStorageKey(
-        localStoragePrefix,
-        'tockLastMessageTimestamp',
-      );
+  const recordResponseToLocalSession: (messages: Message[]) => void =
+    useCallback(
+      (messages: Message[]) => {
+        historySavePromise.current = historySavePromise.current
+          .then(async () => {
+            if (!messages.length) {
+              return;
+            }
 
-      const savedHistory = window.localStorage.getItem(messageHistoryLSKeyName);
-      let history: Message[];
-      if (!savedHistory) {
-        history = [];
-      } else {
-        history = JSON.parse(savedHistory);
-      }
-      if (history.length >= localStorageMaxMessages) {
-        history.splice(0, history.length - localStorageMaxMessages + 1);
-      }
-      history.push(message);
-      window.localStorage.setItem(
-        messageHistoryLSKeyName,
-        JSON.stringify(history),
-      );
-      window.localStorage.setItem(messageHistoryLastTime, '' + Date.now());
-    },
-    [localStoragePrefix, localStorageMaxMessages],
-  );
+            const messageHistoryLSKeyName = retrievePrefixedLocalStorageKey(
+              localStoragePrefix,
+              'tockMessageHistory',
+            );
+            const messageHistoryLastTime = retrievePrefixedLocalStorageKey(
+              localStoragePrefix,
+              'tockLastMessageTimestamp',
+            );
+
+            const savedHistory = window.localStorage.getItem(
+              messageHistoryLSKeyName,
+            );
+            const history = savedHistory
+              ? ((await historySerialization.decode(savedHistory)) ?? [])
+              : [];
+
+            history.push(...messages);
+            if (history.length > localStorageMaxMessages) {
+              history.splice(0, history.length - localStorageMaxMessages);
+            }
+            const payload = await historySerialization.encode(history);
+            window.localStorage.setItem(messageHistoryLSKeyName, payload);
+            window.localStorage.setItem(
+              messageHistoryLastTime,
+              '' + Date.now(),
+            );
+          })
+          .catch((error) => {
+            console.error('Failed to save message history', error);
+          });
+      },
+      [localStoragePrefix, localStorageMaxMessages, historySerialization],
+    );
 
   const handleBotResponse: (botResponse: BotConnectorResponse) => void =
     useCallback(
@@ -248,53 +265,66 @@ export const useTock0: (
             );
           }
 
+          const messages: Message[] = [];
+
+          for (const response of responses) {
+            const { text, card, carousel, widget, image, buttons } = response;
+            let message: Message;
+
+            if (widget) {
+              message = {
+                widgetData: widget,
+                type: MessageType.widget,
+              } as Widget;
+            } else if (text !== undefined) {
+              message = {
+                author: 'bot',
+                message: text,
+                type: MessageType.message,
+                buttons: (buttons || [])
+                  .filter((button) => button.type !== 'quick_reply')
+                  .map(mapButton),
+              } as TextMessage;
+            } else if (card) {
+              message = mapCard(card);
+            } else if (image) {
+              message = mapImage(image);
+            } else if (carousel) {
+              message = {
+                cards: carousel.cards.map(mapCard),
+                type: MessageType.carousel,
+              } as Carousel;
+            } else {
+              console.error('Unsupported bot response', response);
+              continue;
+            }
+
+            message.metadata = {
+              RECEPTION_TIME: new Date().toISOString(),
+              ...metadata,
+            };
+            messages.push(message);
+          }
+
+          if (localStorageEnabled) {
+            recordResponseToLocalSession(messages);
+          }
+
           dispatch({
             type:
               metadata?.TOCK_STREAM_RESPONSE === 'true'
                 ? 'UPDATE_MESSAGE'
                 : 'ADD_MESSAGE',
-            messages: responses.flatMap((response) => {
-              const { text, card, carousel, widget, image, buttons } = response;
-              let message: Message;
-              if (widget) {
-                message = {
-                  widgetData: widget,
-                  type: MessageType.widget,
-                } as Widget;
-              } else if (text !== undefined) {
-                message = {
-                  author: 'bot',
-                  message: text,
-                  type: MessageType.message,
-                  buttons: (buttons || [])
-                    .filter((button) => button.type !== 'quick_reply')
-                    .map(mapButton),
-                } as TextMessage;
-              } else if (card) {
-                message = mapCard(card);
-              } else if (image) {
-                message = mapImage(image);
-              } else if (carousel) {
-                message = {
-                  cards: carousel.cards.map(mapCard),
-                  type: MessageType.carousel,
-                } as Carousel;
-              } else {
-                console.error('Unsupported bot response', response);
-                return [];
-              }
-
-              message.metadata = metadata;
-
-              if (localStorageEnabled) {
-                recordResponseToLocalSession(message);
-              }
-              return [message];
-            }),
+            messages,
           });
         }
       },
-      [dispatch],
+      [
+        dispatch,
+        localStorageEnabled,
+        localStoragePrefix,
+        recordResponseToLocalSession,
+      ],
     );
 
   const setProcessedMessageCount = useCallback(
@@ -436,7 +466,7 @@ export const useTock0: (
           type: MessageType.message,
         } as TextMessage;
         if (localStorageEnabled) {
-          recordResponseToLocalSession(messageToDispatch);
+          recordResponseToLocalSession([messageToDispatch]);
         }
         dispatch({
           type: 'ADD_MESSAGE',
@@ -503,11 +533,13 @@ export const useTock0: (
     } else if (button.payload) {
       setQuickReplies([]);
       if (localStorageEnabled) {
-        recordResponseToLocalSession({
-          author: 'user',
-          message: button.label,
-          type: MessageType.message,
-        });
+        recordResponseToLocalSession([
+          {
+            author: 'user',
+            message: button.label,
+            type: MessageType.message,
+          },
+        ]);
       }
       addMessage(button.label, 'user');
       startLoading();
@@ -629,17 +661,29 @@ export const useTock0: (
     }, [handleSseBotResponse, onSseStateChange]);
 
     useEffect(() => {
+      let cancelled = false;
+      // Restore local history first, so that messages pushed by the backend as soon as
+      // the SSE connection opens are appended after it and are not handled twice
+      const historyLoaded = loadHistory().catch((e) => console.error(e));
       if (disableSse || !tockEndPoint.length) {
-        afterInit.current();
+        historyLoaded.finally(afterInit.current);
       } else {
-        // Trigger afterInit regardless of whether the SSE call succeeded or failed
-        // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
-        sseSource.current
-          .open(tockEndPoint, userId)
-          .catch((e) => console.error(e))
-          .finally(afterInit.current);
+        historyLoaded.then(() => {
+          if (cancelled) {
+            return;
+          }
+          // Trigger afterInit regardless of whether the SSE call succeeded or failed
+          // (it is valid for the backend to refuse SSE connections, but we still attempt to connect by default)
+          sseSource.current
+            .open(tockEndPoint, userId)
+            .catch((e) => console.error(e))
+            .finally(afterInit.current);
+        });
       }
-      return () => sseSource.current.close();
+      return () => {
+        cancelled = true;
+        sseSource.current.close();
+      };
     }, [disableSse, tockEndPoint]);
   };
 
@@ -661,15 +705,21 @@ export const useTock0: (
     [],
   );
 
-  const loadHistory: () => TockHistoryData | null = () => {
+  const loadHistory: () => Promise<TockHistoryData | null> = () => {
     // If not first time, return existing messages
     if (messages.length) {
-      return {
+      return Promise.resolve({
         messages,
         quickReplies,
-      };
+      });
     }
+    // Restoring from local storage must happen only once, even though both
+    // useSseInit and the chat component request it
+    historyLoadPromise.current ??= loadStoredHistory();
+    return historyLoadPromise.current;
+  };
 
+  const loadStoredHistory: () => Promise<TockHistoryData | null> = async () => {
     const messageHistoryLSKey = retrievePrefixedLocalStorageKey(
       localStoragePrefix,
       'tockMessageHistory',
@@ -687,12 +737,17 @@ export const useTock0: (
       'tockLastMessageTimestamp',
     );
 
-    const serializedHistory =
+    const storedMessages =
       storageAvailable('localStorage') && localStorageEnabled
-        ? window.localStorage.getItem(messageHistoryLSKey)
+        ? await historySerialization
+            .decode(window.localStorage.getItem(messageHistoryLSKey))
+            .catch((error) => {
+              console.error('Failed to load message history', error);
+              return null;
+            })
         : undefined;
 
-    if (serializedHistory) {
+    if (storedMessages) {
       const historyMaxAge = localStorageSettings.historyMaxAge;
       if (historyMaxAge > 0) {
         const lastMessageTime = +(
@@ -706,7 +761,7 @@ export const useTock0: (
         }
       }
 
-      const messages = JSON.parse(serializedHistory);
+      const messages = storedMessages;
       const quickReplies = JSON.parse(
         window.localStorage.getItem(quickReplyHistoryLSKey) || '[]',
       );

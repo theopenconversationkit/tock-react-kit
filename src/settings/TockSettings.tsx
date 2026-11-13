@@ -1,3 +1,7 @@
+import {
+  createDefaultHistorySerialization,
+  HistorySerialization,
+} from '../historySerialization';
 import { RendererSettings } from './RendererSettings';
 import linkifyHtml from 'linkify-html';
 import { PartialDeep } from 'type-fest';
@@ -7,6 +11,7 @@ export interface LocalStorageSettings {
   enableMessageHistory: boolean;
   maxMessageCount: number;
   historyMaxAge: number;
+  historySerialization: HistorySerialization;
 }
 
 export interface NetworkSettings {
@@ -32,6 +37,7 @@ export const defaultSettings: TockSettings = {
     enableMessageHistory: false,
     maxMessageCount: 10,
     historyMaxAge: -1,
+    historySerialization: createDefaultHistorySerialization(),
   },
   network: {
     disableSse: false,

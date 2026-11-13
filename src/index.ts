@@ -50,6 +50,12 @@ export type {
 } from './PostInitContext';
 export type { default as TockTheme } from './styles/theme';
 export type { default as TockOptions } from './TockOptions';
+export type { default as TockLocalStorage } from './TockLocalStorage';
+export type { HistorySerialization } from './historySerialization';
+export {
+  createDefaultHistorySerialization,
+  createEncryptedHistorySerialization,
+} from './historySerialization';
 export type {
   default as TockSettings,
   LocalStorageSettings,

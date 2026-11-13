@@ -369,20 +369,21 @@ Objects implementing this interface can be passed to `renderChat` or to `TockCon
 
 #### `LocalStorageSettings`
 
-| Property name          | Type       | Description                                                                                                                                                |
-|------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `enableMessageHistory` | `boolean?` | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                                  |
-| `historyMaxAge`        | `number?`  | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received).     |
-| `maxMessageCount`      | `number?`  | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                                 |
-| `prefix`               | `string?`  | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).                |
+| Property name          | Type                    | Description                                                                                                                                                                                                                         |
+|------------------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `enableMessageHistory` | `boolean?`              | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                                                                                                           |
+| `historyMaxAge`        | `number?`               | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received).                                                                              |
+| `maxMessageCount`      | `number?`               | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                                                                                                          |
+| `prefix`               | `string?`               | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).                                                                                         |
+| `historySerialization` | `HistorySerialization?` | Replaces the default JSON serialization of the persisted message history with a custom `{ decode, encode }` implementation. Use `createEncryptedHistorySerialization(encryptionKey)` to opt into the built-in AES-GCM encryption. |
 
 #### `NetworkSettings`
 
-| Property name          | type                                     | Description                                                                                                                                                                                 |
-|------------------------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `disableSse`           | `boolean?`                               | If `true`, disables any SSE connection attempt                                                                                                                                              |
-| `extraHeadersProvider` | `() => Promise<Record<string, string>>?` | Provides extra HTTP headers for outgoing requests                                                                                                                                           |
-| `retryOnPingTimeoutMs` | `number?`                                | If SSE is enabled, when this duration in milliseconds elapses without receiving ping events from the backend, the SSE connection is considered to be in an error state and gets restarted  |
+| Property name          | type                                     | Description                                                                                                                                                                               |
+|------------------------|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `disableSse`           | `boolean?`                               | If `true`, disables any SSE connection attempt                                                                                                                                            |
+| `extraHeadersProvider` | `() => Promise<Record<string, string>>?` | Provides extra HTTP headers for outgoing requests                                                                                                                                         |
+| `retryOnPingTimeoutMs` | `number?`                                | If SSE is enabled, when this duration in milliseconds elapses without receiving ping events from the backend, the SSE connection is considered to be in an error state and gets restarted |
 
 #### `RendererSettings`
 
@@ -530,9 +531,16 @@ The optional `localStorage.enableMessageHistory` setting (disabled by default) m
 This history loads at the creation of the chat and is stored in the local storage of the browser.
 The number of persisted messages can be configured with the `localStorage.maxMessageCount` setting.
 
+The default serialization strategy uses plain JSON. It can however be overridden by setting `localStorage.historySerialization`.
+This package ships an alternative AES-GCM encrypted implementation, which can be instantiated using `createEncryptedHistorySerialization(encryptionKey)`
+For backward compatibility, this alternative strategy can still decrypt existing plain-JSON and `v1`-encrypted histories.
+You may also opt for your own implementation of the `HistorySerialization` interface.
+
 Example:
 
 ```js
+import { createEncryptedHistorySerialization } from 'tock-react-kit';
+
 renderChat(
     document.getElementById('chat'),
     '<TOCK_BOT_API_URL>',
@@ -541,6 +549,14 @@ renderChat(
     { localStorage: {
         enableMessageHistory: true,
         maxMessageCount: 15, // default is 10 messages max
+        historySerialization: createEncryptedHistorySerialization(
+          () => 'my-secret-key',
+        ),
+        // or provide a custom serialization implementation:
+        // historySerialization: {
+        //   encrypt: async (history) => /* custom serialization/encryption */,
+        //   decrypt: async (history) => /* custom deserialization/decryption */,
+        // }
       }
     },
 );
