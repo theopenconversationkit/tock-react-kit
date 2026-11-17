@@ -21,6 +21,7 @@
 A toolkit to easily embed [Tock](https://doc.tock.ai) chatbots into Web pages.
 
 The toolkit provides:
+
 - simple integration, as a script or React module
 - connection/dialog with a Tock bot using _Bot API_ (using SSE if available)
 - user interface for conversations, including default widgets and animations
@@ -112,12 +113,16 @@ When working in a non-React app, you can once again use `renderChat` to render t
 import { renderChat } from 'tock-react-kit';
 
 renderChat(
-    document.getElementById('chat'),
-    '<TOCK_BOT_API_URL>',
-    /* The following parameters are optional */
-    'referralParameter',
-    { /* ... */ },
-    { /* ... */ },
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  /* The following parameters are optional */
+  'referralParameter',
+  {
+    /* ... */
+  },
+  {
+    /* ... */
+  },
 );
 ```
 
@@ -126,43 +131,53 @@ renderChat(
 Use the third argument of `renderChat` to style your app:
 
 ```js
-renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParameter', {
-  palette: {
-    text: {
-      user: 'limegreen',
-      bot: 'rebeccapurple',
-      card: 'black',
-      input: 'black',
+renderChat(
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  'referralParameter',
+  {
+    palette: {
+      text: {
+        user: 'limegreen',
+        bot: 'rebeccapurple',
+        card: 'black',
+        input: 'black',
+      },
+      background: {
+        user: 'red',
+        bot: 'orange',
+        card: 'lightgreen',
+        input: 'lightblue',
+        inputDisabled: '#b6b4b4',
+      },
     },
-    background: {
-      user: 'red',
-      bot: 'orange',
-      card: 'lightgreen',
-      input: 'lightblue',
-      inputDisabled: '#b6b4b4',
+    sizing: {
+      loaderSize: '8px',
+      borderRadius: '8px',
+      conversation: {
+        width: '720px',
+      },
+    },
+    typography: {
+      fontFamily: 'monospace',
+      fontSize: '24px',
+    },
+    overrides: {
+      chat: `background: #fff;`,
     },
   },
-  sizing: {
-    loaderSize: '8px',
-    borderRadius: '8px',
-    conversation: {
-      width: '720px',
-    },
-  },
-  typography: {
-    fontFamily: 'monospace',
-    fontSize: '24px',
-  },
-  overrides: {
-    chat: `background: #fff;`,
-  },
-});
+);
 ```
 
 You can use createTheme function to init a valid theme.
 
 ```js
-renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParameter', createTheme({}));
+renderChat(
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  'referralParameter',
+  createTheme({}),
+);
 ```
 
 ### Default classes
@@ -170,7 +185,6 @@ renderChat(document.getElementById('chat'), '<TOCK_BOT_API_URL>', 'referralParam
 If the MetadataEvent `TOCK_STREAM_RESPONSE` is set to true, the tock-react-kit will add the css class `tock-streamed-response` to the message element.
 
 It allows the client to customize the appearance of streamed responses.
-
 
 ## Customize interface
 
@@ -197,7 +211,7 @@ This approach can be used alongside custom renderers to control more granular as
 
 ## Message Metadata
 
-*TOCK*'s backend supports sending metadata alongside messages. This metadata takes the form of key-value pairs of arbitrary strings.
+_TOCK_'s backend supports sending metadata alongside messages. This metadata takes the form of key-value pairs of arbitrary strings.
 The `tock-react-kit` supports customization of the interface based on said metadata at two levels:
 
 ### Chat metadata
@@ -218,6 +232,20 @@ as well as to custom React-based frontends that handle message rendering themsel
 
 In order to support the streaming of responses, when the MetadataEvent `TOCK_STREAM_RESPONSE` is set to true, a message with the same responseId will be replaced with the new version of the message.
 
+The streaming contract (metadata of a response envelope):
+
+| Metadata                         | Meaning                                                                                                                                  |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `TOCK_STREAM_PARTIAL=true`       | Transient frame of an answer being generated. Not counted as a consumed message and not stored in the local history.                     |
+| `TOCK_STREAM_REPLACE=<actionId>` | Final response: only the message whose `actionId` matches replaces the streamed bubble, the other messages are added in order.           |
+| `TOCK_STREAM_DISCARD=true`       | The final response has no text: the streamed bubble is removed.                                                                          |
+| `TOCK_REQUEST_ID`                | Identifier sent by the kit as `requestId` with each question and echoed on every frame. Frames of another in-flight request are ignored. |
+
+By default, each streamed frame carries the whole text received so far. With the `network.streamMode: 'delta'` setting, the kit adds `"streamMode": "delta"` to its requests; the server then sends frames flagged with the MetadataEvent `TOCK_STREAM_MODE` set to `delta`, whose text is only the end of the (already rendered) text. `TOCK_STREAM_KEEP` gives the number of characters of the current message to keep before appending it, so that the displayed text is the same as in the default mode. The final response always carries the complete text and replaces the message. Servers that do not support this option ignore it.
+
+Frames flagged `TOCK_STREAM_PARTIAL` do not count as messages consumed from the POST response; every other SSE frame does, so that the POST response only adds the messages not already received over SSE. A `TOCK_STREAM_DISCARD` frame carries no message and counts for none.
+
+Note: a delta frame received while no streamed bubble exists yet displays only its fragment until the final response replaces it. An invalid `TOCK_STREAM_KEEP` is ignored and the message waits for the final response.
 
 ## API Reference
 
@@ -226,7 +254,7 @@ In order to support the streaming of responses, when the MetadataEvent `TOCK_STR
 Renders an entire chat in a target element.
 
 | Argument name       | Type                                                                  | Description                                    |
-|---------------------|-----------------------------------------------------------------------|------------------------------------------------|
+| ------------------- | --------------------------------------------------------------------- | ---------------------------------------------- |
 | `element`           | [`Element`](https://developer.mozilla.org/en-US/docs/Web/API/Element) | Target element where the chat will be rendered |
 | `tockBotApiUrl`     | `string`                                                              | URL to the Tock Bot REST API                   |
 | `referralParameter` | `string`                                                              | Optional referal parameter                     |
@@ -240,7 +268,7 @@ Hook that provides chat history and methods to communicate with the Tock Bot. It
 Until version 24.9.0 of the tock-react-kit, this function took the following arguments, which are now moved to [`TockSettings`](#TockSettings):
 
 | Argument name          | Type                                    | Description                                                   |
-|------------------------|-----------------------------------------|---------------------------------------------------------------|
+| ---------------------- | --------------------------------------- | ------------------------------------------------------------- |
 | `tockBotApiUrl`        | `string`                                | URL to the Tock Bot REST API                                  |
 | `extraHeadersProvider` | `() => Promise<Record<string, string>>` | Optional Provider of extra HTTP headers for outgoing requests |
 | `disableSse`           | `boolean`                               | Optional Force-disabling of SSE mode                          |
@@ -251,7 +279,7 @@ Until version 24.9.0 of the tock-react-kit, this function took the following arg
 A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`](https://emotion.sh/docs/theming) (bundled with the library) or as a third argument of `renderChat`.
 
 | Property name        | Type         | Description                                        |
-|----------------------|--------------|----------------------------------------------------|
+| -------------------- | ------------ | -------------------------------------------------- |
 | `palette`            | `Palette`    | Object for customising colors (see below)          |
 | `sizing`             | `Sizing`     | Object for customising elements sizing (see below) |
 | `typography`         | `Typography` | Object for customising typographies (see below)    |
@@ -260,55 +288,55 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `Palette`
 
-| Property name   | Type                | Description                                                 |
-|-----------------|---------------------|-------------------------------------------------------------|
-| `background`    | `BackgroundPalette` | Object for customising background colors (see below)        |
-| `text`          | `TextPalette?`      | Object for customising text colors (see below)              |
+| Property name | Type                | Description                                          |
+| ------------- | ------------------- | ---------------------------------------------------- |
+| `background`  | `BackgroundPalette` | Object for customising background colors (see below) |
+| `text`        | `TextPalette?`      | Object for customising text colors (see below)       |
 
 #### `BackgroundPalette`
 
-| Property name   | Type               | Description                                                  |
-|-----------------|--------------------|--------------------------------------------------------------|
-| `user`          | `string?`          | CSS color used mainly for the user's chat speech balloons    |
-| `bot`           | `string?`          | CSS color used mainly for the bot's chat speech balloons     |
-| `card`          | `string?`          | CSS background color for cards                               |
-| `input`         | `string?`          | CSS background color for the main user text input            |
-| `inputDisabled` | `string?`          | CSS background color for the main user text input disabled   |
+| Property name   | Type      | Description                                                |
+| --------------- | --------- | ---------------------------------------------------------- |
+| `user`          | `string?` | CSS color used mainly for the user's chat speech balloons  |
+| `bot`           | `string?` | CSS color used mainly for the bot's chat speech balloons   |
+| `card`          | `string?` | CSS background color for cards                             |
+| `input`         | `string?` | CSS background color for the main user text input          |
+| `inputDisabled` | `string?` | CSS background color for the main user text input disabled |
 
 #### `TextPalette`
 
-| Property name   | Type               | Description                                                  |
-|-----------------|--------------------|--------------------------------------------------------------|
-| `user`          | `string?`          | CSS color used mainly for the user's chat speech balloons    |
-| `bot`           | `string?`          | CSS color used mainly for the bot's chat speech balloons     |
-| `card`          | `string?`          | CSS background color for cards                               |
-| `input`         | `string?`          | CSS background color for the main user text input            |
+| Property name | Type      | Description                                               |
+| ------------- | --------- | --------------------------------------------------------- |
+| `user`        | `string?` | CSS color used mainly for the user's chat speech balloons |
+| `bot`         | `string?` | CSS color used mainly for the bot's chat speech balloons  |
+| `card`        | `string?` | CSS background color for cards                            |
+| `input`       | `string?` | CSS background color for the main user text input         |
 
 #### `Sizing`
 
-| Property name   | Type               | Description                                                  |
-|-----------------|--------------------|--------------------------------------------------------------|
-| `loaderSize`    | `string?`          | Loader component size                                        |
-| `borderRadius`  | `string?`          | Border radius used in various chat components                |
-| `conversation`  | `Shape`            | Object for customising chat size (see below)                 |
+| Property name  | Type      | Description                                   |
+| -------------- | --------- | --------------------------------------------- |
+| `loaderSize`   | `string?` | Loader component size                         |
+| `borderRadius` | `string?` | Border radius used in various chat components |
+| `conversation` | `Shape`   | Object for customising chat size (see below)  |
 
 #### `Shape`
 
-| Property name   | Type               | Description                                                  |
-|-----------------|--------------------|--------------------------------------------------------------|
-| `width`         | `string?`          | CSS max-width of the chat interface                          |
+| Property name | Type      | Description                         |
+| ------------- | --------- | ----------------------------------- |
+| `width`       | `string?` | CSS max-width of the chat interface |
 
 #### `Typography`
 
-| Property name   | Type               | Description                                                  |
-|-----------------|--------------------|--------------------------------------------------------------|
-| `fontFamily`    | `string?`          | CSS font-family used in the chat                             |
-| `fontSize`      | `string?`          | CSS base font-size used in the chat                          |
+| Property name | Type      | Description                         |
+| ------------- | --------- | ----------------------------------- |
+| `fontFamily`  | `string?` | CSS font-family used in the chat    |
+| `fontSize`    | `string?` | CSS base font-size used in the chat |
 
 #### `Overrides`
 
 | Property name       | Type                   | Description                                                                      |
-|---------------------|------------------------|----------------------------------------------------------------------------------|
+| ------------------- | ---------------------- | -------------------------------------------------------------------------------- |
 | `buttons`           | `TockThemeButtonStyle` | Object for adding CSS styles on button components (see below)                    |
 | `card`              | `TockThemeCardStyle`   | Object for adding CSS styles on card component (see below)                       |
 | `chatInput`         | `TockThemeInputStyle?` | Object for adding CSS styles on chat input component (see below)                 |
@@ -323,17 +351,17 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `TockThemeButtonStyle`
 
-| Property name     | Type                   | Description                                                             |
-|-------------------|------------------------|-------------------------------------------------------------------------|
-| `urlButton`       | `string?`              | Additional CSS styles for URL buttons (overrides base styles)           |
-| `postbackButton`  | `string?`              | Additional CSS styles for postback buttons (overrides base styles)      |
-| `buttonList`      | `string?`              | Additional CSS styles for button lists (overrides base styles)          |
-| `buttonContainer` | `string?`              | Additional CSS styles for button list container (overrides base styles) |
+| Property name     | Type      | Description                                                             |
+| ----------------- | --------- | ----------------------------------------------------------------------- |
+| `urlButton`       | `string?` | Additional CSS styles for URL buttons (overrides base styles)           |
+| `postbackButton`  | `string?` | Additional CSS styles for postback buttons (overrides base styles)      |
+| `buttonList`      | `string?` | Additional CSS styles for button lists (overrides base styles)          |
+| `buttonContainer` | `string?` | Additional CSS styles for button list container (overrides base styles) |
 
 #### `TockThemeCardStyle`
 
 | Property name     | Type      | Description                                                                                                                    |
-|-------------------|-----------|--------------------------------------------------------------------------------------------------------------------------------|
+| ----------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `cardContainer`   | `string?` | Additional CSS styles for carousel cards container (overrides base styles)                                                     |
 | `cardTitle`       | `string?` | Additional CSS styles for carousel cards title (overrides base styles)                                                         |
 | `cardSubTitle`    | `string?` | Additional CSS styles for carousel cards subtitle (overrides base styles)                                                      |
@@ -344,11 +372,11 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 
 #### `TockThemeInputStyle`
 
-| Property name       | Type                   | Description                                                                      |
-|---------------------|------------------------|----------------------------------------------------------------------------------|
-| `container`         | `string?`              | Additional CSS styles for input container (overrides base styles)                |
-| `input`             | `string?`              | Additional CSS styles for input (overrides base styles)                          |
-| `icon`              | `string?`              | Additional CSS styles for input icon (overrides base styles)                     |
+| Property name | Type      | Description                                                       |
+| ------------- | --------- | ----------------------------------------------------------------- |
+| `container`   | `string?` | Additional CSS styles for input container (overrides base styles) |
+| `input`       | `string?` | Additional CSS styles for input (overrides base styles)           |
+| `icon`        | `string?` | Additional CSS styles for input icon (overrides base styles)      |
 
 ### `TockSettings`
 
@@ -356,10 +384,10 @@ The main source of configuration for the chatbot interface.
 Objects implementing this interface can be passed to `renderChat` or to `TockContext`.
 
 | Property name  | Type                    | Description                                                                                                           |
-|----------------|-------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| -------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `endpoint`     | `string`                | The URL of the web connector endpoint                                                                                 |
 | `userId`       | `(string\|null)?`       | Unique user ID. `null` means no clientside ID. `undefined` (default) generates and stores a UUID in the localStorage. |
-| `locale`       | `string?`               | Optional user language, as an *RFC 5646* code                                                                         |
+| `locale`       | `string?`               | Optional user language, as an _RFC 5646_ code                                                                         |
 | `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library                                                                  |
 | `network`      | `NetworkSettings?`      | If `true`, disables any SSE connection attempt                                                                        |
 | `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers                                                                     |
@@ -369,25 +397,25 @@ Objects implementing this interface can be passed to `renderChat` or to `TockCon
 
 #### `LocalStorageSettings`
 
-| Property name          | Type       | Description                                                                                                                                                |
-|------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `enableMessageHistory` | `boolean?` | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                                  |
-| `historyMaxAge`        | `number?`  | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received).     |
-| `maxMessageCount`      | `number?`  | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                                 |
-| `prefix`               | `string?`  | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).                |
+| Property name          | Type       | Description                                                                                                                                            |
+| ---------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `enableMessageHistory` | `boolean?` | If set to `true`, the most recent messages of a conversation will be persisted in the local storage. Defaults to `false`.                              |
+| `historyMaxAge`        | `number?`  | If set to a positive value, represents the number of seconds before the message history is cleared (the timeout is reset after each message received). |
+| `maxMessageCount`      | `number?`  | When message history is enabled, sets the max number of messages to store. Defaults to 10.                                                             |
+| `prefix`               | `string?`  | Prefix for local storage keys allowing communication with different bots from the same domain (used for both `userId` and message history).            |
 
 #### `NetworkSettings`
 
-| Property name          | type                                     | Description                                                                                                                                                                                 |
-|------------------------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `disableSse`           | `boolean?`                               | If `true`, disables any SSE connection attempt                                                                                                                                              |
-| `extraHeadersProvider` | `() => Promise<Record<string, string>>?` | Provides extra HTTP headers for outgoing requests                                                                                                                                           |
-| `retryOnPingTimeoutMs` | `number?`                                | If SSE is enabled, when this duration in milliseconds elapses without receiving ping events from the backend, the SSE connection is considered to be in an error state and gets restarted  |
+| Property name          | type                                     | Description                                                                                                                                                                               |
+| ---------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disableSse`           | `boolean?`                               | If `true`, disables any SSE connection attempt                                                                                                                                            |
+| `extraHeadersProvider` | `() => Promise<Record<string, string>>?` | Provides extra HTTP headers for outgoing requests                                                                                                                                         |
+| `retryOnPingTimeoutMs` | `number?`                                | If SSE is enabled, when this duration in milliseconds elapses without receiving ping events from the backend, the SSE connection is considered to be in an error state and gets restarted |
 
 #### `RendererSettings`
 
 | Property name      | Type                | Description                                                                        |
-|--------------------|---------------------|------------------------------------------------------------------------------------|
+| ------------------ | ------------------- | ---------------------------------------------------------------------------------- |
 | `buttonRenderers`  | `ButtonRenderers?`  | Configuration of renderers for buttons displayed in the chat interface             |
 | `imageRenderers`   | `ImageRenderers?`   | Configuration of renderers for dynamic images displayed in the chat interface      |
 | `messageRenderers` | `MessageRenderers?` | Configuration of renderers for individual message components in the chat interface |
@@ -400,7 +428,7 @@ They are tasked with rendering a graphical component using button-specific data,
 The passed in class name provides the default style for the rendered component, as well as applicable [overrides](#overrides).
 
 | Property name | Type                        | Description                                                                                          |
-|---------------|-----------------------------|------------------------------------------------------------------------------------------------------|
+| ------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `default`     | `ButtonRenderer`            | The fallback renderer. By default, renders a single `button` component using the provided properties |
 | `url`         | `UrlButtonRenderer`         | Renders an `UrlButton`. By default, renders a single `a` component using the provided properties     |
 | `postback`    | `PostBackButtonRenderer?`   | Renders a `PostBackButton`                                                                           |
@@ -413,7 +441,7 @@ They are tasked with rendering a graphical component using a source URL, a descr
 The passed in class name provides the default style for the rendered component, as well as applicable [overrides](#overrides).
 
 | Property name | Description                                                                                       |
-|---------------|---------------------------------------------------------------------------------------------------|
+| ------------- | ------------------------------------------------------------------------------------------------- |
 | `default`     | The fallback renderer. By default, renders a single `img` component using the provided properties |
 | `standalone`  | Renders images in the dedicated image component, including the zoomed-in view                     |
 | `card`        | Renders images in the card component (including in carousels)                                     |
@@ -426,7 +454,7 @@ Currently, the only message renderer that can be defined here is for the `error`
 appears after a network error (and disappears after a successful request).
 
 | Property name | Description                                                                          |
-|---------------|--------------------------------------------------------------------------------------|
+| ------------- | ------------------------------------------------------------------------------------ |
 | `error`       | The error message renderer. If left unspecified, no error message is ever displayed. |
 
 #### `TextRenderers`
@@ -443,7 +471,7 @@ Some renderers are expected to handle rich text, that is text that already conta
 Such rich text renderers may strip HTML tags or attributes that are deemed dangerous to add to the DOM.
 
 | Property name | Type of content          | Description                                                                                               |
-|---------------|--------------------------|-----------------------------------------------------------------------------------------------------------|
+| ------------- | ------------------------ | --------------------------------------------------------------------------------------------------------- |
 | `default`     | non-interactive phrasing | The fallback renderer. By default, renders the whole string as a single text node                         |
 | `html`        | flow                     | The fallback renderer for rich text. By default, renders the string into a `div` with `innerHTML`         |
 | `htmlPhrase`  | phrasing                 | The fallback renderer for inline rich text. By default, renders the string into a `span` with `innerHTML` |
@@ -453,54 +481,55 @@ Such rich text renderers may strip HTML tags or attributes that are deemed dange
 
 Contains all the properties from [`TockSettings`](#tocksettings) as well as the following:
 
-| Property name           | Type                                   | Description                                                              |
-|-------------------------|----------------------------------------|--------------------------------------------------------------------------|
-| `afterInit`             | `(PostInitContext) => Promise<void>?`  | Callback that will be executed after chat init and before openingMessage |
-| `openingMessage`        | `string?`                              | Initial message to send to the bot to trigger a welcome sequence         |
-| `extraHeadersProvider`  | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests                     |
-| `timeoutBetweenMessage` | `number?`                              | Timeout between message                                                  |
-| `widgets`               | `any?`                                 | Custom display component                                                 |
-| `disableSse`            | `boolean?`                             | Disable SSE (not even trying)                                            |
-| `accessibility`         | `TockAccessibility`                    | Object for overriding role and label accessibility attributes            |
-| `localStorageHistory`   | `TockLocalStorage?`                    | Object for history local storage                                         |
+| Property name           | Type                                   | Description                                                                                 |
+| ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `afterInit`             | `(PostInitContext) => Promise<void>?`  | Callback that will be executed after chat init and before openingMessage                    |
+| `openingMessage`        | `string?`                              | Initial message to send to the bot to trigger a welcome sequence                            |
+| `extraHeadersProvider`  | `() => Promise<Record<string, string>` | Provider of extra HTTP headers for outgoing requests                                        |
+| `timeoutBetweenMessage` | `number?`                              | Timeout between message                                                                     |
+| `widgets`               | `any?`                                 | Custom display component                                                                    |
+| `disableSse`            | `boolean?`                             | Disable SSE (not even trying)                                                               |
+| `streamMode`            | `'delta'?`                             | Ask the server to stream only new fragments (see [Streamed responses](#streamed-responses)) |
+| `accessibility`         | `TockAccessibility`                    | Object for overriding role and label accessibility attributes                               |
+| `localStorageHistory`   | `TockLocalStorage?`                    | Object for history local storage                                                            |
 
 #### `TockAccessibility`
 
-| Property name                     | Type                       | Description                                                                                         |
-|-----------------------------------|----------------------------|-----------------------------------------------------------------------------------------------------|
-| `input`                           | `InputAccessibility?`      | Object for adding accessibility labels on input component (see below)                               |
-| `carousel`                        | `CarouselAccessibility?`   | Object for adding accessibility labels on carousel component (see below)                            |
-| `qrCarousel`                      | `QRCarouselAccessibility?` | Object for adding accessibility labels on QR inline carousel component component (see below)        |
+| Property name | Type                       | Description                                                                                  |
+| ------------- | -------------------------- | -------------------------------------------------------------------------------------------- |
+| `input`       | `InputAccessibility?`      | Object for adding accessibility labels on input component (see below)                        |
+| `carousel`    | `CarouselAccessibility?`   | Object for adding accessibility labels on carousel component (see below)                     |
+| `qrCarousel`  | `QRCarouselAccessibility?` | Object for adding accessibility labels on QR inline carousel component component (see below) |
 
 #### `InputAccessibility`
 
-| Property name                     | Type                       | Description                                                                                         |
-|-----------------------------------|----------------------------|-----------------------------------------------------------------------------------------------------|
-| `sendButtonLabel`                 | `string?`                  | Message of the send message button image aria-label attribute (overrides 'Send a message')          |
-| `clearButtonLabel`                | `string?`                  | Message of the clear messages button image aria-label attribute (overrides 'Clear messages')        |
+| Property name      | Type      | Description                                                                                  |
+| ------------------ | --------- | -------------------------------------------------------------------------------------------- |
+| `sendButtonLabel`  | `string?` | Message of the send message button image aria-label attribute (overrides 'Send a message')   |
+| `clearButtonLabel` | `string?` | Message of the clear messages button image aria-label attribute (overrides 'Clear messages') |
 
 #### `TockLocalStorage`
 
-| Property name                     | Type                   | Description                                                                 |
-|-----------------------------------|------------------------|-----------------------------------------------------------------------------|
-| `enable`                          | `boolean?`             | Enable history local storage                                                |
-| `maxNumberMessages`               | `number?`              | Max number of messages in the history local storage (default 10)            |
+| Property name       | Type       | Description                                                      |
+| ------------------- | ---------- | ---------------------------------------------------------------- |
+| `enable`            | `boolean?` | Enable history local storage                                     |
+| `maxNumberMessages` | `number?`  | Max number of messages in the history local storage (default 10) |
 
 #### `CarouselAccessibility`
 
-| Property name             | Type                   | Description                                                                                        |
-|---------------------------|------------------------|----------------------------------------------------------------------------------------------------|
-| `roleDescription`         | `string?`              | Message of the carousel aria-roledescription attribute (overrides 'Carousel')                      |
-| `slideRoleDescription`    | `string?`              | Message of the slide carousel aria-roledescription attribute (overrides 'Slide')                   |
-| `previousButtonLabel`     | `string?`              | Message of the carousel previous button image aria-label attribute (overrides 'Previous slides')   |
-| `nextButtonLabel`         | `string?`              | Message of the carousel next button image aria-label attribute (overrides 'Next slides')           |
+| Property name          | Type      | Description                                                                                      |
+| ---------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| `roleDescription`      | `string?` | Message of the carousel aria-roledescription attribute (overrides 'Carousel')                    |
+| `slideRoleDescription` | `string?` | Message of the slide carousel aria-roledescription attribute (overrides 'Slide')                 |
+| `previousButtonLabel`  | `string?` | Message of the carousel previous button image aria-label attribute (overrides 'Previous slides') |
+| `nextButtonLabel`      | `string?` | Message of the carousel next button image aria-label attribute (overrides 'Next slides')         |
 
 #### `QRCarouselAccessibility`
 
-| Property name           | Type                   | Description                                                                                                            |
-|-------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `previousButtonLabel`   | `string?`              | Message of the quick replies carousel previous button image aria-label attribute (overrides 'Previous quick replies')  |
-| `nextButtonLabel`       | `string?`              | Message of the quick replies carousel next button image aria-label attribute (overrides 'Next quick replies')          |
+| Property name         | Type      | Description                                                                                                           |
+| --------------------- | --------- | --------------------------------------------------------------------------------------------------------------------- |
+| `previousButtonLabel` | `string?` | Message of the quick replies carousel previous button image aria-label attribute (overrides 'Previous quick replies') |
+| `nextButtonLabel`     | `string?` | Message of the quick replies carousel next button image aria-label attribute (overrides 'Next quick replies')         |
 
 #### Accessibility
 
@@ -510,17 +539,18 @@ Example :
 
 ```js
 renderChat(
-    document.getElementById('chat'),
-    '<TOCK_BOT_API_URL>',
-    undefined,
-    {},
-    { accessibility: {
-        carousel: {
-          roleDescription: 'Carousel',
-          slideRoleDescription: 'Result',
-        },
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {},
+  {
+    accessibility: {
+      carousel: {
+        roleDescription: 'Carousel',
+        slideRoleDescription: 'Result',
       },
     },
+  },
 );
 ```
 
@@ -534,15 +564,16 @@ Example:
 
 ```js
 renderChat(
-    document.getElementById('chat'),
-    '<TOCK_BOT_API_URL>',
-    undefined,
-    {},
-    { localStorage: {
-        enableMessageHistory: true,
-        maxMessageCount: 15, // default is 10 messages max
-      }
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {},
+  {
+    localStorage: {
+      enableMessageHistory: true,
+      maxMessageCount: 15, // default is 10 messages max
     },
+  },
 );
 ```
 
@@ -563,23 +594,24 @@ Example:
 
 ```js
 renderChat(
-    document.getElementById('chat'), 
-    '<TOCK_BOT_API_URL>', 
-    undefined,
-    {},
-    {
-      localStorageHistory: { enable: true },
-      afterInit: async (context) => {
-        if (context.history) await context.sendMessage('I am back');
-        else await context.sendPayload('greetings')
-      }
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {},
+  {
+    localStorageHistory: { enable: true },
+    afterInit: async (context) => {
+      if (context.history) await context.sendMessage('I am back');
+      else await context.sendPayload('greetings');
     },
+  },
 );
 ```
 
 In this example, whenever the page is loaded:
+
 - If the user previously interacted with the bot, they will send the "I am back" message to the bot endpoint,
-triggering the corresponding story. Said message will be displayed as a user message.
+  triggering the corresponding story. Said message will be displayed as a user message.
 - Otherwise, a payload will be sent, which will trigger the intent with the ID `greetings`.
 
 ##### Opening message
@@ -597,11 +629,11 @@ Example:
 
 ```js
 renderChat(
-    document.getElementById('chat'), 
-    '<TOCK_BOT_API_URL>', 
-    undefined,
-    {},
-    { openingMessage: 'hello my bot' },
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {},
+  { openingMessage: 'hello my bot' },
 );
 ```
 
@@ -610,25 +642,25 @@ the story corresponding to _"hello my bot"_ (e.g. `hello`) will be triggered, st
 
 #### Extra headers
 
-The optional `extraHeadersProvider` makes it possible to provide additional HTTP headers, 
+The optional `extraHeadersProvider` makes it possible to provide additional HTTP headers,
 to message requests from the Web page (`tock-react-kit` component) to the Bot (Tock Bot API).
 
 Example:
 
 ```js
 renderChat(
-    document.getElementById('chat'), 
-    '<TOCK_BOT_API_URL>', 
-    undefined,
-    {},
-    { extraHeadersProvider: (async () => ({'my-custom-header': 'some value'})) },
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {},
+  { extraHeadersProvider: async () => ({ 'my-custom-header': 'some value' }) },
 );
 ```
 
 This is typically used to pass tokens or custom values to the Bot backend.
 
 > Note that extra headers should be allowed by the backend's CORS setup for the application to work as intended.
- 
+
 #### Custom widgets
 
 Tock web connector can send custom messages :
@@ -637,10 +669,10 @@ Tock web connector can send custom messages :
 {
   data: {
     departure: 'Paris',
-    arrival: 'Nice'
+    arrival: 'Nice',
   },
   type: 'TrainCardWidget',
-} 
+}
 ```
 
 You can define your own display components for this custom message :
@@ -649,27 +681,27 @@ You can define your own display components for this custom message :
 import React from 'react';
 import { renderChat, MessageContainer, Message } from 'tock-react-kit';
 
-const TrainCardWidget = ({departure, arrival}) => {
-    return (
-        <MessageContainer>
-            <Message>
-                <p>Departure: {departure}</p>
-                <p>Arrival: {arrival}</p>
-            </Message>
-        </MessageContainer>
-    );
+const TrainCardWidget = ({ departure, arrival }) => {
+  return (
+    <MessageContainer>
+      <Message>
+        <p>Departure: {departure}</p>
+        <p>Arrival: {arrival}</p>
+      </Message>
+    </MessageContainer>
+  );
 };
 
 renderChat(
-    document.getElementById('chat'),
-    '<TOCK_BOT_API_URL>',
-    undefined,
-    {}, 
-    {
-        widgets: {
-            TrainCardWidget
-        }
-    }
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {},
+  {
+    widgets: {
+      TrainCardWidget,
+    },
+  },
 );
 ```
 
@@ -678,17 +710,17 @@ renderChat(
 By default, the `tock-react-kit` tries to connect to the Bot through [Server-sent events](https://en.wikipedia.org/wiki/Server-sent_events).
 If an error occurs, it probably means the Bot's backend does not accept SSE, so the `tock-react-kit` switches to classic requests.
 
-The optional `disableSse`parameter makes it possible to disable SSE before even trying, possibly preventing a `404` error 
+The optional `disableSse`parameter makes it possible to disable SSE before even trying, possibly preventing a `404` error
 from console (when the Bot does not accept SSE).
 
 Example:
 
 ```js
 renderChat(
-    document.getElementById('chat'), 
-    '<TOCK_BOT_API_URL>', 
-    undefined,
-    {},
-    { disableSse: true },
+  document.getElementById('chat'),
+  '<TOCK_BOT_API_URL>',
+  undefined,
+  {},
+  { disableSse: true },
 );
 ```

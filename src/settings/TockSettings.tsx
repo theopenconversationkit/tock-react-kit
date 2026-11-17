@@ -11,6 +11,7 @@ export interface LocalStorageSettings {
 
 export interface NetworkSettings {
   disableSse: boolean;
+  streamMode?: 'delta';
   retryOnPingTimeoutMs: number;
   extraHeadersProvider?: () => Promise<Record<string, string>>;
 }

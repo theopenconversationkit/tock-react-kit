@@ -16,6 +16,7 @@ export interface BotConnectorMessage {
   widget?: BotConnectorWidget;
   image?: BotConnectorImage;
   deepLink?: string;
+  actionId?: string;
 }
 
 export interface BotConnectorCard {
