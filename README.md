@@ -355,17 +355,24 @@ A `TockTheme` can be used as a value of a `ThemeProvider` of [`emotion-theming`]
 The main source of configuration for the chatbot interface.
 Objects implementing this interface can be passed to `renderChat` or to `TockContext`.
 
-| Property name  | Type                    | Description                                                                                                           |
-|----------------|-------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| `endpoint`     | `string`                | The URL of the web connector endpoint                                                                                 |
-| `userId`       | `(string\|null)?`       | Unique user ID. `null` means no clientside ID. `undefined` (default) generates and stores a UUID in the localStorage. |
-| `locale`       | `string?`               | Optional user language, as an *RFC 5646* code                                                                         |
-| `localStorage` | `LocalStorageSettings?` | Configuration for use of localStorage by the library                                                                  |
-| `network`      | `NetworkSettings?`      | If `true`, disables any SSE connection attempt                                                                        |
-| `renderers`    | `RendererSettings?`     | Configuration for custom image and text renderers                                                                     |
+| Property name    | Type                    | Description                                                                                                           |
+|------------------|-------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `endpoint`       | `string`                | The URL of the web connector endpoint                                                                                 |
+| `userId`         | `(string\|null)?`       | Unique user ID. `null` means no clientside ID. `undefined` (default) generates and stores a UUID in the localStorage. |
+| `locale`         | `string?`               | Optional user language, as an *RFC 5646* code                                                                         |
+| `restartKeyword` | `string?`               | Keyword sent to the bot when the user clears the messages, to restart the conversation on the server side (see below) |
+| `localStorage`   | `LocalStorageSettings?` | Configuration for use of localStorage by the library                                                                  |
+| `network`        | `NetworkSettings?`      | If `true`, disables any SSE connection attempt                                                                        |
+| `renderers`      | `RendererSettings?`     | Configuration for custom image and text renderers                                                                     |
 
 > Note: disabling clientside ID is more secure, but requires setting a different [Web Security Mode](https://github.com/theopenconversationkit/tock/tree/master/bot/connector-web#web-security-modes)
 > in the matching bot configuration.
+
+By default, the clear messages button only erases the messages on the client side: the bot keeps the conversation context
+(current story, entity values, RAG history...). Set `restartKeyword` to `_restart_` (the default value of the
+`tock_bot_restart_keyword` property, see [tock#2164](https://github.com/theopenconversationkit/tock/pull/2164)) to also restart the conversation on the server side.
+The keyword is not displayed, the answer of the bot is. The user ID is kept.
+The same behaviour is available programmatically through the `restartConversation` method returned by `useTock`.
 
 #### `LocalStorageSettings`
 

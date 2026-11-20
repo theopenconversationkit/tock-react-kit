@@ -19,6 +19,11 @@ export default interface TockSettings {
   endpoint?: string; // will be required in a future release
   userId?: string | null;
   locale?: string;
+  /**
+   * Keyword sent to the bot when the user clears the messages, to restart the conversation on the server side.
+   * The default Tock keyword is `_restart_`. Undefined (default) only clears the messages on the client side.
+   */
+  restartKeyword?: string;
   localStorage: LocalStorageSettings;
   network: NetworkSettings;
   renderers: RendererSettings;
