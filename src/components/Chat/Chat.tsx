@@ -54,6 +54,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
     sseInitPromise,
     sseInitializing,
     clearMessages,
+    restartConversation,
     error,
   }: UseTock = useTock(
     endPoint,
@@ -103,7 +104,7 @@ const Chat: (props: ChatProps) => JSX.Element = ({
         disabled={sseInitializing}
         onSubmit={sendMessage}
         accessibility={accessibility}
-        clearMessages={clearMessages}
+        clearMessages={restartConversation}
       />
     </Container>
   );

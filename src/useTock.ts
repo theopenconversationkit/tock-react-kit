@@ -49,6 +49,11 @@ export interface UseTock {
   ) => void;
   sendMessage: (message: string) => Promise<void>;
   clearMessages: () => void;
+  /**
+   * Clears the messages, then sends the {@link TockSettings.restartKeyword} (if any) to the bot,
+   * so that the conversation also restarts on the server side.
+   */
+  restartConversation: () => Promise<void>;
   addCard: (
     title: string,
     imageUrl?: string,
@@ -142,7 +147,12 @@ export const useTock0: (
   localStorageHistory?: TockLocalStorage,
 ) => UseTockInternal = (
   tockEndPoint: string,
-  { locale, localStorage: localStorageSettings, network: networkSettings },
+  {
+    locale,
+    restartKeyword,
+    localStorage: localStorageSettings,
+    network: networkSettings,
+  },
   extraHeadersProvider?: () => Promise<Record<string, string>>,
   disableSseArg?: boolean,
   localStorageHistoryArg?: TockLocalStorage,
@@ -550,6 +560,15 @@ export const useTock0: (
     return Promise.resolve();
   };
 
+  const restartConversation: () => Promise<void> = () => {
+    clearMessages();
+    setQuickReplies([]);
+    // the keyword is not displayed, only the bot answer is
+    return restartKeyword
+      ? sendMessage(restartKeyword, undefined, false)
+      : Promise.resolve();
+  };
+
   // Sends an initial message to the backend, to trigger a welcome message
   const sendOpeningMessage: (msg: string) => Promise<void> = (msg) =>
     sendMessage(msg, undefined, false);
@@ -729,6 +748,7 @@ export const useTock0: (
     loading,
     error,
     clearMessages,
+    restartConversation,
     addCard,
     addCarousel,
     addMessage,
